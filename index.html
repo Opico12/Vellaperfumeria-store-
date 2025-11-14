@@ -17,9 +17,10 @@
         theme: {
           extend: {
             colors: {
-              'brand-lilac': '#DCD0FF',
-              'brand-lilac-dark': '#C8B6FF',
-              'brand-rose': '#E9A8D3',
+              'brand-pink': '#EEC8E6',
+              'brand-pink-dark': '#E1B4D7',
+              'brand-rose': '#720eec',
+              'brand-bg-subtle': '#EDEDED',
             }
           }
         }
@@ -27,12 +28,12 @@
     </script>
     <style>
       :root {
-        --color-background: #FFFFFF;
-        --color-text: #000000;
-        --color-primary: #000000; /* Black for primary buttons */
+        --color-background: #EDEDED;
+        --color-text: #515151;
+        --color-primary: #222020; /* Black for primary text */
         --color-primary-dark: #333333;
-        --color-secondary: #DCD0FF; /* Light Lilac Accent */
-        --color-accent: #000000;
+        --color-secondary: #EEC8E6; /* Soft Pink Accent */
+        --color-accent: #222020;
         --font-body: 'Inter', sans-serif;
         --font-heading: 'Raleway', sans-serif;
       }
@@ -52,7 +53,7 @@
       
       .btn-primary {
         background-color: var(--color-secondary);
-        color: var(--color-accent);
+        color: var(--color-primary);
         font-weight: 600;
         padding: 0.75rem 1.5rem;
         border-radius: 0.5rem;
@@ -60,7 +61,7 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
       }
       .btn-primary:hover {
-        background-color: #C8B6FF; /* brand-lilac-dark */
+        background-color: #E1B4D7; /* brand-pink-dark */
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       }
@@ -114,7 +115,7 @@
         transform-origin: bottom left;
       }
       .hover-underline-effect-white::after {
-        background-color: #DCD0FF;
+        background-color: #EEC8E6;
       }
     </style>
   <script type="importmap">

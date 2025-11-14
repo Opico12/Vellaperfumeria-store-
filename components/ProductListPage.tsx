@@ -44,7 +44,7 @@ const ProductListPage: React.FC<{
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div 
-                className="bg-brand-lilac/20 rounded-lg p-8 md:p-12 mb-12 text-center"
+                className="bg-[#fdf2f8] rounded-lg p-8 md:p-12 mb-12 text-center"
             >
                 <h1 className="text-4xl font-extrabold text-black tracking-tight">Nuestra Tienda</h1>
                 <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-700">

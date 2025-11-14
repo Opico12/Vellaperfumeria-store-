@@ -1,9 +1,12 @@
 
 
+
+
 import React from 'react';
 import type { View, Product } from './types';
 import { allProducts } from './products';
 import { ProductCard } from './ProductCard';
+// Fix: Changed to a default import as HeroCarousel is not a named export.
 import HeroCarousel from './HeroCarousel';
 import type { Currency } from './currency';
 
@@ -22,7 +25,7 @@ const ProductList: React.FC<{
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20">
              <div className="text-center">
                  <h1 className="text-4xl lg:text-5xl font-extrabold text-black tracking-tight leading-tight">
-                    Tu Esencia, Tu Belleza, <span className="text-brand-lilac-dark">Tu Tienda.</span>
+                    Tu Esencia, Tu Belleza, <span className="text-brand-pink-dark">Tu Tienda.</span>
                 </h1>
                 <p className="mt-6 text-lg text-gray-700 max-w-2xl mx-auto">
                     Descubre cosméticos, fragancias y productos de bienestar que realzan tu belleza natural. Calidad y exclusividad en cada artículo.

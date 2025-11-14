@@ -3,7 +3,7 @@ import type { View } from './types';
 
 const ThreadsIcon = () => (
     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M5.524 7.532v.934a.467.467 0 0 1-.467.467h-.467a.467.467 0 0 1-.467-.467v-.934a2.798 2.798 0 0 1 1.4-2.427 2.798 2.798 0 0 1 3.468-.16c.33.197.63.456.883.766.253.31.455.66.595 1.033a2.798 2.798 0 0 1 0 2.454c-.14.373-.342.723-.595 1.033-.253.31-.553.569-.883.766a2.798 2.798 0 0 1-3.468-.16 2.798 2.798 0 0 1-1.4-2.427v-.934a.467.467 0 0 1 .467-.467h.467a.467.467 0 0 1 .467.467zM8 3.333a4.667 4.667 0 1 0 0 9.334 4.667 4.667 0 0 0 0-9.334z"/>
+        <path d="M8.01 3.51c-1.35 0-2.45 1.1-2.45 2.45v.38c0 .28.22.5.5.5h1.5c.28 0 .5-.22.5-.5v-.38c0-.69.56-1.25 1.25-1.25h.19c.69 0 1.25.56 1.25 1.25v2.87c0 1.35-1.1 2.45-2.45 2.45h-.87c-.28 0-.5.22-.5.5v1.5c0 .28.22.5.5.5h.87c2.21 0 4-1.79 4-4V5.96c0-1.35-1.1-2.45-2.45-2.45h-2.12zm-3.09 3.1h-1.5c-.28 0-.5.22-.5.5v.38c0 1.35 1.1 2.45 2.45 2.45h.19c.69 0 1.25-.56 1.25-1.25V5.96c0-1.35-1.1-2.45-2.45-2.45H3.01c-1.35 0-2.45 1.1-2.45 2.45v2.12c0 2.21 1.79 4 4 4h.87c.28 0 .5-.22.5-.5v-1.5c0-.28-.22-.5-.5-.5h-.87c-.69 0-1.25-.56-1.25-1.25v-.38c0-.28-.22-.5-.5-.5z"/>
     </svg>
 );
 
@@ -46,7 +46,7 @@ const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> =
         <a 
             href="#"
             onClick={(e) => { e.preventDefault(); onClick(); }}
-            className="text-gray-400 hover:text-amber-300 transition-colors hover-underline-effect hover-underline-effect-white"
+            className="text-gray-400 hover:text-white transition-colors hover:underline"
         >
             {children}
         </a>
@@ -55,7 +55,7 @@ const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> =
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     return (
-        <footer className="bg-black text-white">
+        <footer className="bg-black text-white border-t border-gray-800">
             <div className="container mx-auto px-6 py-16">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center md:text-left">
                     {/* Column 1: Branding */}
@@ -63,7 +63,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                          <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="inline-block hover:opacity-80 transition-opacity mb-4">
                              <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-24 w-auto mx-auto md:mx-0" />
                         </a>
-                        <h2 className="text-xl font-bold tracking-wider">Vellaperfumeria</h2>
+                        <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>
                         <p className="text-gray-400 text-sm mt-2">
                             Tu esencia, tu belleza, tu tienda.
                         </p>
@@ -71,7 +71,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
                     {/* Column 2: Navegación */}
                     <div>
-                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4">Navegación</h3>
+                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4 text-white">Navegación</h3>
                         <ul className="space-y-2 text-sm">
                            <FooterLink onClick={() => onNavigate('home')}>Inicio</FooterLink>
                            <FooterLink onClick={() => onNavigate('products')}>Tienda</FooterLink>
@@ -83,7 +83,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
                     {/* Column 3: Ayuda */}
                      <div>
-                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4">Ayuda</h3>
+                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4 text-white">Ayuda</h3>
                         <ul className="space-y-2 text-sm">
                             <FooterLink onClick={() => onNavigate('about')}>Sobre Nosotros</FooterLink>
                             <FooterLink onClick={() => onNavigate('contact')}>Contacto</FooterLink>
@@ -93,7 +93,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                                     href="https://vellaperfumeria.com/politica-de-privacidad/?v=12470fe406d4"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-gray-400 hover:text-amber-300 transition-colors hover-underline-effect hover-underline-effect-white"
+                                    className="text-gray-400 hover:text-white transition-colors hover:underline"
                                 >
                                     Política de Privacidad
                                 </a>
@@ -103,18 +103,18 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
                     {/* Column 4: Redes Sociales */}
                      <div>
-                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4">Síguenos</h3>
+                        <h3 className="text-lg font-bold tracking-widest uppercase mb-4 text-white">Síguenos</h3>
                         <div className="flex justify-center md:justify-start space-x-4">
-                            <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Threads">
+                            <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="bg-gray-800 text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Threads">
                                 <ThreadsIcon />
                             </a>
-                            <a href="https://www.instagram.com/beautieshopvella" target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Instagram">
+                            <a href="https://www.instagram.com/beautieshopvella" target="_blank" rel="noopener noreferrer" className="bg-gray-800 text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Instagram">
                                 <InstagramIcon />
                             </a>
-                            <a href="https://www.facebook.com/vellaperfumeria" target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Facebook">
+                            <a href="https://www.facebook.com/vellaperfumeria" target="_blank" rel="noopener noreferrer" className="bg-gray-800 text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="Facebook">
                                 <FacebookIcon />
                             </a>
-                             <a href="https://wa.me/661202616" target="_blank" rel="noopener noreferrer" className="bg-black text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="WhatsApp">
+                             <a href="https://wa.me/661202616" target="_blank" rel="noopener noreferrer" className="bg-gray-800 text-white p-2 rounded-full hover:bg-brand-rose transition-all duration-300 transform hover:scale-110" aria-label="WhatsApp">
                                 <WhatsAppIcon />
                             </a>
                         </div>
@@ -123,8 +123,8 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
                 <div className="mt-16 border-t border-gray-800 pt-8">
                      <div className="text-center mb-8">
-                        <h3 className="text-sm font-semibold tracking-wider uppercase text-gray-500">Métodos de Pago Aceptados</h3>
-                        <div className="flex justify-center items-center space-x-6 mt-4 text-gray-400">
+                        <h3 className="text-sm font-semibold tracking-wider uppercase text-gray-400">Métodos de Pago Aceptados</h3>
+                        <div className="flex justify-center items-center space-x-6 mt-4 text-gray-300">
                             <VisaIcon />
                             <MastercardIcon />
                             <PaypalIcon />

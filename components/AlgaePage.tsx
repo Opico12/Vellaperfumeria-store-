@@ -179,7 +179,7 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
                 <p className="mt-4 text-gray-600">No puedes finalizar la compra sin productos.</p>
                 <button
                     onClick={() => onNavigate('products')}
-                    className="mt-6 bg-brand-lilac text-black font-semibold py-2 px-8 rounded-lg hover:bg-brand-lilac-dark transition-colors"
+                    className="mt-6 bg-brand-pink text-black font-semibold py-2 px-8 rounded-lg hover:bg-brand-pink-dark transition-colors"
                 >
                     Ir a la tienda
                 </button>
@@ -188,7 +188,7 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
     }
 
     return (
-        <div className="bg-gray-50 min-h-screen">
+        <div className="bg-transparent min-h-screen">
             <div className="container mx-auto grid lg:grid-cols-5 gap-12 p-4 md:p-8">
                 
                 {/* Left Column: Forms */}
@@ -211,7 +211,7 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
                              {/* Contact Information */}
                             <div>
                                 <h3 className="text-xl font-bold mb-4 border-b pb-2">Información de contacto</h3>
-                                <label htmlFor="checkout_email" className="block text-sm font-medium text-gray-700 mb-1">Dirección de email</label>
+                                <label htmlFor="checkout_email" className="block text-sm font-medium text-gray-800 mb-1">Dirección de email</label>
                                 <input type="email" id="checkout_email" defaultValue="tmaromero73@gmail.com" className="w-full px-3 py-2 border rounded-md mb-3" />
                                 <div className="flex items-center">
                                     <input type="checkbox" id="newsletter" className="h-4 w-4 text-black border-gray-300 rounded focus:ring-black/50" />
@@ -224,7 +224,7 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
                                 <h3 className="text-xl font-bold mt-8 mb-4 border-b pb-2">Dirección de envío</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                      <div>
-                                        <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">País</label>
+                                        <label htmlFor="country" className="block text-sm font-medium text-gray-800 mb-1">País</label>
                                         <select id="country" className="w-full px-3 py-2 border rounded-md bg-white">
                                             <option>España</option>
                                             <option>Portugal</option>
@@ -232,23 +232,23 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
                                         </select>
                                     </div>
                                     <div>
-                                        <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-1">Nombre y apellidos</label>
+                                        <label htmlFor="full_name" className="block text-sm font-medium text-gray-800 mb-1">Nombre y apellidos</label>
                                         <input type="text" id="full_name" defaultValue="Tsmara Moreno" className="w-full px-3 py-2 border rounded-md" />
                                     </div>
                                     <div className="md:col-span-2">
-                                        <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                                        <label htmlFor="address" className="block text-sm font-medium text-gray-800 mb-1">Dirección</label>
                                         <input type="text" id="address" className="w-full px-3 py-2 border rounded-md" />
                                     </div>
                                     <div>
-                                        <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">Ciudad</label>
+                                        <label htmlFor="city" className="block text-sm font-medium text-gray-800 mb-1">Ciudad</label>
                                         <input type="text" id="city" defaultValue="Madrid" className="w-full px-3 py-2 border rounded-md" />
                                     </div>
                                     <div>
-                                        <label htmlFor="postal_code" className="block text-sm font-medium text-gray-700 mb-1">Código Postal</label>
+                                        <label htmlFor="postal_code" className="block text-sm font-medium text-gray-800 mb-1">Código Postal</label>
                                         <input type="text" id="postal_code" defaultValue="28760" className="w-full px-3 py-2 border rounded-md" />
                                     </div>
                                     <div className="md:col-span-2">
-                                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                         <label htmlFor="phone" className="block text-sm font-medium text-gray-800 mb-1">Teléfono</label>
                                         <input type="tel" id="phone" defaultValue="+34 661 20 26 16" className="w-full px-3 py-2 border rounded-md" />
                                     </div>
                                 </div>
@@ -262,7 +262,7 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
                                         <label
                                             key={option.id}
                                             htmlFor={`shipping-${option.id}`}
-                                            className={`border rounded-md p-4 flex justify-between items-center cursor-pointer transition-all ${selectedShippingId === option.id ? 'border-brand-lilac-dark ring-2 ring-brand-lilac' : 'border-gray-200'}`}
+                                            className={`border rounded-md p-4 flex justify-between items-center cursor-pointer transition-all ${selectedShippingId === option.id ? 'border-brand-pink-dark ring-2 ring-brand-pink' : 'border-gray-200'}`}
                                         >
                                             <div>
                                                 <span className="font-semibold">{option.name}</span>
@@ -288,7 +288,7 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
                                 <h3 className="text-xl font-bold mt-8 mb-4 border-b pb-2">Pago</h3>
                                 <div className="space-y-3">
                                     {/* Credit Card with Stripe */}
-                                    <div className={`border rounded-md transition-all ${paymentMethod === 'card' ? 'border-brand-lilac-dark ring-2 ring-brand-lilac' : 'border-gray-200'}`}>
+                                    <div className={`border rounded-md transition-all ${paymentMethod === 'card' ? 'border-brand-pink-dark ring-2 ring-brand-pink' : 'border-gray-200'}`}>
                                         <label htmlFor="card" className="p-4 flex items-center cursor-pointer">
                                             <input type="radio" id="card" name="payment" value="card" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="h-4 w-4 text-black border-gray-300 focus:ring-black/50" />
                                             <span className="ml-3 font-semibold">Tarjeta de Crédito / Débito (Pago Seguro)</span>
@@ -301,12 +301,12 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
                                         )}
                                     </div>
                                     {/* PayPal */}
-                                    <label htmlFor="paypal" className={`border rounded-md p-4 flex items-center cursor-pointer ${paymentMethod === 'paypal' ? 'border-brand-lilac-dark ring-2 ring-brand-lilac' : 'border-gray-200'}`}>
+                                    <label htmlFor="paypal" className={`border rounded-md p-4 flex items-center cursor-pointer ${paymentMethod === 'paypal' ? 'border-brand-pink-dark ring-2 ring-brand-pink' : 'border-gray-200'}`}>
                                         <input type="radio" id="paypal" name="payment" value="paypal" checked={paymentMethod === 'paypal'} onChange={() => setPaymentMethod('paypal')} className="h-4 w-4 text-black border-gray-300 focus:ring-black/50" />
                                         <span className="ml-3 font-semibold">PayPal</span>
                                     </label>
                                     {/* Cash on Delivery */}
-                                    <label htmlFor="cod" className={`border rounded-md p-4 flex items-center cursor-pointer ${paymentMethod === 'cod' ? 'border-brand-lilac-dark ring-2 ring-brand-lilac' : 'border-gray-200'}`}>
+                                    <label htmlFor="cod" className={`border rounded-md p-4 flex items-center cursor-pointer ${paymentMethod === 'cod' ? 'border-brand-pink-dark ring-2 ring-brand-pink' : 'border-gray-200'}`}>
                                         <input type="radio" id="cod" name="payment" value="cod" checked={paymentMethod === 'cod'} onChange={() => setPaymentMethod('cod')} className="h-4 w-4 text-black border-gray-300 focus:ring-black/50" />
                                         <span className="ml-3 font-semibold">Contra reembolso</span>
                                     </label>
@@ -370,13 +370,13 @@ const AlgaePage: React.FC<AlgaePageProps> = ({ cartItems, currency, onNavigate, 
 
                         <div className="flex items-start mt-6">
                             <input type="checkbox" id="terms" className="h-4 w-4 mt-1 text-black border-gray-300 rounded focus:ring-black/50" />
-                            <label htmlFor="terms" className="ml-2 block text-xs text-gray-700">He leído y acepto los <a href="#" className="font-semibold hover:underline">términos y condiciones</a> y la <a href="#" className="font-semibold hover:underline">política de privacidad</a>.</label>
+                            <label htmlFor="terms" className="ml-2 block text-xs text-gray-800">He leído y acepto los <a href="#" className="font-semibold hover:underline">términos y condiciones</a> y la <a href="#" className="font-semibold hover:underline">política de privacidad</a>.</label>
                         </div>
                         
                         <button
                             onClick={handlePlaceOrder}
                             disabled={isProcessing}
-                            className="flex items-center justify-center w-full bg-brand-lilac text-black font-bold py-3 rounded-lg mt-4 hover:bg-brand-lilac-dark transition-colors disabled:bg-gray-300 disabled:cursor-wait"
+                            className="flex items-center justify-center w-full bg-brand-pink text-black font-bold py-3 rounded-lg mt-4 hover:bg-brand-pink-dark transition-colors disabled:bg-gray-300 disabled:cursor-wait"
                         >
                             {isProcessing ? (
                                 <>

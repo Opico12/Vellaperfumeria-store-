@@ -9,7 +9,7 @@ interface Message {
 }
 
 const SparklesIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-lilac-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-pink-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m1-9l2-2 2 2m-2 4v6m2-6l2 2-2 2M15 3l2 2-2 2m-2-4v4m2 4l2 2-2 2m-8 4h12" />
     </svg>
 );
@@ -112,11 +112,11 @@ const AsistenteIAPage: React.FC = () => {
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                              {msg.role === 'model' && (
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-lilac/30 flex items-center justify-center">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-pink/30 flex items-center justify-center">
                                     <SparklesIcon />
                                 </div>
                             )}
-                            <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-brand-lilac/20 text-gray-800 rounded-bl-none'}`}>
+                            <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-brand-pink/20 text-gray-800 rounded-bl-none'}`}>
                                 <p className="whitespace-pre-wrap">{msg.text}</p>
                             </div>
                             {msg.role === 'user' && (
@@ -128,14 +128,14 @@ const AsistenteIAPage: React.FC = () => {
                     ))}
                     {isLoading && (
                          <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-lilac/30 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-pink/30 flex items-center justify-center">
                                 <SparklesIcon />
                             </div>
-                            <div className="max-w-md p-4 rounded-2xl bg-brand-lilac/20 text-gray-800 rounded-bl-none">
+                            <div className="max-w-md p-4 rounded-2xl bg-brand-pink/20 text-gray-800 rounded-bl-none">
                                 <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-brand-lilac rounded-full animate-pulse"></div>
-                                    <div className="w-2 h-2 bg-brand-lilac rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                                    <div className="w-2 h-2 bg-brand-lilac rounded-full animate-pulse [animation-delay:0.4s]"></div>
+                                    <div className="w-2 h-2 bg-brand-pink rounded-full animate-pulse"></div>
+                                    <div className="w-2 h-2 bg-brand-pink rounded-full animate-pulse [animation-delay:0.2s]"></div>
+                                    <div className="w-2 h-2 bg-brand-pink rounded-full animate-pulse [animation-delay:0.4s]"></div>
                                 </div>
                             </div>
                         </div>
@@ -169,7 +169,7 @@ const AsistenteIAPage: React.FC = () => {
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Escribe tu mensaje..."
                             aria-label="Escribe tu mensaje"
-                            className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-lilac-dark"
+                            className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-pink-dark"
                             disabled={isLoading}
                         />
                         <button 

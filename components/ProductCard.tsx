@@ -82,7 +82,7 @@ export const ProductCard: React.FC<{
                     {product.name}
                 </h3>
                 <div className="mt-2 flex items-baseline gap-2">
-                    <p className={`${isFeatured ? 'text-2xl' : 'text-lg'} font-bold ${isDiscounted ? 'text-brand-lilac-dark' : 'text-black'}`}>{formatCurrency(product.price, currency)}</p>
+                    <p className={`${isFeatured ? 'text-2xl' : 'text-lg'} font-bold ${isDiscounted ? 'text-brand-pink-dark' : 'text-black'}`}>{formatCurrency(product.price, currency)}</p>
                     {isDiscounted && (
                         <p className="text-sm text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
                     )}
@@ -90,7 +90,7 @@ export const ProductCard: React.FC<{
                 <button
                     ref={btnRef}
                     onClick={() => onAddToCart(product, btnRef.current, null)}
-                    className="w-full mt-4 bg-brand-lilac text-black font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-brand-lilac-dark transition-colors text-sm"
+                    className="w-full mt-4 bg-brand-pink text-black font-semibold py-2 px-4 rounded-lg shadow-sm hover:bg-brand-pink-dark transition-colors text-sm"
                     aria-label={`Añadir ${product.name} al carrito`}
                 >
                     Añadir al carrito

@@ -273,7 +273,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     <h1 className="text-3xl md:text-4xl font-bold tracking-wide mb-2">{product.name}</h1>
                     
                     <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-4">
-                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-brand-lilac-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-brand-pink-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
                         {isDiscounted && (
                             <>
                                 <p className="text-xl text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
@@ -294,7 +294,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     <p className="text-gray-800 leading-relaxed mb-4">{product.description}</p>
                     
                      {product.beautyPoints && (
-                        <div className="flex items-center gap-2 text-black font-semibold my-3 p-3 bg-brand-lilac/20 rounded-md border border-brand-lilac/50">
+                        <div className="flex items-center gap-2 text-black font-semibold my-3 p-3 bg-brand-pink/20 rounded-md border border-brand-pink/50">
                             <SparklesIcon/>
                             <span>Consigue <b>+{product.beautyPoints} Puntos Beauty</b> con este producto</span>
                         </div>
@@ -319,7 +319,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                         <button
                                                             key={option.value}
                                                             onClick={() => handleVariantChange(type, option.value)}
-                                                            className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'border-brand-lilac-dark ring-2 ring-offset-1 ring-brand-lilac' : 'border-gray-300'}`}
+                                                            className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'border-brand-pink-dark ring-2 ring-offset-1 ring-brand-pink' : 'border-gray-300'}`}
                                                             style={{ backgroundColor: option.colorCode }}
                                                             aria-label={`Seleccionar color ${option.value}`}
                                                         />
@@ -330,7 +330,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                     <button
                                                         key={option.value}
                                                         onClick={() => handleVariantChange(type, option.value)}
-                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-brand-lilac text-black' : 'bg-white text-black hover:bg-gray-100'}`}
+                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-brand-pink text-black' : 'bg-white text-black hover:bg-gray-100'}`}
                                                     >
                                                         {option.value}
                                                     </button>
@@ -356,7 +356,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 }
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-lilac text-black hover:bg-brand-lilac-dark transform hover:scale-105 active:scale-95'}`}
+                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-pink text-black hover:bg-brand-pink-dark transform hover:scale-105 active:scale-95'}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}

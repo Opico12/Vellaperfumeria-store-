@@ -5,7 +5,7 @@ import type { View } from './types';
 import type { Currency } from './currency';
 
 const CartIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
     </svg>
 );
@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 onNavigate(view);
                 setIsMenuOpen(false); // Close menu on navigation
             }}
-            className="text-gray-700 hover:text-brand-lilac-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect"
+            className="text-gray-800 hover:text-brand-pink-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect"
         >
             {children}
         </a>
@@ -62,17 +62,17 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
     return (
         <header className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-30">
             {/* Top bar */}
-            <div className="bg-brand-lilac text-white text-xs">
+            <div className="bg-brand-pink text-black text-xs">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-1">
                     <div className="flex items-center space-x-4">
-                        <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="hover:text-white/80 transition-colors" aria-label="Threads"><InstagramIcon /></a>
-                        <a href="https://www.facebook.com/vellaperfumeria" target="_blank" rel="noopener noreferrer" className="hover:text-white/80 transition-colors" aria-label="Facebook"><FacebookIcon /></a>
+                        <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="hover:text-black/80 transition-colors" aria-label="Threads"><InstagramIcon /></a>
+                        <a href="https://www.facebook.com/vellaperfumeria" target="_blank" rel="noopener noreferrer" className="hover:text-black/80 transition-colors" aria-label="Facebook"><FacebookIcon /></a>
                     </div>
                     <div>
                         <select
                             value={currency}
                             onChange={(e) => onCurrencyChange(e.target.value as Currency)}
-                            className="bg-transparent border border-white/50 rounded-md text-white py-0.5 px-1 focus:outline-none focus:ring-1 focus:ring-white/50"
+                            className="bg-transparent border border-black/50 rounded-md text-black py-0.5 px-1 focus:outline-none focus:ring-1 focus:ring-black/50"
                             aria-label="Seleccionar moneda"
                         >
                             <option value="EUR" className="text-black">EUR €</option>
@@ -98,7 +98,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
                     {/* Right side actions (cart, mobile menu) */}
                     <div className="absolute right-0 flex items-center space-x-2">
-                        <button onClick={onCartClick} className="relative text-gray-700 hover:text-brand-lilac-dark p-2" aria-label={`Abrir carrito. Tienes ${cartCount} artículos.`}>
+                        <button onClick={onCartClick} className="relative text-gray-800 hover:text-brand-pink-dark p-2" aria-label={`Abrir carrito. Tienes ${cartCount} artículos.`}>
                             <CartIcon />
                             {cartCount > 0 && (
                                 <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-black rounded-full">
@@ -116,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 
                 {/* Desktop Nav */}
                 <nav className="hidden md:flex justify-center space-x-8 items-center border-t py-3">
-                    <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home')}} className="text-gray-700 hover:text-brand-lilac-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
+                    <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home')}} className="text-gray-800 hover:text-brand-pink-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
                     <NavLink view="products">Tienda</NavLink>
                     <NavLink view="ofertas">Ofertas</NavLink>
                     <NavLink view="catalog">Catálogo</NavLink>
@@ -128,7 +128,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             {isMenuOpen && (
                 <div className="md:hidden bg-white border-t">
                     <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 space-y-2">
-                         <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home')}} className="text-gray-700 hover:text-brand-lilac-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
+                         <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home')}} className="text-gray-800 hover:text-brand-pink-dark transition-colors font-semibold py-2 block md:inline-block hover-underline-effect">Inicio</a>
                         <NavLink view="products">Tienda</NavLink>
                         <NavLink view="ofertas">Ofertas</NavLink>
                         <NavLink view="catalog">Catálogo</NavLink>
