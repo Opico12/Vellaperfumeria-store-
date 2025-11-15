@@ -19,6 +19,7 @@ import CatalogPage from './components/CatalogPage';
 import QuickViewModal from './components/QuickViewModal';
 import BottomNavBar from './components/BottomNavBar';
 
+
 const App: React.FC = () => {
     const [view, setView] = useState<View>('home');
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -97,37 +98,24 @@ const App: React.FC = () => {
         setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
     };
 
-    /**
-     * Handles the checkout process by redirecting to the external store.
-     * It constructs a URL with cart items to be parsed by vellaperfumeria.com.
-     * The target site must be configured to handle the 'prefill_cart' query parameter.
-     * The format is `ID:QTY[:VARIANTS_JSON]`, with items separated by commas.
-     * Example: `?prefill_cart=17586:2,43243:1:%7B%22Tono%22%3A%22Light%20Ivory%22%7D`
-     */
     const handleCheckout = () => {
         if (cartItems.length === 0) return;
-
-        const cartQuery = cartItems
-            .map(item => {
-                const productId = item.product.id;
-                const quantity = item.quantity;
-                let itemString = `${productId}:${quantity}`;
-
-                // If the item has selected variants, encode them as a URL-safe JSON string
-                if (item.selectedVariant && Object.keys(item.selectedVariant).length > 0) {
-                    const variantString = encodeURIComponent(JSON.stringify(item.selectedVariant));
-                    itemString += `:${variantString}`;
-                }
-
-                return itemString;
-            })
-            .join(',');
-
-        // The URL for the cart on the main site is /carrito/
-        const checkoutUrl = `https://vellaperfumeria.com/carrito/?prefill_cart=${cartQuery}`;
         
-        // Redirect the user to the main site's cart page to complete the purchase
-        window.location.href = checkoutUrl;
+        setIsCartOpen(false);
+
+        const baseUrl = 'https://vellaperfumeria.com/cart/';
+        const params = new URLSearchParams();
+
+        cartItems.forEach(item => {
+            // This simple implementation works best for simple products.
+            // For variable products, WooCommerce often requires a variation_id,
+            // which is not available in our current product data. This will add the default variation.
+            params.append('add-to-cart', item.product.id.toString());
+            params.append('quantity', item.quantity.toString());
+        });
+
+        // Redirect to the external cart page
+        window.location.href = `${baseUrl}?${params.toString()}`;
     };
     
     const cartCount = useMemo(() => {
@@ -236,10 +224,7 @@ const App: React.FC = () => {
                 currency={currency}
                 onUpdateQuantity={handleUpdateQuantity}
                 onRemoveItem={handleRemoveItem}
-                onCheckout={() => {
-                    setIsCartOpen(false);
-                    handleCheckout();
-                }}
+                onCheckout={handleCheckout}
             />
             {quickViewProduct && (
                  <QuickViewModal
