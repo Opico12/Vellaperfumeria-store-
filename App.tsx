@@ -19,6 +19,8 @@ import type { BreadcrumbItem } from './components/Breadcrumbs';
 import CatalogPage from './components/CatalogPage';
 import QuickViewModal from './components/QuickViewModal';
 import BottomNavBar from './components/BottomNavBar';
+import CheckoutPage from './components/AlgaePage'; // Renamed AlgaePage to CheckoutPage
+import OrderConfirmationPage from './components/OrderConfirmationPage';
 
 const App: React.FC = () => {
     const [view, setView] = useState<View>('home');
@@ -36,6 +38,11 @@ const App: React.FC = () => {
         }
         setView(newView);
         window.scrollTo(0, 0); // Scroll to top on page change
+    };
+    
+    const handleOrderComplete = () => {
+        setCartItems([]);
+        handleNavigate('orderConfirmation');
     };
 
     const handleProductSelect = (product: Product) => {
@@ -132,6 +139,10 @@ const App: React.FC = () => {
                     return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }, { label: selectedPost.title }];
                 }
                 return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }];
+            case 'checkout':
+                return [homeCrumb, { label: 'Finalizar Compra' }];
+            case 'orderConfirmation':
+                 return [homeCrumb, { label: 'Confirmación de Pedido' }];
             default:
                 return [];
         }
@@ -170,6 +181,15 @@ const App: React.FC = () => {
                 return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
                  return selectedPost ? <BlogPostPage post={selectedPost} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={handleBackToBlog} /> : <div className="text-center p-8"><p>Artículo no encontrado</p></div>;
+            case 'checkout':
+                return <CheckoutPage 
+                    cartItems={cartItems} 
+                    currency={currency} 
+                    onNavigate={handleNavigate}
+                    onOrderComplete={handleOrderComplete}
+                />;
+            case 'orderConfirmation':
+                return <OrderConfirmationPage onNavigate={handleNavigate} />;
             case 'home':
             default:
                 return <ProductList
@@ -206,7 +226,7 @@ const App: React.FC = () => {
                 onRemoveItem={handleRemoveItem}
                 onCheckout={() => {
                     setIsCartOpen(false);
-                    window.open('https://vellaperfumeria.com/finalizar-compra/', '_blank');
+                    handleNavigate('checkout');
                 }}
             />
             {quickViewProduct && (
