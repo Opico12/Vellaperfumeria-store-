@@ -1,5 +1,7 @@
 
 
+
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { Product } from './types';
 import type { Currency } from './currency';
@@ -69,8 +71,8 @@ const Hotspot: React.FC<HotspotProps> = ({ data, currency, onAddToCart }) => {
                 aria-label={`Ver producto ${product.name}`}
             >
                 <span className="relative flex h-5 w-5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-fuchsia-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-5 w-5 bg-fuchsia-500"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-purple opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-5 w-5 bg-brand-purple-dark"></span>
                 </span>
             </button>
 
@@ -88,7 +90,7 @@ const Hotspot: React.FC<HotspotProps> = ({ data, currency, onAddToCart }) => {
                                     onAddToCart(product, btnRef.current, null);
                                     setIsOpen(false);
                                 }}
-                                className="w-full bg-brand-lilac text-black font-semibold py-2 px-3 rounded-md hover:bg-brand-lilac-dark transition-colors text-sm flex items-center justify-center"
+                                className="w-full bg-brand-purple text-white font-semibold py-2 px-3 rounded-md hover:bg-brand-purple-dark transition-colors text-sm flex items-center justify-center"
                             >
                                 <CartPlusIcon /> Añadir
                             </button>

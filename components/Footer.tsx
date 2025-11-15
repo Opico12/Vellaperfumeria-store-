@@ -58,11 +58,11 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     return (
         <footer className="bg-brand-primary text-white border-t border-gray-800">
             <div className="container mx-auto px-6 py-16">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center md:text-left">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center md:text-left">
                     {/* Column 1: Branding */}
-                    <div className="col-span-2 md:col-span-1">
-                         <a href="#" onClick={(e) => {e.preventDefault(); onNavigate('home');}} className="inline-block hover:opacity-80 transition-opacity mb-4">
-                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-24 w-auto mx-auto md:mx-0 filter brightness-0 invert" />
+                    <div className="sm:col-span-2 lg:col-span-1">
+                         <a href="https://vellaperfumeria.com" className="inline-block hover:opacity-80 transition-opacity mb-4">
+                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-24 w-auto mx-auto md:mx-0" />
                         </a>
                         <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>
                         <p className="text-gray-400 text-sm mt-2">

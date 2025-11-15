@@ -18,6 +18,7 @@ export interface Product {
     regularPrice?: number;
     imageUrl: string;
     description: string;
+    howToUse?: string;
     stock: number;
     category: 'perfume' | 'hair' | 'makeup' | 'skincare' | 'personal-care' | 'men' | 'wellness' | 'accessories';
     subCategory?: 'Giordani Gold' | 'THE ONE' | 'OnColour';
@@ -39,4 +40,4 @@ export interface CartItem {
 }
 
 // App view type
-export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost' | 'checkout' | 'orderConfirmation';
+export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost';

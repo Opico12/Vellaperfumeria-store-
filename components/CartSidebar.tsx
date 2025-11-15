@@ -157,7 +157,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                 <div className="text-center text-sm">
                                     <p>Te faltan <span className="font-bold">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para el envío <b>GRATIS</b>.</p>
                                     <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                                        <div className="bg-brand-pink-dark h-2 rounded-full" style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}></div>
+                                        <div className="bg-brand-purple-dark h-2 rounded-full" style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}></div>
                                     </div>
                                 </div>
                             ) : (
@@ -165,7 +165,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             )}
                             
                             {totalBeautyPoints > 0 && (
-                                <div className="flex justify-center items-center gap-2 text-black font-semibold p-2 bg-brand-pink/20 rounded-md border border-brand-pink/50">
+                                <div className="flex justify-center items-center gap-2 text-black font-semibold p-2 bg-brand-purple/20 rounded-md border border-brand-purple/50">
                                     <span>✨</span>
                                     <span>¡Conseguirás <b>{totalBeautyPoints} Puntos Beauty</b> con esta compra!</span>
                                 </div>
@@ -190,7 +190,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </p>
                             <button
                                 onClick={onCheckout}
-                                className="w-full bg-brand-pink text-black font-bold py-3 rounded-lg mt-2 hover:bg-brand-pink-dark transition-colors"
+                                className="w-full bg-brand-purple text-white font-bold py-3 rounded-lg mt-2 hover:bg-brand-purple-dark transition-colors"
                             >
                                 Finalizar Compra
                             </button>
@@ -205,7 +205,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                         <p className="text-gray-500 mt-2">Parece que aún no has añadido nada.</p>
                         <button
                             onClick={onClose}
-                            className="mt-6 bg-brand-pink text-black font-semibold py-2 px-8 rounded-lg hover:bg-brand-pink-dark transition-colors"
+                            className="mt-6 bg-brand-purple text-white font-semibold py-2 px-8 rounded-lg hover:bg-brand-purple-dark transition-colors"
                         >
                             Seguir comprando
                         </button>

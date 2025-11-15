@@ -1,5 +1,4 @@
 
-
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
 
@@ -9,7 +8,7 @@ interface Message {
 }
 
 const SparklesIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-pink-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-brand-purple-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m1-9l2-2 2 2m-2 4v6m2-6l2 2-2 2M15 3l2 2-2 2m-2-4v4m2 4l2 2-2 2m-8 4h12" />
     </svg>
 );
@@ -24,7 +23,7 @@ const UserIcon = () => (
 const AsistenteIAPage: React.FC = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [chat, setChat] = useState<Chat | null>(null);
 
@@ -33,6 +32,9 @@ const AsistenteIAPage: React.FC = () => {
     useEffect(() => {
         // Initialize the AI chat session
         try {
+            if (!process.env.API_KEY) {
+                throw new Error("API key is not configured.");
+            }
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             const newChat = ai.chats.create({
                 model: 'gemini-2.5-flash',
@@ -43,7 +45,7 @@ const AsistenteIAPage: React.FC = () => {
             setChat(newChat);
         } catch (e) {
             console.error("Error initializing Gemini:", e);
-            setError("No se pudo inicializar el asistente de IA. Por favor, revisa la configuración.");
+            setError("No se pudo inicializar el asistente de IA. Por favor, contacta con el soporte.");
         }
     }, []);
 
@@ -52,38 +54,46 @@ const AsistenteIAPage: React.FC = () => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
-    }, [messages, isLoading]);
+    }, [messages]);
 
     const handleSendMessage = async (messageText: string) => {
-        if (!messageText.trim() || isLoading || !chat) return;
+        if (!messageText.trim() || isProcessing || !chat) {
+             if (!chat) setError("El asistente no está disponible en este momento.");
+            return;
+        }
 
         setError(null);
-        setIsLoading(true);
+        setIsProcessing(true);
 
         const userMessage: Message = { role: 'user', text: messageText };
-        setMessages(prev => [...prev, userMessage]);
+        setMessages(prev => [...prev, userMessage, { role: 'model', text: '' }]);
         setInput('');
 
         try {
             const responseStream = await chat.sendMessageStream({ message: messageText });
-
-            let modelResponse = '';
-            setMessages(prev => [...prev, { role: 'model', text: '...' }]);
-
+            
+            let fullModelResponse = "";
             for await (const chunk of responseStream) {
-                modelResponse += chunk.text;
+                fullModelResponse += chunk.text;
                 setMessages(prev => {
                     const newMessages = [...prev];
-                    newMessages[newMessages.length - 1].text = modelResponse;
+                    newMessages[newMessages.length - 1].text = fullModelResponse;
                     return newMessages;
                 });
             }
         } catch (e) {
             console.error("Error sending message to Gemini:", e);
-            setError("Lo siento, ha ocurrido un error al procesar tu solicitud.");
-            setMessages(prev => prev.slice(0, -1)); // Remove the placeholder
+            const errorMessage = "Lo siento, ha ocurrido un error al procesar tu solicitud. Por favor, inténtalo de nuevo más tarde.";
+            setError(errorMessage);
+            setMessages(prev => {
+                const newMessages = [...prev];
+                if (newMessages.length > 0 && newMessages[newMessages.length - 1].role === 'model') {
+                   newMessages[newMessages.length - 1].text = errorMessage;
+                }
+                return newMessages;
+            });
         } finally {
-            setIsLoading(false);
+            setIsProcessing(false);
         }
     };
     
@@ -109,15 +119,34 @@ const AsistenteIAPage: React.FC = () => {
 
             <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col h-[70vh]">
                 <div ref={chatContainerRef} className="flex-grow p-6 overflow-y-auto space-y-6">
+                    {messages.length === 0 && !isProcessing && (
+                         <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-purple/30 flex items-center justify-center">
+                                <SparklesIcon />
+                            </div>
+                            <div className="max-w-md p-4 rounded-2xl bg-brand-purple/20 text-gray-800 rounded-bl-none">
+                                <p>¡Hola! Soy tu asistente de belleza personal de Vellaperfumeria. ¿En qué puedo ayudarte hoy?</p>
+                            </div>
+                        </div>
+                    )}
+
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                              {msg.role === 'model' && (
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-pink/30 flex items-center justify-center">
+                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-purple/30 flex items-center justify-center">
                                     <SparklesIcon />
                                 </div>
                             )}
-                            <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-brand-pink/20 text-gray-800 rounded-bl-none'}`}>
-                                <p className="whitespace-pre-wrap">{msg.text}</p>
+                            <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-brand-purple/20 text-gray-800 rounded-bl-none'}`}>
+                                 {index === messages.length - 1 && msg.role === 'model' && msg.text === '' && isProcessing ? (
+                                     <div className="flex items-center space-x-2">
+                                        <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse"></div>
+                                        <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.2s]"></div>
+                                        <div className="w-2 h-2 bg-brand-purple rounded-full animate-pulse [animation-delay:0.4s]"></div>
+                                    </div>
+                                ) : (
+                                     <p className="whitespace-pre-wrap">{msg.text}</p>
+                                )}
                             </div>
                             {msg.role === 'user' && (
                                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
@@ -126,26 +155,22 @@ const AsistenteIAPage: React.FC = () => {
                             )}
                         </div>
                     ))}
-                    {isLoading && (
+                    
+                    {error && messages.length === 0 && (
                          <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-pink/30 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
                                 <SparklesIcon />
                             </div>
-                            <div className="max-w-md p-4 rounded-2xl bg-brand-pink/20 text-gray-800 rounded-bl-none">
-                                <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-brand-pink rounded-full animate-pulse"></div>
-                                    <div className="w-2 h-2 bg-brand-pink rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                                    <div className="w-2 h-2 bg-brand-pink rounded-full animate-pulse [animation-delay:0.4s]"></div>
-                                </div>
+                            <div className="max-w-md p-4 rounded-2xl bg-red-50 text-red-700 rounded-bl-none">
+                                <p>{error}</p>
                             </div>
                         </div>
                     )}
-                    {error && <p className="text-center text-red-500">{error}</p>}
                 </div>
 
-                {messages.length === 0 && !isLoading && (
-                    <div className="p-6 text-center text-gray-500">
-                        <p className="mb-4">Prueba a preguntar algo como:</p>
+                {messages.length <= 1 && !isProcessing && (
+                    <div className="p-6 pt-0 text-center text-gray-500">
+                        <p className="mb-4 text-sm">O prueba con una de estas sugerencias:</p>
                         <div className="flex flex-wrap justify-center gap-2">
                             {examplePrompts.map(prompt => (
                                 <button
@@ -169,12 +194,12 @@ const AsistenteIAPage: React.FC = () => {
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Escribe tu mensaje..."
                             aria-label="Escribe tu mensaje"
-                            className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-pink-dark"
-                            disabled={isLoading}
+                            className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-purple-dark"
+                            disabled={isProcessing}
                         />
                         <button 
                             type="submit" 
-                            disabled={isLoading || !input.trim()}
+                            disabled={isProcessing || !input.trim()}
                             className="bg-black text-white font-semibold rounded-full p-2.5 shadow-sm hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                             aria-label="Enviar mensaje"
                         >

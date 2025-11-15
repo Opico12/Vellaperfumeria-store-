@@ -69,7 +69,7 @@ const ProductListPage: React.FC<{
                 <form className="woocommerce-ordering">
                     <select 
                         name="orderby" 
-                        className="orderby border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-brand-pink-dark focus:border-brand-pink-dark bg-white"
+                        className="orderby border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-brand-purple-dark focus:border-brand-purple-dark bg-white"
                         aria-label="Pedido de la tienda"
                         value={sortOrder}
                         onChange={handleSortChange}

@@ -38,12 +38,12 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                   e.preventDefault();
                   item.onClick?.();
                 }}
-                className="hover:text-black hover-underline-effect"
+                className="hover:text-brand-purple-dark hover-underline-effect"
               >
                 {item.label}
               </a>
             ) : (
-              <span className="font-semibold text-gray-700" aria-current="page">
+              <span className="font-semibold text-brand-primary" aria-current="page">
                 {item.label}
               </span>
             )}

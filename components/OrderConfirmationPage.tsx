@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { View } from './types';
 
@@ -25,7 +26,7 @@ const OrderConfirmationPage: React.FC<OrderConfirmationPageProps> = ({ onNavigat
                 </p>
                 <button
                     onClick={() => onNavigate('products')}
-                    className="w-full bg-brand-lilac text-black font-bold py-3 rounded-lg hover:bg-brand-lilac-dark transition-colors"
+                    className="w-full bg-brand-purple text-white font-bold py-3 rounded-lg hover:bg-brand-purple-dark transition-colors"
                 >
                     Seguir Comprando
                 </button>

@@ -17,9 +17,8 @@
         theme: {
           extend: {
             colors: {
-              'brand-pink': '#F7E4F3',
-              'brand-pink-dark': '#EEC8E6',
-              'brand-rose': '#720eec',
+              'brand-purple': '#E54ED9',
+              'brand-purple-dark': '#D633C6',
               'brand-bg-subtle': '#F9F9F9',
               'brand-primary': '#222020',
             },
@@ -33,14 +32,14 @@
     </script>
     <style>
       :root {
-        --color-background: #EDEDED;
+        --color-background: #FFFFFF;
         --color-text: #515151;
         --color-primary: #222020; /* Black for primary text */
         --color-primary-dark: #333333;
-        --color-secondary: #EEC8E6; /* Soft Pink Accent */
+        --color-secondary: #F2E7FE; /* Light lilac from user screenshot */
         --color-accent: #222020;
         --font-body: 'Inter', sans-serif;
-        --font-heading: 'Raleway', sans-serif;
+        --font-heading: 'Raleway', 'sans-serif';
       }
 
       body {
@@ -57,8 +56,8 @@
       }
       
       .btn-primary {
-        background-color: var(--color-primary);
-        color: white;
+        background-color: var(--color-secondary);
+        color: var(--color-primary);
         font-weight: 600;
         padding: 0.75rem 1.5rem;
         border-radius: 0.5rem;
@@ -66,7 +65,7 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
       }
       .btn-primary:hover {
-        background-color: #333; /* brand-primary-dark */
+        background-color: #E8D9FF; /* Darker shade of new purple */
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       }
@@ -128,7 +127,10 @@
         transform-origin: bottom left;
       }
       .hover-underline-effect-white::after {
-        background-color: #EEC8E6;
+        background-color: white;
+      }
+      .logo-inverted {
+        filter: invert(1);
       }
     </style>
   <script type="importmap">

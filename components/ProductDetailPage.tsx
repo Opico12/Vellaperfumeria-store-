@@ -96,6 +96,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [copyButtonText, setCopyButtonText] = useState('Copiar enlace');
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('description');
 
 
     const [selectedVariant, setSelectedVariant] = useState<Record<string, string> | null>(getDefaultVariant(product));
@@ -221,7 +222,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     <h1 className="text-3xl md:text-4xl font-bold tracking-wide mb-2">{product.name}</h1>
                     
                     <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-4">
-                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-brand-pink-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-brand-purple-dark' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
                         {isDiscounted && (
                             <>
                                 <p className="text-xl text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
@@ -239,17 +240,15 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                         </div>
                     )}
                     
-                    <p className="text-gray-800 leading-relaxed mb-4">{product.description}</p>
-                    
                      {product.beautyPoints && (
-                        <div className="flex items-center gap-2 text-black font-semibold my-3 p-3 bg-brand-pink/20 rounded-md border border-brand-pink/50">
+                        <div className="flex items-center gap-2 text-black font-semibold my-3 p-3 bg-brand-purple/20 rounded-md border border-brand-purple/50">
                             <SparklesIcon/>
                             <span>Consigue <b>+{product.beautyPoints} Puntos Beauty</b> con este producto</span>
                         </div>
                     )}
 
                     {product.variants && (
-                        <div className="space-y-4 mb-6">
+                        <div className="space-y-4 my-6">
                             {Object.keys(product.variants).map((type) => {
                                 const options = product.variants![type];
                                 if (!Array.isArray(options)) return null;
@@ -267,7 +266,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                         <button
                                                             key={option.value}
                                                             onClick={() => handleVariantChange(type, option.value)}
-                                                            className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'border-brand-pink-dark ring-2 ring-offset-1 ring-brand-pink' : 'border-gray-300'}`}
+                                                            className={`w-8 h-8 rounded-full border-2 transition-all ${isSelected ? 'border-brand-purple-dark ring-2 ring-offset-1 ring-brand-purple' : 'border-gray-300'}`}
                                                             style={{ backgroundColor: option.colorCode }}
                                                             aria-label={`Seleccionar color ${option.value}`}
                                                         />
@@ -278,7 +277,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                     <button
                                                         key={option.value}
                                                         onClick={() => handleVariantChange(type, option.value)}
-                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-brand-pink text-black' : 'bg-white text-black hover:bg-gray-100'}`}
+                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-brand-purple text-white' : 'bg-white text-black hover:bg-gray-100'}`}
                                                     >
                                                         {option.value}
                                                     </button>
@@ -291,11 +290,11 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                         </div>
                     )}
                     
-                    <div className="mb-6">
+                    <div className="mb-6 mt-auto">
                         <p className="text-sm font-semibold">Disponibilidad: <span className={`font-bold ${stockInfo.color}`}>{stockInfo.text}</span></p>
                     </div>
                     
-                    <div className="mt-auto flex flex-col gap-3">
+                    <div className="flex flex-col gap-3">
                         <button
                             ref={btnRef}
                             onClick={() => {
@@ -304,7 +303,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 }
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-pink text-black hover:bg-brand-pink-dark transform hover:scale-105 active:scale-95'}`}
+                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-purple text-white hover:bg-brand-purple-dark transform hover:scale-105 active:scale-95'}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}
@@ -320,6 +319,30 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                            Compartir
                         </button>
                     </div>
+                </div>
+            </div>
+
+            {/* Description & How to Use Section */}
+            <div className="bg-white rounded-lg shadow-lg p-4 md:p-8 mt-8">
+                <div className="flex border-b border-gray-200 mb-6">
+                    <button 
+                        onClick={() => setActiveTab('description')} 
+                        className={`py-3 px-1 mr-6 font-semibold text-lg transition-colors focus:outline-none ${activeTab === 'description' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
+                    >
+                        Descripción
+                    </button>
+                    {product.howToUse && (
+                        <button 
+                            onClick={() => setActiveTab('howToUse')} 
+                            className={`py-3 px-1 font-semibold text-lg transition-colors focus:outline-none ${activeTab === 'howToUse' ? 'border-b-2 border-brand-primary text-brand-primary' : 'text-gray-500 hover:text-brand-primary'}`}
+                        >
+                            Modo de Empleo
+                        </button>
+                    )}
+                </div>
+                <div className="text-gray-800 leading-relaxed min-h-[100px]">
+                    {activeTab === 'description' && <p>{product.description}</p>}
+                    {activeTab === 'howToUse' && product.howToUse && <p className="whitespace-pre-wrap">{product.howToUse}</p>}
                 </div>
             </div>
 

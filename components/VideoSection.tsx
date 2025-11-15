@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { View } from './types';
 
@@ -58,7 +59,7 @@ const VideoSection: React.FC<VideoSectionProps> = ({ onNavigate }) => {
                     </p>
                     <button 
                         onClick={() => onNavigate('contact')}
-                        className="bg-brand-lilac text-black font-semibold py-2 px-6 rounded-md hover:bg-brand-lilac-dark transition-colors"
+                        className="bg-brand-purple text-white font-semibold py-2 px-6 rounded-md hover:bg-brand-purple-dark transition-colors"
                     >
                         Únete al Equipo
                     </button>
