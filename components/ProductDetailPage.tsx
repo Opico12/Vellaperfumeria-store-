@@ -277,7 +277,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                     <button
                                                         key={option.value}
                                                         onClick={() => handleVariantChange(type, option.value)}
-                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-brand-purple text-white' : 'bg-white text-black hover:bg-gray-100'}`}
+                                                        className={`px-4 py-1.5 text-sm font-medium border rounded-md transition-colors ${isSelected ? 'bg-brand-purple text-brand-primary' : 'bg-white text-black hover:bg-gray-100'}`}
                                                     >
                                                         {option.value}
                                                     </button>
@@ -303,7 +303,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 }
                             }}
                             disabled={isOutOfStock}
-                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-purple text-white hover:bg-brand-purple-dark transform hover:scale-105 active:scale-95'}`}
+                            className={`w-full font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 ${isOutOfStock ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-brand-purple text-brand-primary hover:bg-brand-purple-dark transform hover:scale-105 active:scale-95'}`}
                             aria-label={`Añadir ${product.name} al carrito`}
                         >
                             {isOutOfStock ? 'Agotado' : 'Añadir al carrito'}

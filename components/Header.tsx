@@ -117,7 +117,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                         <button onClick={onCartClick} className="relative text-brand-primary hover:text-brand-purple p-2" aria-label={`Abrir carrito. Tienes ${cartCount} artículos.`}>
                             <CartIcon />
                             {cartCount > 0 && (
-                                <span ref={cartCountRef} className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-brand-purple rounded-full">
+                                <span ref={cartCountRef} className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-brand-primary transform translate-x-1/2 -translate-y-1/2 bg-brand-purple rounded-full">
                                     {cartCount}
                                 </span>
                             )}

@@ -90,7 +90,7 @@ const Hotspot: React.FC<HotspotProps> = ({ data, currency, onAddToCart }) => {
                                     onAddToCart(product, btnRef.current, null);
                                     setIsOpen(false);
                                 }}
-                                className="w-full bg-brand-purple text-white font-semibold py-2 px-3 rounded-md hover:bg-brand-purple-dark transition-colors text-sm flex items-center justify-center"
+                                className="w-full bg-brand-purple text-brand-primary font-semibold py-2 px-3 rounded-md hover:bg-brand-purple-dark transition-colors text-sm flex items-center justify-center"
                             >
                                 <CartPlusIcon /> Añadir
                             </button>

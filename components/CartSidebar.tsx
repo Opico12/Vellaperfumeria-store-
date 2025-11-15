@@ -190,7 +190,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </p>
                             <button
                                 onClick={onCheckout}
-                                className="w-full bg-brand-purple text-white font-bold py-3 rounded-lg mt-2 hover:bg-brand-purple-dark transition-colors"
+                                className="w-full bg-brand-purple text-brand-primary font-bold py-3 rounded-lg mt-2 hover:bg-brand-purple-dark transition-colors"
                             >
                                 Finalizar Compra
                             </button>
@@ -205,7 +205,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                         <p className="text-gray-500 mt-2">Parece que aún no has añadido nada.</p>
                         <button
                             onClick={onClose}
-                            className="mt-6 bg-brand-purple text-white font-semibold py-2 px-8 rounded-lg hover:bg-brand-purple-dark transition-colors"
+                            className="mt-6 bg-brand-purple text-brand-primary font-semibold py-2 px-8 rounded-lg hover:bg-brand-purple-dark transition-colors"
                         >
                             Seguir comprando
                         </button>
