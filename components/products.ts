@@ -529,6 +529,12 @@ export const allProducts: Product[] = [
                 { value: 'Marble', colorCode: '#EAD0B6' },
                 { value: 'Light Rose', colorCode: '#EAD0C0' },
                 { value: 'Light Beige', colorCode: '#E0C0A5' },
+                { value: 'Soft Sand', colorCode: '#DFB8AA' },
+                { value: 'Beige Warm', colorCode: '#D7BAA4' },
+                { value: 'Natural Beige', colorCode: '#D7B4A4' },
+                { value: 'Sienna', colorCode: '#C19674' },
+                { value: 'Toast', colorCode: '#B27E5C' },
+                { value: 'Hazelnut', colorCode: '#8B6555' },
             ]
         }
     },
@@ -577,6 +583,7 @@ export const allProducts: Product[] = [
                 { value: 'Soft Sand', colorCode: '#E6BB95' },
                 { value: 'Ivory Neutral', colorCode: '#D9B08D' },
                 { value: 'Natural Beige', colorCode: '#D2A282' },
+                { value: 'Beige Warm', colorCode: '#C59A7D' },
             ]
         }
     },
@@ -645,6 +652,7 @@ export const allProducts: Product[] = [
                 { value: 'Light Beige Neutral', colorCode: '#E6C095' },
                 { value: 'Soft Sand', colorCode: '#F2C6A9' },
                 { value: 'Light Ivory Neutral', colorCode: '#D5AC96' },
+                { value: 'Natural Beige', colorCode: '#D2A282' },
             ]
         }
     },
@@ -653,7 +661,7 @@ export const allProducts: Product[] = [
         name: 'Crema Iluminadora Peach OnColour',
         brand: 'OnColour',
         price: 8.47,
-        imageUrl: 'https://www.oriflame.es/products/product?code=39292', // No image available from HTML, using product page
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F39292%2F39292_1.png',
         description: 'Crema iluminadora con un toque de color melocotón para un brillo saludable y natural.',
         stock: 50,
         category: 'makeup',
@@ -681,6 +689,10 @@ export const allProducts: Product[] = [
                 { value: 'Beige Neutral', colorCode: '#DAAD87' },
                 { value: 'Ivory Neutral', colorCode: '#CBA077' },
                 { value: 'Beige Warm', colorCode: '#CEA17C' },
+                { value: 'Sun Beige Warm', colorCode: '#D9A170' },
+                { value: 'Amber Warm', colorCode: '#BC8055' },
+                { value: 'Caramel Warm', colorCode: '#AB693E' },
+                { value: 'Chestnut Warm', colorCode: '#835535' },
             ]
         }
     },
@@ -697,5 +709,61 @@ export const allProducts: Product[] = [
         productType: 'Accesorio de Maquillaje',
         rating: 4.7,
         reviewCount: 36,
+    },
+    {
+        id: 46134,
+        name: 'BB Cream Beautifier MAX SPF 15 THE ONE',
+        brand: 'The ONE',
+        price: 17.00,
+        imageUrl: `https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F46134%2F46134_1.png`,
+        description: 'Una BB cream multifuncional que hidrata, unifica el tono, protege con SPF 15 y proporciona un acabado natural y radiante. Perfecta para el día a día.',
+        stock: 40,
+        category: 'makeup',
+        productType: 'Cremas BB y CC',
+        rating: 4.8,
+        reviewCount: 232,
+        tag: 'NOVEDAD',
+        variants: { Tono: [
+          { value: 'Light', colorCode: '#F5D3B8' },
+          { value: 'Fair', colorCode: '#EBC7A9' },
+          { value: 'Medium', colorCode: '#D8B18E' },
+          { value: 'Dark', colorCode: '#C49871' },
+        ]}
+    },
+    {
+        id: 35641,
+        name: 'Bálsamo BB Cream OnColour',
+        brand: 'OnColour',
+        price: 3.99,
+        regularPrice: 10.00,
+        imageUrl: `https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F35641%2F35641_1.png`,
+        description: 'Un bálsamo ligero con color que hidrata y perfecciona la piel al instante. Proporciona una cobertura ligera para un look fresco y natural.',
+        stock: 60,
+        category: 'makeup',
+        productType: 'Cremas BB y CC',
+        rating: 4.8,
+        reviewCount: 686,
+        variants: { Tono: [
+          { value: 'Light', colorCode: '#F4D9C3' },
+          { value: 'Medium', colorCode: '#E3C1A6' },
+          { value: 'Dark', colorCode: '#D3A989' },
+        ]}
+    },
+    {
+        id: 42113,
+        name: 'Crema Correctora del Color SPF 30 + Protección UVA Giordani Gold',
+        brand: 'Giordani Gold',
+        price: 30.00,
+        imageUrl: `https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F42113%2F42113_1.png`,
+        description: 'Una lujosa CC cream que combina maquillaje y tratamiento. Corrige el tono, ilumina, hidrata y protege del sol con SPF 30 y protección UVA.',
+        stock: 35,
+        category: 'makeup',
+        productType: 'Cremas BB y CC',
+        rating: 4.8,
+        reviewCount: 369,
+        variants: { Tono: [
+          { value: 'Light', colorCode: '#F2D3B8' },
+          { value: 'Medium', colorCode: '#E7BE9D' },
+        ]}
     }
 ];

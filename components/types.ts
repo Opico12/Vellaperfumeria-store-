@@ -22,7 +22,7 @@ export interface Product {
     stock: number;
     category: 'perfume' | 'hair' | 'makeup' | 'skincare' | 'personal-care' | 'men' | 'wellness' | 'accessories';
     subCategory?: 'Giordani Gold' | 'THE ONE' | 'OnColour';
-    productType?: 'Base' | 'Corrector' | 'Máscara' | 'Colorete y Bronceador' | 'Labial' | 'Accesorio de Maquillaje';
+    productType?: 'Base' | 'Corrector' | 'Máscara' | 'Colorete y Bronceador' | 'Labial' | 'Accesorio de Maquillaje' | 'Cremas BB y CC';
     tag?: 'NOVEDAD' | 'SET';
     statusLabel?: string;
     rating?: number;

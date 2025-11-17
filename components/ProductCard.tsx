@@ -76,7 +76,7 @@ export const ProductCard: React.FC<{
 
     return (
         <div 
-            className="bg-white rounded-lg flex flex-col group border border-gray-100 hover:shadow-xl transition-shadow duration-300"
+            className="bg-white rounded-lg flex flex-col group border border-gray-100 hover:shadow-xl transition-shadow duration-300 h-full"
             onClick={() => onProductSelect(product)}
         >
             <div className="relative cursor-pointer overflow-hidden rounded-t-lg">
