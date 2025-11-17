@@ -1,3 +1,4 @@
+
 import React, { useRef, useState } from 'react';
 import { type Currency, formatCurrency } from './currency';
 import type { Product } from './types';
@@ -109,12 +110,12 @@ export const ProductCard: React.FC<{
                     </div>
                 )}
                 <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{product.brand}</span>
-                <h3 className="text-sm font-semibold text-brand-primary mt-1 flex-grow cursor-pointer h-10">
+                <h3 className="text-sm font-semibold text-brand-primary mt-1 flex-grow cursor-pointer min-h-10">
                     {product.name}
                 </h3>
                 
                 {product.variants?.Tono && (
-                    <div className="flex items-center gap-1 mt-2 h-5">
+                    <div className="flex items-center gap-1 mt-3 h-5">
                         {product.variants.Tono.slice(0, 6).map(v => (
                             <span key={v.value} className="block w-4 h-4 rounded-full border border-gray-200" style={{ backgroundColor: v.colorCode }} title={v.value}></span>
                         ))}

@@ -39,18 +39,25 @@ const MakeupPage: React.FC<{
 }> = ({ currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
     
     const [sortOrder, setSortOrder] = useState('menu_order');
-    const [activeSubCategory, setActiveSubCategory] = useState('Bases de maquillaje');
+    const [activeSubCategory, setActiveSubCategory] = useState('Colorete');
 
 
     const pageProducts = useMemo(() => {
         let products: Product[];
-        if (activeSubCategory === 'Bases de maquillaje') {
-            const productIds = [46906, 42236, 43244, 32922, 46332, 42102, 39292, 42125, 47551];
-            products = productIds.map(id => allProducts.find(p => p.id === id)).filter((p): p is Product => p !== undefined);
-        } else if (activeSubCategory === 'Cremas BB y CC') {
-            products = allProducts.filter(p => p.productType === 'Cremas BB y CC');
-        } else {
-            products = []; // No products for other categories yet
+        switch (activeSubCategory) {
+            case 'Bases de maquillaje':
+                const productIds = [46906, 42236, 43244, 32922, 46332, 42102, 39292, 42125, 47551];
+                products = productIds.map(id => allProducts.find(p => p.id === id)).filter((p): p is Product => p !== undefined);
+                break;
+            case 'Cremas BB y CC':
+                products = allProducts.filter(p => p.productType === 'Cremas BB y CC');
+                break;
+            case 'Colorete':
+                 const coloreteIds = [46901, 42121, 46940, 44917];
+                 products = coloreteIds.map(id => allProducts.find(p => p.id === id)).filter((p): p is Product => p !== undefined);
+                 break;
+            default:
+                products = []; // No products for other categories yet
         }
         
         let sorted = [...products];
@@ -69,7 +76,7 @@ const MakeupPage: React.FC<{
                 break;
             case 'menu_order':
             default:
-                 // Keep original order
+                 // Keep original order from the switch case
                  return products;
         }
         return sorted;
@@ -152,10 +159,30 @@ const MakeupPage: React.FC<{
                     </>
                 )}
 
-                {activeSubCategory === 'Cremas BB y CC' && (
+                {activeSubCategory === 'Cremas BB y CC' && pageProducts.length > 0 && (
                      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
                         {pageProducts.map(p => <ProductCard key={p.id} product={p} currency={currency} onAddToCart={onAddToCart} onProductSelect={onProductSelect} onQuickView={onQuickView} onCartClick={onCartClick}/>)}
                     </div>
+                )}
+
+                 {activeSubCategory === 'Colorete' && (
+                    <>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                            {pageProducts.map(p => <ProductCard key={p.id} product={p} currency={currency} onAddToCart={onAddToCart} onProductSelect={onProductSelect} onQuickView={onQuickView} onCartClick={onCartClick}/>)}
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <a href="https://es.oriflame.com/?openVirtualTryOn=once" target="_blank" rel="noopener noreferrer" className="bg-white rounded-lg shadow-md flex flex-col items-center justify-center p-6 text-center group transition-transform transform hover:scale-105 cursor-pointer">
+                                <p className="text-xl font-bold">Experimenta con maquillaje virtual en tiempo real</p>
+                                <button className="mt-4 text-sm font-semibold text-brand-primary group-hover:underline">PROBAR AHORA &rarr;</button>
+                            </a>
+                            <a href="#" className="bg-black rounded-lg shadow-md overflow-hidden group">
+                                <video autoPlay playsInline muted loop className="w-full h-full object-cover">
+                                    <source src="https://media-cdn.oriflame.com/static-media-web/0fa45d91-4c57-41ab-957e-9404e87544d8?mimeType=video%2fmp4" type="video/mp4" />
+                                </video>
+                            </a>
+                        </div>
+                    </>
                 )}
                 
                 {pageProducts.length === 0 && (
@@ -172,12 +199,12 @@ const MakeupPage: React.FC<{
                      <p className="text-sm text-gray-700">Mostrando {pageProducts.length} de {pageProducts.length} productos</p>
                 </div>
 
-                {/* Final Promo Section - only for foundations */}
-                {activeSubCategory === 'Bases de maquillaje' && (
+                {/* Final Promo Section */}
+                {(activeSubCategory === 'Bases de maquillaje' || activeSubCategory === 'Colorete') && (
                     <div className="mt-12">
                          <div className="bg-white rounded-lg shadow-lg overflow-hidden grid md:grid-cols-2 items-center">
                             <div className="p-10 text-center md:text-left">
-                                <h2 className="text-3xl font-bold text-brand-primary mb-4">Encuentra tu mejor look con el Virtual Makeup Lab</h2>
+                                <h2 className="text-3xl font-bold text-brand-primary mb-4">Encuentra tu mejor look en el Virtual Makeup Lab</h2>
                                  <button className="inline-block bg-white text-brand-primary font-semibold py-3 px-6 rounded-lg border-2 border-brand-primary hover:bg-brand-primary hover:text-white transition-colors">
                                     PRUEBA EL MAQUILLAJE VIRTUAL
                                 </button>
