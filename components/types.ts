@@ -22,6 +22,7 @@ export interface Product {
     stock: number;
     category: 'perfume' | 'hair' | 'makeup' | 'skincare' | 'personal-care' | 'men' | 'wellness' | 'accessories';
     subCategory?: 'Giordani Gold' | 'THE ONE' | 'OnColour';
+    productType?: 'Base' | 'Corrector' | 'Máscara' | 'Colorete y Bronceador' | 'Labial' | 'Accesorio de Maquillaje';
     tag?: 'NOVEDAD' | 'SET';
     statusLabel?: string;
     rating?: number;
@@ -40,4 +41,4 @@ export interface CartItem {
 }
 
 // App view type
-export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost';
+export type View = 'home' | 'products' | 'productDetail' | 'ofertas' | 'ia' | 'catalog' | 'about' | 'contact' | 'blog' | 'blogPost' | 'makeup';

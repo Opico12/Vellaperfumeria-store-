@@ -18,6 +18,7 @@ import type { BreadcrumbItem } from './components/Breadcrumbs';
 import CatalogPage from './components/CatalogPage';
 import QuickViewModal from './components/QuickViewModal';
 import BottomNavBar from './components/BottomNavBar';
+import MakeupPage from './components/MakeupPage';
 
 
 const App: React.FC = () => {
@@ -101,21 +102,15 @@ const App: React.FC = () => {
     const handleCheckout = () => {
         if (cartItems.length === 0) return;
         
+        // This is a best-effort attempt to transfer the cart to the external site.
+        // It adds the first item to the cart and redirects the user.
+        // A full cart transfer via URL is not a standard feature in WooCommerce.
+        const firstItem = cartItems[0];
+        const checkoutUrl = `https://vellaperfumeria.com/cart/?add-to-cart=${firstItem.product.id}&quantity=${firstItem.quantity}`;
+
+        // Open in a new tab to avoid losing the app state and allow the user to reference the app cart.
+        window.open(checkoutUrl, '_blank');
         setIsCartOpen(false);
-
-        const baseUrl = 'https://vellaperfumeria.com/cart/';
-        const params = new URLSearchParams();
-
-        cartItems.forEach(item => {
-            // This simple implementation works best for simple products.
-            // For variable products, WooCommerce often requires a variation_id,
-            // which is not available in our current product data. This will add the default variation.
-            params.append('add-to-cart', item.product.id.toString());
-            params.append('quantity', item.quantity.toString());
-        });
-
-        // Redirect to the external cart page
-        window.location.href = `${baseUrl}?${params.toString()}`;
     };
     
     const cartCount = useMemo(() => {
@@ -130,9 +125,18 @@ const App: React.FC = () => {
                 return [{ label: 'Inicio' }];
             case 'products':
                 return [homeCrumb, { label: 'Tienda' }];
+            case 'makeup':
+                return [homeCrumb, { label: 'Maquillaje' }];
             case 'productDetail':
                 if (selectedProduct) {
-                    return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products') }, { label: selectedProduct.name }];
+                     const crumbs: BreadcrumbItem[] = [homeCrumb];
+                     if (selectedProduct.category === 'makeup') {
+                        crumbs.push({ label: 'Maquillaje', onClick: () => handleNavigate('makeup') });
+                     } else {
+                        crumbs.push({ label: 'Tienda', onClick: () => handleNavigate('products') });
+                     }
+                     crumbs.push({ label: selectedProduct.name });
+                     return crumbs;
                 }
                 return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products') }];
             case 'ofertas':
@@ -158,9 +162,12 @@ const App: React.FC = () => {
     };
 
     const renderView = () => {
+        const handleCartClick = () => setIsCartOpen(true);
         switch (view) {
             case 'products':
-                return <ProductListPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
+                return <ProductListPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
+            case 'makeup':
+                return <MakeupPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
             case 'productDetail':
                 return selectedProduct ? (
                     <ProductDetailPage
@@ -169,10 +176,11 @@ const App: React.FC = () => {
                         onAddToCart={handleAddToCart}
                         onProductSelect={handleProductSelect}
                         onQuickView={setQuickViewProduct}
+                        onCartClick={handleCartClick}
                     />
                 ) : <div className="text-center p-8"> <p>Producto no encontrado</p></div>;
             case 'ofertas':
-                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
+                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
             case 'ia':
                 return <AsistenteIAPage />;
             case 'catalog':
@@ -181,6 +189,7 @@ const App: React.FC = () => {
                     onAddToCart={handleAddToCart}
                     onProductSelect={handleProductSelect}
                     onQuickView={setQuickViewProduct}
+                    onCartClick={handleCartClick}
                 />;
              case 'about':
                 return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="text-black font-semibold hover-underline-effect">Vellaperfumeria</a>, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
@@ -198,6 +207,7 @@ const App: React.FC = () => {
                     onAddToCart={handleAddToCart}
                     currency={currency}
                     onQuickView={setQuickViewProduct}
+                    onCartClick={handleCartClick}
                 />;
         }
     };

@@ -76,6 +76,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                         <ul className="space-y-2 text-sm">
                            <FooterLink onClick={() => onNavigate('home')}>Inicio</FooterLink>
                            <FooterLink onClick={() => onNavigate('products')}>Tienda</FooterLink>
+                           <FooterLink onClick={() => onNavigate('makeup')}>Maquillaje</FooterLink>
                            <FooterLink onClick={() => onNavigate('ofertas')}>Ofertas</FooterLink>
                            <FooterLink onClick={() => onNavigate('catalog')}>Catálogo</FooterLink>
                            <FooterLink onClick={() => onNavigate('ia')}>Asistente IA</FooterLink>

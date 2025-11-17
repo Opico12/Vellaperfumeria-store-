@@ -13,7 +13,8 @@ const OfertasPage: React.FC<{
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
-}> = ({ currency, onAddToCart, onProductSelect, onQuickView }) => {
+    onCartClick: () => void;
+}> = ({ currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
@@ -31,6 +32,7 @@ const OfertasPage: React.FC<{
                             onAddToCart={onAddToCart}
                             onProductSelect={onProductSelect}
                             onQuickView={onQuickView}
+                            onCartClick={onCartClick}
                         />
                     ))}
                 </div>

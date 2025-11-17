@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { ProductCard } from './ProductCard';
 import type { Product } from './types';
@@ -9,7 +10,8 @@ const ProductListPage: React.FC<{
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
-}> = ({ currency, onAddToCart, onProductSelect, onQuickView }) => {
+    onCartClick: () => void;
+}> = ({ currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
     
     const [sortOrder, setSortOrder] = useState('menu_order');
     const [currentPage, setCurrentPage] = useState(1);
@@ -94,6 +96,7 @@ const ProductListPage: React.FC<{
                             onAddToCart={onAddToCart}
                             onProductSelect={onProductSelect}
                             onQuickView={onQuickView}
+                            onCartClick={onCartClick}
                         />
                     ))}
                 </div>

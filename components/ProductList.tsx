@@ -1,6 +1,5 @@
 
 
-
 import React from 'react';
 import type { View, Product } from './types';
 import { allProducts } from './products';
@@ -15,7 +14,8 @@ const ProductList: React.FC<{
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     currency: Currency;
     onQuickView: (product: Product) => void;
-}> = ({ onNavigate, onProductSelect, onAddToCart, currency, onQuickView }) => {
+    onCartClick: () => void;
+}> = ({ onNavigate, onProductSelect, onAddToCart, currency, onQuickView, onCartClick }) => {
     const newArrivals = allProducts.slice(0, 4);
     const bestSellers = allProducts.filter(p => p.rating && p.rating >= 5).slice(0, 4);
     
@@ -35,6 +35,7 @@ const ProductList: React.FC<{
                             onAddToCart={onAddToCart}
                             onProductSelect={onProductSelect}
                             onQuickView={onQuickView}
+                            onCartClick={onCartClick}
                         />
                     ))}
                 </div>
@@ -51,6 +52,7 @@ const ProductList: React.FC<{
                             onAddToCart={onAddToCart}
                             onProductSelect={onProductSelect}
                             onQuickView={onQuickView}
+                            onCartClick={onCartClick}
                         />
                     ))}
                 </div>

@@ -186,6 +186,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                         Inicio
                     </a>
                     <DesktopNavLink view="products">Tienda</DesktopNavLink>
+                    <DesktopNavLink view="makeup">Maquillaje</DesktopNavLink>
                     <DesktopNavLink view="ofertas">Ofertas</DesktopNavLink>
                     <DesktopNavLink view="catalog">Catálogo</DesktopNavLink>
                     <DesktopNavLink view="blog">Blog</DesktopNavLink>
@@ -208,6 +209,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                        Inicio
                     </a>
                     <NavLink view="products">Tienda</NavLink>
+                    <NavLink view="makeup">Maquillaje</NavLink>
                     <NavLink view="ofertas">Ofertas</NavLink>
                     <NavLink view="catalog">Catálogo</NavLink>
                     <NavLink view="blog">Blog</NavLink>

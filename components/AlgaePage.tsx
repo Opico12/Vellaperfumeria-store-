@@ -3,6 +3,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { type Currency, formatCurrency } from './currency';
 import type { CartItem, View } from './types';
+import ExpressPayment from './ExpressPayment';
 
 // As a world-class senior frontend engineer, I must declare this so TypeScript knows about the Stripe script loaded in index.html.
 declare global {
@@ -88,7 +89,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
 
     useEffect(() => {
         if (window.Stripe) {
-            const stripeInstance = window.Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); // Dummy key
+            const stripeInstance = window.Stripe('pk_test_TYooMQauvdEDq54NiTphI7jx'); // Public test key
             setStripe(stripeInstance);
         }
     }, []);
@@ -109,7 +110,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
     }, [stripe]);
 
     const subtotal = useMemo(() => cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0), [cartItems]);
-    const shippingCost = 6.00; // Fixed shipping cost from HTML
+    const shippingCost = 6.00; // Fixed shipping cost
     const total = subtotal - (subtotal * discount) + shippingCost;
 
     const handleApplyCoupon = () => {
@@ -131,7 +132,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         setStripeError(null);
         setTimeout(() => {
             onOrderComplete();
-            setIsProcessing(false);
         }, 2500);
     };
 
@@ -150,12 +150,13 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 <form onSubmit={handlePlaceOrder} className="grid lg:grid-cols-5 gap-x-16">
                     {/* Left Column: Forms */}
                     <div className="lg:col-span-3 space-y-10">
+                        <ExpressPayment stripe={stripe} total={total} currency={currency} onOrderComplete={onOrderComplete} />
+
                         <fieldset id="contact-fields" className="space-y-4">
                             <div className="border-b pb-2">
                                 <legend className="text-xl font-bold">Información de contacto</legend>
                                 <p className="text-sm text-gray-600 mt-1">Usaremos este correo electrónico para enviarte actualizaciones.</p>
                             </div>
-                            {/* FIX: Removed redundant 'name' prop, as the component uses 'id' for the name attribute. */}
                             <FloatingLabelInput id="email" label="Dirección de correo electrónico" type="email" value={formState.email} onChange={handleInputChange} required autoComplete="email"/>
                             <div className="flex items-center">
                                 <input type="checkbox" id="subscribe" name="subscribe" checked={formState.subscribe} onChange={handleInputChange} className="h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"/>
@@ -169,22 +170,15 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                                  <p className="text-sm text-gray-600 mt-1">Introduce la dirección para la entrega de tu pedido.</p>
                              </div>
                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {/* FIX: Removed redundant 'name' prop, as the component uses 'id' for the name attribute. */}
                                 <FloatingLabelInput id="shipping_firstName" label="Nombre" value={formState.shipping_firstName} onChange={handleInputChange} required autoComplete="given-name"/>
-                                {/* FIX: Removed redundant 'name' prop, as the component uses 'id' for the name attribute. */}
                                 <FloatingLabelInput id="shipping_lastName" label="Apellidos" value={formState.shipping_lastName} onChange={handleInputChange} required autoComplete="family-name"/>
                              </div>
-                             {/* FIX: Removed redundant 'name' prop, as the component uses 'id' for the name attribute. */}
                              <FloatingLabelInput id="shipping_address" label="Dirección" value={formState.shipping_address} onChange={handleInputChange} required autoComplete="address-line1"/>
-                             {/* FIX: Removed redundant 'name' prop, as the component uses 'id' for the name attribute. */}
                              <FloatingLabelInput id="shipping_apartment" label="Apartamento, habitación, etc. (opcional)" value={formState.shipping_apartment} onChange={handleInputChange} autoComplete="address-line2"/>
                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                 {/* FIX: Removed redundant 'name' prop, as the component uses 'id' for the name attribute. */}
                                  <FloatingLabelInput id="shipping_postcode" label="Código postal" value={formState.shipping_postcode} onChange={handleInputChange} required autoComplete="postal-code"/>
-                                 {/* FIX: Removed redundant 'name' prop, as the component uses 'id' for the name attribute. */}
                                  <FloatingLabelInput id="shipping_city" label="Ciudad" value={formState.shipping_city} onChange={handleInputChange} required autoComplete="address-level2"/>
                              </div>
-                             {/* FIX: Removed redundant 'name' prop, as the component uses 'id' for the name attribute. */}
                              <FloatingLabelInput id="shipping_phone" label="Teléfono (opcional)" value={formState.shipping_phone} onChange={handleInputChange} type="tel" autoComplete="tel"/>
                         </fieldset>
 

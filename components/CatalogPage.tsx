@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { Product } from './types';
 import type { Currency } from './currency';
@@ -15,9 +16,10 @@ interface CatalogPageProps {
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
+    onCartClick: () => void;
 }
 
-const CatalogPage: React.FC<CatalogPageProps> = ({ currency, onAddToCart, onProductSelect, onQuickView }) => {
+const CatalogPage: React.FC<CatalogPageProps> = ({ currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center mb-10">
@@ -50,6 +52,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ currency, onAddToCart, onProd
                                 onAddToCart={onAddToCart}
                                 onProductSelect={onProductSelect}
                                 onQuickView={onQuickView}
+                                onCartClick={onCartClick}
                             />
                         ))}
                     </div>

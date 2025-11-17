@@ -13,6 +13,7 @@ interface ProductDetailPageProps {
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
+    onCartClick: () => void;
 }
 
 // SVG Icons
@@ -91,7 +92,7 @@ const getDefaultVariant = (product: Product): Record<string, string> | null => {
     return defaultVariant;
 };
 
-const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onProductSelect, onQuickView }) => {
+const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onProductSelect, onQuickView, onCartClick }) => {
     const btnRef = useRef<HTMLButtonElement>(null);
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
     const [copyButtonText, setCopyButtonText] = useState('Copiar enlace');
@@ -371,6 +372,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 onAddToCart={onAddToCart}
                                 onProductSelect={onProductSelect}
                                 onQuickView={onQuickView}
+                                onCartClick={onCartClick}
                             />
                         ))}
                     </div>
