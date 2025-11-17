@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useRef } from 'react';
 import type { CartItem } from './types';
 import type { Currency } from './currency';
@@ -185,15 +186,20 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                 <span>Total</span>
                                 <span>{formatCurrency(total, currency)}</span>
                             </div>
-                             <p className="text-xs text-center text-gray-500 pt-2">
-                                Finalizarás tu compra de forma segura en nuestro sitio principal vellaperfumeria.com.
-                            </p>
-                            <button
-                                onClick={onCheckout}
-                                className="w-full bg-brand-purple text-brand-primary font-bold py-3 rounded-lg mt-2 hover:bg-brand-purple-dark transition-colors"
-                            >
-                                Finalizar Compra
-                            </button>
+                            <div className="mt-4 grid grid-cols-1 gap-3">
+                                <button
+                                    onClick={onCheckout}
+                                    className="w-full bg-brand-purple text-brand-primary font-bold py-3 px-4 rounded-lg hover:bg-brand-purple-dark transition-colors"
+                                >
+                                    Finalizar Compra
+                                </button>
+                                <button
+                                    onClick={onClose}
+                                    className="w-full bg-transparent text-brand-primary font-semibold py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors"
+                                >
+                                    Seguir Comprando
+                                </button>
+                            </div>
                         </div>
                     </div>
                 ) : (

@@ -135,12 +135,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
                     {/* Centered Logo */}
                     <div className="flex-1 flex justify-center">
-                        <button onClick={() => onNavigate('home')} className="flex flex-col items-center" aria-label="Vellaperfumeria - Inicio">
+                        <a href="https://vellaperfumeria.com" target="_top" className="flex flex-col items-center" aria-label="Vellaperfumeria - Inicio">
                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-24 w-auto" />
                             <span className="text-2xl font-bold tracking-wider text-brand-primary mt-1">
                                 Vellaperfumeria
                             </span>
-                        </button>
+                        </a>
                     </div>
 
                     {/* Right Side Actions */}
@@ -171,10 +171,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex justify-center space-x-8 items-center py-2 border-t border-gray-100">
-                    <DesktopNavLink view="home">Inicio</DesktopNavLink>
+                    <a href="https://vellaperfumeria.com" target="_top" className="text-gray-700 hover:text-brand-primary transition-colors font-semibold py-2 hover-underline-effect text-sm uppercase tracking-wider">Inicio</a>
                     <DesktopNavLink view="products">Tienda</DesktopNavLink>
+                    <DesktopNavLink view="skincare">Cuidado Facial</DesktopNavLink>
                     <DesktopNavLink view="makeup">Maquillaje</DesktopNavLink>
                     <DesktopNavLink view="fragrance">Fragancias</DesktopNavLink>
+                    <DesktopNavLink view="wellness">Wellness</DesktopNavLink>
                     <DesktopNavLink view="ofertas">Ofertas</DesktopNavLink>
                     <DesktopNavLink view="catalog">Catálogo</DesktopNavLink>
                     <DesktopNavLink view="blog">Blog</DesktopNavLink>
@@ -189,10 +191,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <CloseIcon />
                 </button>
                 <nav className="flex flex-col items-center space-y-8 text-center">
-                    <NavLink view="home">Inicio</NavLink>
+                    <a href="https://vellaperfumeria.com" target="_top" className="text-3xl font-bold text-brand-primary hover:text-brand-purple-dark transition-colors duration-300">Inicio</a>
                     <NavLink view="products">Tienda</NavLink>
+                    <NavLink view="skincare">Cuidado Facial</NavLink>
                     <NavLink view="makeup">Maquillaje</NavLink>
                     <NavLink view="fragrance">Fragancias</NavLink>
+                    <NavLink view="wellness">Wellness</NavLink>
                     <NavLink view="ofertas">Ofertas</NavLink>
                     <NavLink view="catalog">Catálogo</NavLink>
                     <NavLink view="blog">Blog</NavLink>

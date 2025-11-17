@@ -19,9 +19,9 @@ import CatalogPage from './components/CatalogPage';
 import QuickViewModal from './components/QuickViewModal';
 import BottomNavBar from './components/BottomNavBar';
 import MakeupPage from './components/MakeupPage';
-import CheckoutPage from './components/AlgaePage';
-import OrderConfirmationPage from './components/OrderConfirmationPage';
 import FragrancePage from './components/FragrancePage';
+import WellnessPage from './components/WellnessPage';
+import SkincarePage from './components/SkincarePage';
 
 
 const App: React.FC = () => {
@@ -83,6 +83,7 @@ const App: React.FC = () => {
             }, 500);
         }
 
+        // Cart state is now managed locally. Sync happens reliably on checkout.
         setIsCartOpen(true);
     };
 
@@ -104,13 +105,24 @@ const App: React.FC = () => {
 
     const handleCheckout = () => {
         if (cartItems.length === 0) return;
-        setIsCartOpen(false);
-        handleNavigate('checkout');
-    };
     
-    const handleOrderComplete = () => {
-        setCartItems([]);
-        handleNavigate('orderConfirmation');
+        const baseUrl = 'https://vellaperfumeria.com/cart/';
+        
+        // Construct the query parameters to add all items at once.
+        // WooCommerce supports multiple 'add-to-cart' parameters in the URL.
+        const queryParams = cartItems.map(item => {
+            const productId = item.product.id;
+            const quantity = item.quantity;
+            // Note: Adding variants via URL is complex and not standard.
+            // This implementation adds the main product, which is a robust solution.
+            // The user can adjust variants on the cart page if needed.
+            return `add-to-cart=${productId}&quantity=${quantity}`;
+        }).join('&');
+    
+        const finalUrl = `${baseUrl}?${queryParams}`;
+        
+        // Redirect the user to the main site's cart, pre-filled with all items.
+        window.top.location.href = finalUrl;
     };
 
     const cartCount = useMemo(() => {
@@ -125,22 +137,13 @@ const App: React.FC = () => {
                 return [{ label: 'Inicio' }];
             case 'products':
                 return [homeCrumb, { label: 'Tienda' }];
-            case 'makeup':
-                return [homeCrumb, { label: 'Maquillaje' }];
-            case 'fragrance':
-                return [homeCrumb, { label: 'Fragancias' }];
             case 'productDetail':
                 if (selectedProduct) {
-                     const crumbs: BreadcrumbItem[] = [homeCrumb];
-                     if (selectedProduct.category === 'makeup') {
-                        crumbs.push({ label: 'Maquillaje', onClick: () => handleNavigate('makeup') });
-                     } else if (selectedProduct.category === 'perfume') {
-                        crumbs.push({ label: 'Fragancias', onClick: () => handleNavigate('fragrance') });
-                     } else {
-                        crumbs.push({ label: 'Tienda', onClick: () => handleNavigate('products') });
-                     }
-                     crumbs.push({ label: selectedProduct.name });
-                     return crumbs;
+                     return [
+                        homeCrumb, 
+                        { label: 'Tienda', onClick: () => handleNavigate('products') },
+                        { label: selectedProduct.name }
+                    ];
                 }
                 return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products') }];
             case 'ofertas':
@@ -160,10 +163,14 @@ const App: React.FC = () => {
                     return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }, { label: selectedPost.title }];
                 }
                 return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }];
-            case 'checkout':
-                return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products')}, { label: 'Checkout' }];
-            case 'orderConfirmation':
-                 return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products')}, { label: 'Confirmación' }];
+            case 'makeup':
+                return [homeCrumb, { label: 'Maquillaje' }];
+            case 'fragrance':
+                return [homeCrumb, { label: 'Fragancias' }];
+            case 'wellness':
+                return [homeCrumb, { label: 'Wellness' }];
+            case 'skincare':
+                return [homeCrumb, { label: 'Cuidado Facial' }];
             default:
                 return [];
         }
@@ -174,10 +181,6 @@ const App: React.FC = () => {
         switch (view) {
             case 'products':
                 return <ProductListPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
-            case 'makeup':
-                return <MakeupPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
-            case 'fragrance':
-                return <FragrancePage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
             case 'productDetail':
                 return selectedProduct ? (
                     <ProductDetailPage
@@ -201,10 +204,6 @@ const App: React.FC = () => {
                     onQuickView={setQuickViewProduct}
                     onCartClick={handleCartClick}
                 />;
-            case 'checkout':
-                return <CheckoutPage cartItems={cartItems} currency={currency} onNavigate={handleNavigate} onOrderComplete={handleOrderComplete} />;
-            case 'orderConfirmation':
-                return <OrderConfirmationPage onNavigate={handleNavigate} />;
              case 'about':
                 return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos Vellaperfumeria, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
             case 'contact':
@@ -213,6 +212,14 @@ const App: React.FC = () => {
                 return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
                  return selectedPost ? <BlogPostPage post={selectedPost} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={handleBackToBlog} /> : <div className="text-center p-8"><p>Artículo no encontrado</p></div>;
+            case 'makeup':
+                return <MakeupPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
+            case 'fragrance':
+                return <FragrancePage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
+            case 'wellness':
+                return <WellnessPage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
+            case 'skincare':
+                return <SkincarePage currency={currency} onAddToCart={handleAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onCartClick={handleCartClick} />;
             case 'home':
             default:
                 return <ProductList

@@ -22,15 +22,6 @@ const StarIcon: React.FC<{ className?: string }> = ({ className }) => (
     </svg>
 );
 
-const GooglePayIcon = () => (
-    <svg className="w-8 h-auto mr-1" viewBox="0 0 52 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4.33398 8.87988V11.1064H7.31152V12.3086H4.33398V15.1504H8.38184V16.3525H3.13184V7.67773H8.38184V8.87988H4.33398Z" fill="white"/>
-        <path d="M12.2045 10.9756C12.6537 10.9756 13.0649 11.0537 13.4379 11.2099C13.811 11.3662 14.1137 11.5898 14.3451 11.8808C14.5859 12.1621 14.7064 12.5019 14.7064 12.8994C14.7064 13.2187 14.6383 13.5048 14.5023 13.7578C14.3663 14.0107 14.1674 14.2392 13.9057 14.4423C13.644 14.6455 13.332 14.8144 12.9691 14.9492C12.6062 15.0839 12.2142 15.1513 11.7933 15.1513H10.222V16.3535H9.01989V7.67871H11.9564C12.4437 7.67871 12.8822 7.74609 13.2718 7.87988C13.6615 8.01367 13.9808 8.21484 14.2298 8.48339C14.4789 8.75195 14.6035 9.07421 14.6035 9.44921C14.6035 9.87304 14.474 10.2294 14.2142 10.5185C13.9545 10.8076 13.6225 10.9414 13.2181 11.0078L13.1517 11.0185L14.9125 15.0283C15.0775 15.4257 15.2289 15.707 15.3675 15.871C15.5062 16.0351 15.6517 16.1601 15.8031 16.2451L15.4603 16.7119L13.5209 10.9756H12.2045ZM10.222 10.0224V13.9492H11.7162C12.0648 13.9492 12.3568 13.8828 12.5921 13.749C12.8275 13.6152 13.0013 13.4326 13.1136 13.1992C13.2259 12.9658 13.2821 12.7031 13.2821 12.4101C13.2821 12.1269 13.2259 11.8759 13.1136 11.6562C13.0013 11.4365 12.8246 11.2607 12.5833 11.1289C12.3421 10.997 12.0462 10.9316 11.6966 10.9316H10.222V10.0224Z" fill="white"/>
-        <path d="M16.9238 7.67871H18.1259V13.7021L21.7343 7.67871H23.0898L19.4521 13.4541L23.2382 16.3535H21.8212L18.1259 13.9756V16.3535H16.9238V7.67871Z" fill="white"/>
-        <path d="M25.1094 7.67773H30.4199V8.87988H26.3115V11.2373H29.8311V12.4395H26.3115V15.1504H30.4199V16.3525H25.1094V7.67773Z" fill="white"/>
-    </svg>
-);
-
 
 export const ProductCard: React.FC<{
     product: Product;
@@ -47,8 +38,8 @@ export const ProductCard: React.FC<{
 
     const handleBuyNow = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        onAddToCart(product, null, null);
-        onCartClick();
+        // For a true "Buy Now" experience, add the item and go directly to checkout.
+        window.top.location.href = `https://vellaperfumeria.com/checkout/?add-to-cart=${product.id}`;
     };
 
     const handleQuickBuy = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -130,7 +121,7 @@ export const ProductCard: React.FC<{
                     )}
                 </div>
                 
-                <div className="mt-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="mt-4 flex flex-col gap-2">
                      <button
                         ref={btnRef}
                         onClick={(e) => { e.stopPropagation(); onAddToCart(product, btnRef.current, null); }}
@@ -141,10 +132,10 @@ export const ProductCard: React.FC<{
                     </button>
                     <button
                         onClick={handleBuyNow}
-                        className="w-full bg-black text-white font-semibold py-1.5 px-4 rounded-md hover:bg-gray-800 transition-colors text-sm flex items-center justify-center"
-                        aria-label={`Pagar ${product.name} con Google Pay`}
+                        className="w-full bg-gray-700 text-white font-semibold py-2 px-4 rounded-md hover:bg-black transition-colors text-sm"
+                        aria-label={`Comprar ahora ${product.name}`}
                     >
-                        Pagar con <GooglePayIcon /> 
+                        Comprar ahora
                     </button>
                 </div>
             </div>
