@@ -143,13 +143,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
     const [hoverRating, setHoverRating] = useState(0);
 
     const productUrl = window.location.href;
-    const productTitle = `¡Mira este producto: ${product.name}!`;
-
-    const shareLinks = {
-        whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(productTitle)}%20${encodeURIComponent(productUrl)}`,
-        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`,
-        twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(productUrl)}&text=${encodeURIComponent(productTitle)}`,
-    };
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(productUrl).then(() => {
@@ -349,14 +342,12 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
              {product.category === 'skincare' && (
                 <div className="text-center my-10">
-                    <a 
-                        href="https://vellaperfumeria.com/los-7-mejores-limpiadores/?v=12470fe406d4a"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <button 
+                        onClick={() => onProductSelect(allProducts.find(p => p.category === 'skincare')!)} 
                         className="inline-block bg-gray-100 text-gray-800 font-semibold py-3 px-8 rounded-lg hover:bg-gray-200 transition-colors shadow-sm"
                     >
                         Ver todos los limpiadores y productos de Skincare
-                    </a>
+                    </button>
                 </div>
             )}
 
@@ -503,15 +494,15 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                         <p className="font-semibold truncate mb-4 text-center text-gray-700">{product.name}</p>
                         
                         <div className="flex justify-around items-center my-6">
-                            <a href={shareLinks.whatsapp} data-action="share/whatsapp/share" target="_blank" rel="noopener noreferrer" className="text-green-500 hover:text-green-600 transition-transform transform hover:scale-110" aria-label="Compartir en WhatsApp">
+                            <button className="text-green-500 hover:text-green-600 transition-transform transform hover:scale-110" aria-label="Compartir en WhatsApp">
                                <WhatsAppIcon />
-                            </a>
-                             <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 transition-transform transform hover:scale-110" aria-label="Compartir en Facebook">
+                            </button>
+                             <button className="text-blue-600 hover:text-blue-700 transition-transform transform hover:scale-110" aria-label="Compartir en Facebook">
                                <FacebookIcon />
-                            </a>
-                             <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer" className="text-gray-800 hover:text-black transition-transform transform hover:scale-110" aria-label="Compartir en Twitter">
+                            </button>
+                             <button className="text-gray-800 hover:text-black transition-transform transform hover:scale-110" aria-label="Compartir en Twitter">
                                <TwitterIcon />
-                            </a>
+                            </button>
                         </div>
 
                         <div className="flex items-center border rounded-lg p-1">

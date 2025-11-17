@@ -1,3 +1,4 @@
+
 import React from 'react';
 import type { View } from './types';
 
@@ -31,15 +32,13 @@ const HeroBanner: React.FC<HeroBannerProps> = ({ onNavigate }) => {
                             >
                                 Explorar Tienda
                             </button>
-                            <a 
-                                href="https://wa.me/661202616" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
+                            <button 
+                                onClick={() => onNavigate('contact')}
                                 className="btn-secondary flex items-center justify-center gap-2"
                             >
                                 <WhatsAppIcon />
                                 Asesoría VIP
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <div className="hidden md:block">

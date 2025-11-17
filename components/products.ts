@@ -156,31 +156,6 @@ export const allProducts: Product[] = [
         reviewCount: 88,
     },
     {
-        id: 43243,
-        name: "Maquillaje Eternal Glow SPF 25 Giordani Gold",
-        brand: "Giordani Gold",
-        price: 17.99,
-        regularPrice: 32.00,
-        imageUrl: `https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F43243%2FES%2F43243_1.png`,
-        description: "Base de maquillaje con serum que ilumina y perfecciona la piel al instante y a largo plazo. Con SPF 25 y Ácido Hialurónico para un acabado radiante y juvenil. Una fórmula híbrida que combina lo mejor del maquillaje y el cuidado de la piel.",
-        howToUse: "Aplicar una pequeña cantidad en el centro del rostro y difuminar hacia el exterior con una brocha, esponja o con los dedos para un acabado uniforme.",
-        stock: 40,
-        category: 'makeup',
-        productType: 'Base',
-        subCategory: 'Giordani Gold',
-        rating: 5,
-        reviewCount: 953,
-        variants: {
-            Tono: [
-                { value: 'Light Ivory', colorCode: '#F5E4D3' },
-                { value: 'Porcelain', colorCode: '#F3D9C6' },
-                { value: 'Warm Beige', colorCode: '#E4BFA8' },
-                { value: 'Natural Sand', colorCode: '#D8AF92' },
-                { value: 'Golden Sun', colorCode: '#C89A76' },
-            ]
-        }
-    },
-    {
         id: 104,
         name: "WellnessPack Mujer Wellosophy",
         brand: "Wellosophy",
@@ -205,21 +180,6 @@ export const allProducts: Product[] = [
         category: 'hair',
         rating: 4,
         reviewCount: 45,
-    },
-    {
-        id: 102,
-        name: "Maquillaje Everlasting Sync SPF 20",
-        brand: "THE ONE",
-        price: 18.00,
-        imageUrl: `https://raw.githubusercontent.com/tmaromero/imagenes/main/42128.png`,
-        description: "Descubre el maquillaje inteligente que se sincroniza con tu piel. La Base Everlasting Sync SPF 20 de THE ONE, con Tecnología Skin Response, se adapta a la humedad del ambiente para un acabado fresco y semi-mate que dura hasta 30 horas.",
-        howToUse: "Aplicar sobre la piel limpia e hidratada. Difuminar uniformemente desde el centro del rostro hacia el exterior con una brocha, esponja o la yema de los dedos.",
-        stock: 30,
-        category: 'makeup',
-        productType: 'Base',
-        subCategory: 'THE ONE',
-        rating: 5,
-        reviewCount: 150,
     },
     {
         id: 46901,
@@ -546,5 +506,196 @@ export const allProducts: Product[] = [
         category: 'accessories',
         rating: 4.5,
         reviewCount: 19,
+    },
+    // New products from HTML
+    {
+        id: 46906,
+        name: 'Maquillaje Stress-Free Everlasting Sync SPF 20 + Protección UVA Natural THE ONE',
+        brand: 'The ONE',
+        price: 9.23,
+        regularPrice: 20.00,
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F46906%2F46906_1.png&w=600',
+        description: 'Maquillaje de larga duración que se adapta a las necesidades de tu piel, con SPF 20 y protección UVA. Acabado natural y sin estrés.',
+        stock: 30,
+        category: 'makeup',
+        productType: 'Base',
+        rating: 4.8,
+        reviewCount: 936,
+        variants: {
+            Tono: [
+                { value: 'Pale Ivory', colorCode: '#F9E0CF' },
+                { value: 'Vanilla', colorCode: '#F9E5CC' },
+                { value: 'Porcelain', colorCode: '#EACFBC' },
+                { value: 'Marble', colorCode: '#EAD0B6' },
+                { value: 'Light Rose', colorCode: '#EAD0C0' },
+                { value: 'Light Beige', colorCode: '#E0C0A5' },
+            ]
+        }
+    },
+    {
+        id: 42236,
+        name: 'Maquillaje Antienvejecimiento Serum Boost SPF 12 + Protección UVA Giordani Gold',
+        brand: 'Giordani Gold',
+        price: 13.08,
+        regularPrice: 31.00,
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F42236%2F42236_1.png&w=600',
+        description: 'Un maquillaje con serum que combate los signos del envejecimiento, hidrata y protege la piel con SPF 12.',
+        stock: 25,
+        category: 'makeup',
+        productType: 'Base',
+        rating: 4.8,
+        reviewCount: 1421,
+        variants: {
+            Tono: [
+                { value: 'Vanilla Neutral', colorCode: '#F4D7B3' },
+                { value: 'Vanilla Cool', colorCode: '#F7D5BB' },
+                { value: 'Porcelain Warm', colorCode: '#EEC9B4' },
+                { value: 'Light Beige Neutral', colorCode: '#F0CAAA' },
+                { value: 'Light Ivory Neutral', colorCode: '#E1AE8F' },
+                { value: 'Beige Warm', colorCode: '#D2A282' },
+            ]
+        }
+    },
+    {
+        id: 43244,
+        name: 'Maquillaje Eternal Glow SPF 25 Giordani Gold',
+        brand: 'Giordani Gold',
+        price: 13.85,
+        regularPrice: 32.00,
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F43244%2FES%2F43244_1.png&w=600',
+        description: 'Maquillaje con acabado luminoso y SPF 25 que proporciona un brillo eterno y una piel de aspecto más joven.',
+        stock: 20,
+        category: 'makeup',
+        productType: 'Base',
+        rating: 4.8,
+        reviewCount: 954,
+         variants: {
+            Tono: [
+                { value: 'Vanilla Neutral', colorCode: '#F9DFBF' },
+                { value: 'Porcelain Warm', colorCode: '#E6C59D' },
+                { value: 'Light Beige Neutral', colorCode: '#E6C095' },
+                { value: 'Soft Sand', colorCode: '#E6BB95' },
+                { value: 'Ivory Neutral', colorCode: '#D9B08D' },
+                { value: 'Natural Beige', colorCode: '#D2A282' },
+            ]
+        }
+    },
+    {
+        id: 32922,
+        name: 'Maquillaje Liquid Silk Giordani Gold',
+        brand: 'Giordani Gold',
+        price: 23.87,
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F32922%2FES%2F32922_1.png&w=600',
+        description: 'Base de maquillaje fluida y ligera con acabado de seda para una cobertura perfecta y natural.',
+        stock: 15,
+        category: 'makeup',
+        productType: 'Base',
+        rating: 4.8,
+        reviewCount: 1973,
+         variants: {
+            Tono: [
+                { value: 'Vanilla', colorCode: '#E8C396' },
+                { value: 'Porcelain', colorCode: '#E9CAAD' },
+                { value: 'Light Ivory', colorCode: '#DABD9F' },
+                { value: 'Natural Beige', colorCode: '#B38659' },
+                { value: 'Amber', colorCode: '#B58D6A' },
+            ]
+        }
+    },
+    {
+        id: 46332,
+        name: 'Maquillaje Illuskin Glow Reflective THE ONE',
+        brand: 'The ONE',
+        price: 15.40,
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F46332%2F46332_1.png&w=600',
+        description: 'Maquillaje que refleja la luz para un brillo natural y una piel visiblemente más saludable.',
+        stock: 35,
+        category: 'makeup',
+        productType: 'Base',
+        rating: 4.7,
+        reviewCount: 572,
+        variants: {
+            Tono: [
+                { value: 'Vanilla Neutral', colorCode: '#F9DFBF' },
+                { value: 'Marble Neutral', colorCode: '#E8C9A7' },
+                { value: 'Porcelain Cool', colorCode: '#FDE3D8' },
+                { value: 'Light Ivory Neutral', colorCode: '#E6C095' },
+                { value: 'Beige Neutral', colorCode: '#D5AC96' },
+                { value: 'Beige Warm', colorCode: '#D9AA88' },
+            ]
+        }
+    },
+    {
+        id: 42102,
+        name: 'Maquillaje Mineral de Larga Duración SPF 20 Giordani Gold',
+        brand: 'Giordani Gold',
+        price: 23.87,
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F42102%2F42102_1.png&w=600',
+        description: 'Base de maquillaje con minerales volcánicos para una cobertura duradera y un acabado impecable. Con SPF 20.',
+        stock: 18,
+        category: 'makeup',
+        productType: 'Base',
+        rating: 4.8,
+        reviewCount: 1004,
+         variants: {
+            Tono: [
+                { value: 'Vanilla Neutral', colorCode: '#F9DFBF' },
+                { value: 'Porcelain Warm', colorCode: '#E6C59D' },
+                { value: 'Marble Neutral', colorCode: '#E8C9A7' },
+                { value: 'Light Beige Neutral', colorCode: '#E6C095' },
+                { value: 'Soft Sand', colorCode: '#F2C6A9' },
+                { value: 'Light Ivory Neutral', colorCode: '#D5AC96' },
+            ]
+        }
+    },
+    {
+        id: 39292,
+        name: 'Crema Iluminadora Peach OnColour',
+        brand: 'OnColour',
+        price: 8.47,
+        imageUrl: 'https://www.oriflame.es/products/product?code=39292', // No image available from HTML, using product page
+        description: 'Crema iluminadora con un toque de color melocotón para un brillo saludable y natural.',
+        stock: 50,
+        category: 'makeup',
+        productType: 'Base',
+        rating: 4.8,
+        reviewCount: 564,
+    },
+    {
+        id: 42125,
+        name: 'Maquillaje Semi-Mate Everlasting Sync SPF 10 + Protección UVA THE ONE',
+        brand: 'The ONE',
+        price: 15.40,
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F42125%2F42125_1.png&w=600',
+        description: 'Base de maquillaje con acabado semi-mate que se sincroniza con tu piel. Larga duración y protección SPF 10.',
+        stock: 40,
+        category: 'makeup',
+        productType: 'Base',
+        rating: 4.6,
+        reviewCount: 639,
+        variants: {
+            Tono: [
+                { value: 'Alabaster Cool', colorCode: '#E5BEAA' },
+                { value: 'Vanilla Neutral', colorCode: '#EBCAAB' },
+                { value: 'Porcelain Cool', colorCode: '#FAC9AA' },
+                { value: 'Beige Neutral', colorCode: '#DAAD87' },
+                { value: 'Ivory Neutral', colorCode: '#CBA077' },
+                { value: 'Beige Warm', colorCode: '#CEA17C' },
+            ]
+        }
+    },
+    {
+        id: 47551,
+        name: 'Esponjilla de Maquillaje de Silicona Hidden Gems',
+        brand: 'Vellaperfumeria',
+        price: 2.69,
+        regularPrice: 8.99,
+        imageUrl: 'https://media-cdn.oriflame.com/productImage?externalMediaId=product-management-media%2FProducts%2F47551%2F47551_1.png&w=600',
+        description: 'Esponja de silicona para una aplicación de maquillaje higiénica y sin desperdicio de producto.',
+        stock: 100,
+        category: 'makeup',
+        productType: 'Accesorio de Maquillaje',
+        rating: 4.7,
+        reviewCount: 36,
     }
 ];

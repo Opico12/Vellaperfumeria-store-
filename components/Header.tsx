@@ -85,27 +85,24 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
     }, [isMenuOpen]);
 
     const NavLink: React.FC<{ view: View; children: React.ReactNode }> = ({ view, children }) => (
-        <a
-            href="#"
-            onClick={(e) => {
-                e.preventDefault();
+        <button
+            onClick={() => {
                 onNavigate(view);
                 setIsMenuOpen(false); // Close menu on navigation
             }}
             className="text-3xl font-bold text-brand-primary hover:text-brand-purple-dark transition-colors duration-300"
         >
             {children}
-        </a>
+        </button>
     );
     
     const DesktopNavLink: React.FC<{ view: View; children: React.ReactNode }> = ({ view, children }) => (
-         <a
-            href="#"
-            onClick={(e) => { e.preventDefault(); onNavigate(view); }}
+         <button
+            onClick={() => onNavigate(view)}
             className="text-gray-700 hover:text-brand-primary transition-colors font-semibold py-2 hover-underline-effect text-sm uppercase tracking-wider"
         >
             {children}
-        </a>
+        </button>
     );
 
     return (
@@ -117,18 +114,10 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                         Envío GRATIS a partir de 35€
                     </p>
                     <div className="flex items-center space-x-4">
-                        <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:text-brand-primary/80 transition-colors" aria-label="Threads">
-                            <ThreadsIcon />
-                        </a>
-                        <a href="https://www.instagram.com/beautieshopvella" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:text-brand-primary/80 transition-colors" aria-label="Instagram">
-                            <InstagramIcon />
-                        </a>
-                        <a href="https://www.facebook.com/vellaperfumeria" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:text-brand-primary/80 transition-colors" aria-label="Facebook">
-                            <FacebookIcon />
-                        </a>
-                        <a href="https://wa.me/661202616" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:text-brand-primary/80 transition-colors" aria-label="WhatsApp">
-                            <WhatsAppIcon />
-                        </a>
+                        <span className="text-brand-primary" aria-label="Threads"><ThreadsIcon /></span>
+                        <span className="text-brand-primary" aria-label="Instagram"><InstagramIcon /></span>
+                        <span className="text-brand-primary" aria-label="Facebook"><FacebookIcon /></span>
+                        <span className="text-brand-primary" aria-label="WhatsApp"><WhatsAppIcon /></span>
                     </div>
                 </div>
             </div>
@@ -146,12 +135,12 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
                     {/* Centered Logo */}
                     <div className="flex-1 flex justify-center">
-                        <a href="#" onClick={(e) => { e.preventDefault(); onNavigate('home'); }} className="flex flex-col items-center" aria-label="Vellaperfumeria - Inicio">
+                        <button onClick={() => onNavigate('home')} className="flex flex-col items-center" aria-label="Vellaperfumeria - Inicio">
                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-24 w-auto" />
                             <span className="text-2xl font-bold tracking-wider text-brand-primary mt-1">
                                 Vellaperfumeria
                             </span>
-                        </a>
+                        </button>
                     </div>
 
                     {/* Right Side Actions */}
@@ -182,9 +171,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex justify-center space-x-8 items-center py-2 border-t border-gray-100">
-                    <a href="https://vellaperfumeria.com" className="text-gray-700 hover:text-brand-primary transition-colors font-semibold py-2 hover-underline-effect text-sm uppercase tracking-wider">
-                        Inicio
-                    </a>
+                    <DesktopNavLink view="home">Inicio</DesktopNavLink>
                     <DesktopNavLink view="products">Tienda</DesktopNavLink>
                     <DesktopNavLink view="makeup">Maquillaje</DesktopNavLink>
                     <DesktopNavLink view="ofertas">Ofertas</DesktopNavLink>
@@ -201,13 +188,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <CloseIcon />
                 </button>
                 <nav className="flex flex-col items-center space-y-8 text-center">
-                    <a
-                        href="https://vellaperfumeria.com"
-                        className="text-3xl font-bold text-brand-primary hover:text-brand-purple-dark transition-colors duration-300"
-                        onClick={() => setIsMenuOpen(false)}
-                    >
-                       Inicio
-                    </a>
+                    <NavLink view="home">Inicio</NavLink>
                     <NavLink view="products">Tienda</NavLink>
                     <NavLink view="makeup">Maquillaje</NavLink>
                     <NavLink view="ofertas">Ofertas</NavLink>

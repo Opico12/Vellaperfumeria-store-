@@ -19,6 +19,8 @@ import CatalogPage from './components/CatalogPage';
 import QuickViewModal from './components/QuickViewModal';
 import BottomNavBar from './components/BottomNavBar';
 import MakeupPage from './components/MakeupPage';
+import CheckoutPage from './components/AlgaePage';
+import OrderConfirmationPage from './components/OrderConfirmationPage';
 
 
 const App: React.FC = () => {
@@ -101,18 +103,15 @@ const App: React.FC = () => {
 
     const handleCheckout = () => {
         if (cartItems.length === 0) return;
-        
-        // This is a best-effort attempt to transfer the cart to the external site.
-        // It adds the first item to the cart and redirects the user.
-        // A full cart transfer via URL is not a standard feature in WooCommerce.
-        const firstItem = cartItems[0];
-        const checkoutUrl = `https://vellaperfumeria.com/cart/?add-to-cart=${firstItem.product.id}&quantity=${firstItem.quantity}`;
-
-        // Open in a new tab to avoid losing the app state and allow the user to reference the app cart.
-        window.open(checkoutUrl, '_blank');
         setIsCartOpen(false);
+        handleNavigate('checkout');
     };
     
+    const handleOrderComplete = () => {
+        setCartItems([]);
+        handleNavigate('orderConfirmation');
+    };
+
     const cartCount = useMemo(() => {
         return cartItems.reduce((total, item) => total + item.quantity, 0);
     }, [cartItems]);
@@ -156,6 +155,10 @@ const App: React.FC = () => {
                     return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }, { label: selectedPost.title }];
                 }
                 return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }];
+            case 'checkout':
+                return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products')}, { label: 'Checkout' }];
+            case 'orderConfirmation':
+                 return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products')}, { label: 'Confirmación' }];
             default:
                 return [];
         }
@@ -191,10 +194,14 @@ const App: React.FC = () => {
                     onQuickView={setQuickViewProduct}
                     onCartClick={handleCartClick}
                 />;
+            case 'checkout':
+                return <CheckoutPage cartItems={cartItems} currency={currency} onNavigate={handleNavigate} onOrderComplete={handleOrderComplete} />;
+            case 'orderConfirmation':
+                return <OrderConfirmationPage onNavigate={handleNavigate} />;
              case 'about':
-                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos <a href="https://vellaperfumeria.com" target="_blank" rel="noopener noreferrer" className="text-black font-semibold hover-underline-effect">Vellaperfumeria</a>, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
+                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos Vellaperfumeria, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
             case 'contact':
-                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Contacto</h1><p className="mt-4 text-gray-800">¿Preguntas? Estamos aquí para ayudarte. Contáctanos por WhatsApp al <a href="https://wa.me/661202616" className="text-black font-semibold hover-underline-effect">661 20 26 16</a> o visita nuestras redes sociales.</p></div>;
+                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Contacto</h1><p className="mt-4 text-gray-800">¿Preguntas? Estamos aquí para ayudarte. Contáctanos por WhatsApp al 661 20 26 16 o visita nuestras redes sociales.</p></div>;
             case 'blog':
                 return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':

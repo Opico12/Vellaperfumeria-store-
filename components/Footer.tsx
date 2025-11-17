@@ -44,13 +44,12 @@ interface FooterProps {
 
 const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> = ({ onClick, children }) => (
     <li>
-        <a 
-            href="#"
-            onClick={(e) => { e.preventDefault(); onClick(); }}
+        <button 
+            onClick={onClick}
             className="text-gray-400 hover:text-white transition-colors hover:underline"
         >
             {children}
-        </a>
+        </button>
     </li>
 );
 
@@ -61,9 +60,9 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center md:text-left">
                     {/* Column 1: Branding */}
                     <div className="sm:col-span-2 lg:col-span-1">
-                         <a href="https://vellaperfumeria.com" className="inline-block hover:opacity-80 transition-opacity mb-4">
+                         <button onClick={() => onNavigate('home')} className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer">
                              <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-28 w-auto mx-auto md:mx-0" />
-                        </a>
+                        </button>
                         <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>
                         <p className="text-gray-400 text-sm mt-2">
                             Tu esencia, tu belleza, tu tienda.
@@ -90,35 +89,18 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                             <FooterLink onClick={() => onNavigate('about')}>Sobre Nosotros</FooterLink>
                             <FooterLink onClick={() => onNavigate('contact')}>Contacto</FooterLink>
                             <FooterLink onClick={() => onNavigate('blog')}>Blog</FooterLink>
-                            <li>
-                                <a
-                                    href="https://vellaperfumeria.com/politica-de-privacidad/?v=12470fe406d4"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-gray-400 hover:text-white transition-colors hover:underline"
-                                >
-                                    Política de Privacidad
-                                </a>
-                            </li>
+                            <li className="text-gray-400">Política de Privacidad</li>
                         </ul>
                     </div>
 
                     {/* Column 4: Redes Sociales */}
                      <div>
                         <h3 className="text-base font-bold tracking-widest uppercase mb-4 text-white">Síguenos</h3>
-                        <div className="flex justify-center md:justify-start space-x-4">
-                            <a href="https://www.threads.com/@beautieshopvella?xmt=AQF0zHNrv2YdoCmolABWd5JZB7EQbzCLyYByCyzn5RIWN3E" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-all duration-300 transform hover:scale-110" aria-label="Threads">
-                                <ThreadsIcon />
-                            </a>
-                            <a href="https://www.instagram.com/beautieshopvella" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-all duration-300 transform hover:scale-110" aria-label="Instagram">
-                                <InstagramIcon />
-                            </a>
-                            <a href="https://www.facebook.com/vellaperfumeria" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-all duration-300 transform hover:scale-110" aria-label="Facebook">
-                                <FacebookIcon />
-                            </a>
-                             <a href="https://wa.me/661202616" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-all duration-300 transform hover:scale-110" aria-label="WhatsApp">
-                                <WhatsAppIcon />
-                            </a>
+                        <div className="flex justify-center md:justify-start space-x-4 text-gray-400">
+                           <span className="cursor-pointer hover:text-white transition-all duration-300 transform hover:scale-110" aria-label="Threads"><ThreadsIcon /></span>
+                           <span className="cursor-pointer hover:text-white transition-all duration-300 transform hover:scale-110" aria-label="Instagram"><InstagramIcon /></span>
+                           <span className="cursor-pointer hover:text-white transition-all duration-300 transform hover:scale-110" aria-label="Facebook"><FacebookIcon /></span>
+                           <span className="cursor-pointer hover:text-white transition-all duration-300 transform hover:scale-110" aria-label="WhatsApp"><WhatsAppIcon /></span>
                         </div>
                     </div>
                 </div>
