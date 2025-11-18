@@ -1,151 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="es-ES">
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Explora un mundo de fragancias exquisitas y encuentra el aroma perfecto que cuenta tu historia. Vellaperfumeria - Proveedor de cosmética y wellness." />
-    <meta name="referrerpolicy" content="no-referrer" />
-    <title>Shop – Vellaperfumeria</title>
+    <title>Vellaperfumeria - Tu esencia, tu belleza</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Raleway:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <script src="https://js.stripe.com/v3/"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              'brand-purple': '#F4D9FF',
-              'brand-purple-dark': '#E9D5FF',
-              'brand-bg-subtle': '#F9F9F9',
-              'brand-primary': '#222020',
-            },
-            fontFamily: {
-              'sans': ['Inter', 'sans-serif'],
-              'heading': ['Raleway', 'sans-serif'],
-            }
-          }
-        }
-      }
-    </script>
-    <style>
-      :root {
-        --color-background: #FFFFFF;
-        --color-text: #515151;
-        --color-primary: #222020; /* Black for primary text */
-        --color-primary-dark: #333333;
-        --color-secondary: #F4D9FF; /* Very soft pink/lilac from user image */
-        --color-accent: #222020;
-        --font-body: 'Inter', sans-serif;
-        --font-heading: 'Raleway', 'sans-serif';
-      }
-
-      body {
-        font-family: var(--font-body);
-        color: var(--color-text);
-        background-color: var(--color-background);
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-      h1, h2, h3, h4, h5, h6 {
-        font-family: var(--font-heading);
-        font-weight: 700;
-        color: var(--color-accent);
-      }
-      
-      .btn-primary {
-        background-color: var(--color-secondary);
-        color: var(--color-primary);
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      }
-      .btn-primary:hover {
-        background-color: #E9D5FF; /* Darker shade of soft lilac */
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      }
-
-      .btn-secondary {
-        background-color: transparent;
-        color: var(--color-accent);
-        border: 2px solid var(--color-accent);
-        font-weight: 600;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        transition: all 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      }
-      .btn-secondary:hover {
-        background-color: var(--color-accent);
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      }
-      
-      @keyframes pulse-cart {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-      }
-      .pulse-cart {
-        animation: pulse-cart 0.5s ease-in-out;
-      }
-
-      @keyframes pop {
-        0% { transform: scale(1) rotate(0deg); }
-        50% { transform: scale(1.4) rotate(10deg); }
-        100% { transform: scale(1) rotate(0deg); }
-      }
-      .animate-pop {
-          animation: pop 0.3s ease-out;
-      }
-
-      .hover-underline-effect {
-        display: inline-block;
-        position: relative;
-        text-decoration: none;
-      }
-      .hover-underline-effect::after {
-        content: '';
-        position: absolute;
-        width: 100%;
-        transform: scaleX(0);
-        height: 1.5px;
-        bottom: -3px;
-        left: 0;
-        background-color: var(--color-primary);
-        transform-origin: bottom right;
-        transition: transform 0.3s ease-out;
-      }
-      .hover-underline-effect:hover::after {
-        transform: scaleX(1);
-        transform-origin: bottom left;
-      }
-      .hover-underline-effect-white::after {
-        background-color: white;
-      }
-      .logo-inverted {
-        filter: invert(1);
-      }
-    </style>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
     "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
     "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0"
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
   }
 }
 </script>
 </head>
-  <body>
+<body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
-  </body>
+</body>
 </html>

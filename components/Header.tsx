@@ -92,15 +92,15 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-30">
-            <div className="bg-brand-purple text-brand-primary py-2 text-sm font-medium">
+            <div className="bg-brand-purple text-black py-2 text-sm font-medium">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <div className="flex items-center space-x-3 text-brand-primary">
-                        <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Threads"><ThreadsIcon /></span>
-                        <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Instagram"><InstagramIcon /></span>
-                        <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Facebook"><FacebookIcon /></span>
-                        <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="WhatsApp"><WhatsAppIcon /></span>
+                    <div className="flex items-center space-x-3">
+                        <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Threads"><ThreadsIcon /></span>
+                        <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Instagram"><InstagramIcon /></span>
+                        <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Facebook"><FacebookIcon /></span>
+                        <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="WhatsApp"><WhatsAppIcon /></span>
                     </div>
-                    <div className="hidden md:block text-center">
+                    <div className="hidden md:block text-center text-black">
                         <span>
                             <span className="font-bold">BLACK FRIDAY</span> | Envío GRATIS en pedidos +35€
                         </span>

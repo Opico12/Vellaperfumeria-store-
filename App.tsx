@@ -1,278 +1,216 @@
-
-
-import React, { useState, useMemo, useEffect } from 'react';
-import ProductList from './components/ProductList';
-import ProductDetailPage from './components/ProductDetailPage';
-import CartSidebar from './components/CartSidebar';
+import React, { useState, useEffect, useCallback } from 'react';
+// Types
+import type { View, Product, CartItem } from './components/types';
 import type { Currency } from './components/currency';
-import type { Product, CartItem, View } from './components/types';
-import OfertasPage from './components/OfertasPage';
-import AsistenteIAPage from './components/AsistenteIAPage';
+import { blogPosts } from './components/blogData';
+// Components
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ProductList from './components/ProductList';
+import ShopPage from './components/ShopPage';
+import ProductDetailPage from './components/ProductDetailPage';
+import CartSidebar from './components/CartSidebar';
+import OfertasPage from './components/OfertasPage';
+import AsistenteIAPage from './components/AsistenteIAPage';
+import CatalogPage from './components/CatalogPage';
 import BlogPage from './components/BlogPage';
 import BlogPostPage from './components/BlogPostPage';
-import { blogPosts, type BlogPost } from './components/blogData';
-import ShopPage from './components/ShopPage';
-import Breadcrumbs from './components/Breadcrumbs';
-import type { BreadcrumbItem } from './components/Breadcrumbs';
-import CatalogPage from './components/CatalogPage';
 import QuickViewModal from './components/QuickViewModal';
-import BottomNavBar from './components/BottomNavBar';
+import Breadcrumbs, { type BreadcrumbItem } from './components/Breadcrumbs';
+
+type AppView = {
+    current: View;
+    payload?: any;
+};
 
 const App: React.FC = () => {
-    const [view, setView] = useState<View>('home');
-    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-    const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-    const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+    const [view, setView] = useState<AppView>({ current: 'home' });
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [isCartOpen, setIsCartOpen] = useState(false);
     const [currency, setCurrency] = useState<Currency>('EUR');
-    const [isCheckingOut, setIsCheckingOut] = useState(false);
-    const [checkoutError, setCheckoutError] = useState<string | null>(null);
-    const [initialCategory, setInitialCategory] = useState<string>('all');
-    
-    const handleNavigate = (newView: View, payload?: any) => {
-        if (view === 'productDetail' && newView !== 'productDetail') {
-            setSelectedProduct(null);
-        }
-        if (newView === 'products' && typeof payload === 'string') {
-            setInitialCategory(payload);
-        } else if (newView !== 'products') {
-            setInitialCategory('all');
-        }
+    const [isCartOpen, setIsCartOpen] = useState(false);
+    const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
-        setView(newView);
+    // Load cart from local storage on initial render
+    useEffect(() => {
+        try {
+            const storedCart = localStorage.getItem('vellaperfumeria_cart');
+            if (storedCart) {
+                setCartItems(JSON.parse(storedCart));
+            }
+        } catch (error) {
+            console.error("Failed to load cart from localStorage", error);
+        }
+    }, []);
+
+    // Save cart to local storage whenever it changes
+    useEffect(() => {
+        try {
+            localStorage.setItem('vellaperfumeria_cart', JSON.stringify(cartItems));
+        } catch (error) {
+            console.error("Failed to save cart to localStorage", error);
+        }
+    }, [cartItems]);
+    
+    // Scroll to top on view change
+    useEffect(() => {
         window.scrollTo(0, 0);
-    };
+    }, [view]);
+
+    const handleNavigate = useCallback((newView: View, payload?: any) => {
+        setView({ current: newView, payload });
+    }, []);
 
     const handleProductSelect = (product: Product) => {
-        setSelectedProduct(product);
-        setView('productDetail');
-        window.scrollTo(0, 0);
+        handleNavigate('productDetail', product);
     };
 
-    const handleSelectPost = (post: BlogPost) => {
-        setSelectedPost(post);
-        setView('blogPost');
-        window.scrollTo(0, 0);
-    };
-
-    const handleBackToBlog = () => {
-        setSelectedPost(null);
-        setView('blog');
-    };
-
-    const handleQuickAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
-        const variantString = selectedVariant ? Object.values(selectedVariant).join('-') : '';
-        const cartItemId = `${product.id}-${variantString}`;
-
-        setCartItems(prevItems => {
-            const existingItem = prevItems.find(item => item.id === cartItemId);
-            if (existingItem) {
-                return prevItems.map(item =>
-                    item.id === cartItemId
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            }
-            return [...prevItems, { id: cartItemId, product, quantity: 1, selectedVariant }];
-        });
-        
-        if (buttonElement) {
-            buttonElement.classList.add('pulse-cart');
-            setTimeout(() => {
-                 buttonElement.classList.remove('pulse-cart');
-            }, 500);
-        }
+    const showAddToCartConfirmation = (buttonElement: HTMLButtonElement | null) => {
+        if (!buttonElement) return;
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = '¡Añadido! ✔';
+        buttonElement.classList.add('bg-green-500', 'hover:bg-green-600');
+        setTimeout(() => {
+            buttonElement.innerHTML = originalText;
+            buttonElement.classList.remove('bg-green-500', 'hover:bg-green-600');
+        }, 2000);
     };
 
     const handleAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
-        handleQuickAddToCart(product, buttonElement, selectedVariant);
+        const cartItemId = selectedVariant 
+            ? `${product.id}-${Object.values(selectedVariant).join('-')}`
+            : `${product.id}`;
+            
+        const existingItem = cartItems.find(item => item.id === cartItemId);
+
+        if (existingItem) {
+            setCartItems(cartItems.map(item =>
+                item.id === cartItemId ? { ...item, quantity: item.quantity + 1 } : item
+            ));
+        } else {
+            setCartItems([...cartItems, { id: cartItemId, product, quantity: 1, selectedVariant }]);
+        }
+        
         setIsCartOpen(true);
+        if(buttonElement) showAddToCartConfirmation(buttonElement);
+    };
+    
+    const handleQuickAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
+        handleAddToCart(product, buttonElement, selectedVariant);
+        if (!isCartOpen) setIsCartOpen(true);
     };
 
     const handleUpdateQuantity = (cartItemId: string, newQuantity: number) => {
-        if (newQuantity < 1) {
+        if (newQuantity <= 0) {
             handleRemoveItem(cartItemId);
-            return;
-        }
-        setCartItems(prevItems =>
-            prevItems.map(item =>
+        } else {
+            setCartItems(cartItems.map(item =>
                 item.id === cartItemId ? { ...item, quantity: newQuantity } : item
-            )
-        );
+            ));
+        }
     };
 
     const handleRemoveItem = (cartItemId: string) => {
-        setCartItems(prevItems => prevItems.filter(item => item.id !== cartItemId));
+        setCartItems(cartItems.filter(item => item.id !== cartItemId));
     };
 
-    const handleCheckout = async () => {
-        if (isCheckingOut || cartItems.length === 0) return;
-
-        setIsCheckingOut(true);
-        setCheckoutError(null);
-        setIsCartOpen(false);
-
-        try {
-            const queryParts = cartItems.map(item => {
-                let selectedVariant = item.selectedVariant;
-
-                if (item.product.variants && !selectedVariant) {
-                    selectedVariant = {};
-                    const variantType = Object.keys(item.product.variants)[0];
-                    const firstOption = item.product.variants[variantType]?.[0];
-                    if (firstOption) {
-                        selectedVariant[variantType] = firstOption.value;
-                    }
-                }
-
-                if (item.product.variants && selectedVariant) {
-                    const variantType = Object.keys(item.product.variants)[0];
-                    const selectedValue = selectedVariant[variantType];
-                    const variantOption = item.product.variants[variantType]?.find(v => v.value === selectedValue);
-
-                    if (variantOption?.variationId) {
-                        const attributeSlug = `attribute_pa_${variantType.toLowerCase()}`;
-                        return `add-to-cart=${item.product.id}&variation_id=${variantOption.variationId}&${attributeSlug}=${encodeURIComponent(selectedValue)}&quantity=${item.quantity}`;
-                    }
-                }
-                
-                return `add-to-cart=${item.product.id}&quantity=${item.quantity}`;
-            });
-
-            // Clear the cart on the destination site and then add products. This prevents stale items from previous sessions.
-            const checkoutUrl = `https://vellaperfumeria.com/cart/?clear-cart=true&${queryParts.join('&')}`;
-            window.top.location.href = checkoutUrl;
-
-        } catch (error) {
-            console.error('Checkout URL construction failed:', error);
-            setCheckoutError('No se pudo preparar el enlace de pago. Por favor, inténtalo de nuevo.');
-            setIsCartOpen(true);
-            setIsCheckingOut(false);
-        }
+    const handleCheckout = () => {
+        console.log("Redirecting to checkout page...");
+        // This is the fix requested by the user.
+        window.location.href = 'https://vellaperfumeria.com/checkout/';
     };
 
-    const cartCount = useMemo(() => {
-        return cartItems.reduce((total, item) => total + item.quantity, 0);
-    }, [cartItems]);
-    
-    const categoriesMap: Record<string, string> = {
-        all: 'Tienda',
-        skincare: 'Cuidado Facial',
-        makeup: 'Maquillaje',
-        perfume: 'Fragancias',
-        wellness: 'Wellness',
+    const handleSelectPost = (post: any) => {
+        handleNavigate('blogPost', post);
     };
 
-    const getBreadcrumbs = (): BreadcrumbItem[] => {
-        const homeCrumb: BreadcrumbItem = { label: 'Inicio', onClick: () => handleNavigate('home') };
-        
-        switch (view) {
+    const renderContent = () => {
+        switch (view.current) {
             case 'home':
-                return [{ label: 'Inicio' }];
+                return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} currency={currency} onQuickView={setQuickViewProduct} />;
             case 'products':
-                const categoryName = categoriesMap[initialCategory] || 'Tienda';
-                 if (initialCategory === 'all') {
-                     return [homeCrumb, { label: 'Tienda' }];
-                 }
-                return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products', 'all') }, { label: categoryName }];
+                return <ShopPage initialCategory={view.payload || 'all'} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'productDetail':
-                if (selectedProduct) {
-                     return [
-                        homeCrumb, 
-                        { label: 'Tienda', onClick: () => handleNavigate('products', 'all') },
-                        { label: selectedProduct.name }
-                    ];
-                }
-                return [homeCrumb, { label: 'Tienda', onClick: () => handleNavigate('products', 'all') }];
-            case 'ofertas':
-                return [homeCrumb, { label: 'Ideas para Regalar' }];
-            case 'ia':
-                return [homeCrumb, { label: 'Asistente IA' }];
-             case 'catalog':
-                return [homeCrumb, { label: 'Catálogo' }];
-            case 'about':
-                return [homeCrumb, { label: 'Sobre Nosotros' }];
-            case 'contact':
-                return [homeCrumb, { label: 'Contacto' }];
-            case 'blog':
-                return [homeCrumb, { label: 'Blog' }];
-            case 'blogPost':
-                if (selectedPost) {
-                    return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }, { label: selectedPost.title }];
-                }
-                return [homeCrumb, { label: 'Blog', onClick: () => handleNavigate('blog') }];
-            default:
-                return [homeCrumb];
-        }
-    };
-
-    const renderView = () => {
-        switch (view) {
-            case 'products':
-                return <ShopPage 
-                            initialCategory={initialCategory} 
-                            currency={currency} 
-                            onAddToCart={handleAddToCart} 
-                            onQuickAddToCart={handleQuickAddToCart} 
-                            onProductSelect={handleProductSelect} 
-                            onQuickView={setQuickViewProduct} 
-                        />;
-            case 'productDetail':
-                return selectedProduct ? (
-                    <ProductDetailPage
-                        product={selectedProduct}
-                        currency={currency}
-                        onAddToCart={handleAddToCart}
-                        onQuickAddToCart={handleQuickAddToCart}
-                        onProductSelect={handleProductSelect}
-                        onQuickView={setQuickViewProduct}
-                    />
-                ) : <div className="text-center p-8"> <p>Producto no encontrado</p></div>;
+                return <ProductDetailPage product={view.payload} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ofertas':
                 return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ia':
                 return <AsistenteIAPage />;
             case 'catalog':
-                return <CatalogPage />;
-             case 'about':
-                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos Vellaperfumeria, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
-            case 'contact':
-                return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Contacto</h1><p className="mt-4 text-gray-800">¿Preguntas? Estamos aquí para ayudarte. Contáctanos por WhatsApp al 661 20 26 16 o visita nuestras redes sociales.</p></div>;
+                return <CatalogPage onAddToCart={handleAddToCart} currency={currency} />;
             case 'blog':
-                return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
+                 return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
-                 return selectedPost ? <BlogPostPage post={selectedPost} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={handleBackToBlog} /> : <div className="text-center p-8"><p>Artículo no encontrado</p></div>;
-            case 'home':
+                 return <BlogPostPage post={view.payload} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={() => handleNavigate('blog')} />;
             default:
-                return <ProductList
-                    onNavigate={handleNavigate}
-                    onProductSelect={handleProductSelect}
-                    onAddToCart={handleAddToCart}
-                    onQuickAddToCart={handleQuickAddToCart}
-                    currency={currency}
-                    onQuickView={setQuickViewProduct}
-                />;
+                return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} currency={currency} onQuickView={setQuickViewProduct} />;
         }
     };
+    
+    const buildBreadcrumbs = (): BreadcrumbItem[] => {
+        const homeCrumb: BreadcrumbItem = { label: 'Inicio', onClick: () => handleNavigate('home') };
+        const crumbs = [homeCrumb];
+
+        switch(view.current) {
+            case 'products':
+                crumbs.push({ label: 'Tienda' });
+                break;
+            case 'productDetail':
+                {
+                    const product = view.payload as Product;
+                    const categoryName = categories.find(c => c.key === product.category)?.name || product.category;
+                    crumbs.push({ label: 'Tienda', onClick: () => handleNavigate('products', 'all') });
+                    crumbs.push({ label: categoryName, onClick: () => handleNavigate('products', product.category) });
+                    crumbs.push({ label: product.name });
+                }
+                break;
+            case 'ofertas':
+                crumbs.push({ label: 'Ideas Regalo' });
+                break;
+             case 'ia':
+                crumbs.push({ label: 'Asistente IA' });
+                break;
+            case 'catalog':
+                crumbs.push({ label: 'Catálogo' });
+                break;
+            case 'blog':
+                crumbs.push({ label: 'Blog' });
+                break;
+            case 'blogPost':
+                crumbs.push({ label: 'Blog', onClick: () => handleNavigate('blog') });
+                crumbs.push({ label: view.payload.title });
+                break;
+        }
+
+        return crumbs;
+    };
+
+    const categories = [
+        { key: 'all', name: 'Todos los productos' },
+        { key: 'skincare', name: 'Cuidado Facial' },
+        { key: 'makeup', name: 'Maquillaje' },
+        { key: 'perfume', name: 'Fragancias' },
+        { key: 'wellness', name: 'Wellness' },
+        { key: 'hair', name: 'Cuidado del Cabello' },
+        { key: 'personal-care', name: 'Cuidado Personal' },
+        { key: 'men', name: 'Hombre' },
+        { key: 'accessories', name: 'Accesorios' },
+    ];
 
     return (
-        <div className="bg-[var(--color-background)] min-h-screen flex flex-col pb-16 md:pb-0">
+        <div className="flex flex-col min-h-screen bg-gray-50 font-sans">
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
                 onCurrencyChange={setCurrency}
-                cartCount={cartCount}
+                cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                 onCartClick={() => setIsCartOpen(true)}
             />
-            <main className="pt-8 flex-grow">
-                { view !== 'home' && <Breadcrumbs items={getBreadcrumbs()} /> }
-                {renderView()}
+             <main className="flex-grow py-8 mb-16 md:mb-0">
+                <Breadcrumbs items={buildBreadcrumbs()} />
+                {renderContent()}
             </main>
             <Footer onNavigate={handleNavigate} />
-            <BottomNavBar onNavigate={handleNavigate} currentView={view} currentCategory={initialCategory} />
+
             <CartSidebar
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
@@ -281,22 +219,84 @@ const App: React.FC = () => {
                 onUpdateQuantity={handleUpdateQuantity}
                 onRemoveItem={handleRemoveItem}
                 onCheckout={handleCheckout}
-                isCheckingOut={isCheckingOut}
-                checkoutError={checkoutError}
+                isCheckingOut={false}
+                checkoutError={null}
                 onNavigate={handleNavigate}
             />
+
             {quickViewProduct && (
-                 <QuickViewModal
+                <QuickViewModal
                     product={quickViewProduct}
                     currency={currency}
                     onClose={() => setQuickViewProduct(null)}
                     onAddToCart={handleAddToCart}
-                    onProductSelect={(product) => {
+                    onProductSelect={(p) => {
                         setQuickViewProduct(null);
-                        handleProductSelect(product);
+                        handleProductSelect(p);
                     }}
                 />
             )}
+            
+            <style>{`
+                :root {
+                    --color-primary: #3a3a3a;
+                    --color-secondary: #E0C3FC; 
+                    --color-accent: #d1a892;
+                }
+                .btn-primary {
+                    background-color: var(--color-primary);
+                    color: white;
+                    padding: 0.75rem 1.5rem;
+                    border-radius: 0.375rem;
+                    font-weight: 600;
+                    transition: background-color 0.2s;
+                }
+                .btn-primary:hover {
+                    background-color: #555;
+                }
+                 .bg-brand-primary { background-color: #3a3a3a; }
+                 .text-brand-primary { color: #3a3a3a; }
+                 
+                 /* Moradito Claro - Soft Lilac */
+                 .bg-brand-purple { background-color: #E0C3FC; } 
+                 .text-brand-purple { color: #E0C3FC; }
+                 
+                 .bg-brand-purple-dark { background-color: #d1a892; }
+                 .text-brand-purple-dark { color: #d1a892; }
+                 .border-brand-purple { border-color: #E0C3FC; }
+                 .border-brand-purple-dark { border-color: #d1a892; }
+                 .ring-brand-purple { ring-color: #E0C3FC; }
+                 .ring-brand-purple-dark { ring-color: #d1a892; }
+                 .hover-underline-effect {
+                    display: inline-block;
+                    position: relative;
+                 }
+                 .hover-underline-effect::after {
+                    content: '';
+                    position: absolute;
+                    width: 100%;
+                    transform: scaleX(0);
+                    height: 2px;
+                    bottom: -2px;
+                    left: 0;
+                    background-color: var(--color-primary);
+                    transform-origin: bottom right;
+                    transition: transform 0.25s ease-out;
+                 }
+                 .hover-underline-effect:hover::after {
+                    transform: scaleX(1);
+                    transform-origin: bottom left;
+                 }
+                 .logo-inverted { filter: brightness(0) invert(1); }
+                 @keyframes pop {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.3); }
+                    100% { transform: scale(1); }
+                 }
+                 .animate-pop {
+                    animation: pop 0.3s ease-out;
+                 }
+            `}</style>
         </div>
     );
 };
