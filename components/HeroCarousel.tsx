@@ -8,25 +8,25 @@ interface HeroCarouselProps {
 
 const slides = [
     {
-        imageUrl: 'https://images.unsplash.com/photo-1557175344-7e074816f225?q=80&w=1770&auto=format&fit=crop',
-        title: 'Descubre tu Esencia Única',
-        subtitle: 'Explora nuestra colección de fragancias exclusivas.',
-        buttonText: 'Ver Perfumes',
+        imageUrl: 'https://media-cdn.oriflame.com/digitalPromotionsMedia/images/banner-media/ES/20899847/20866148.jpg',
+        title: 'Un aroma muy femenino para vivir la noche',
+        subtitle: '¡NUEVO! EAU DE PARFUM DIVINE DARK VELVET',
+        buttonText: 'VER AHORA',
         view: 'fragrance' as View,
     },
     {
-        imageUrl: 'https://images.unsplash.com/photo-1590439471364-192aa70c0b23?q=80&w=1770&auto=format&fit=crop',
-        title: 'El Arte del Cuidado Facial',
-        subtitle: 'Rutinas personalizadas para una piel radiante.',
-        buttonText: 'Ver Cuidado Facial',
-        view: 'skincare' as View,
+        imageUrl: 'https://media-cdn.oriflame.com/digitalPromotionsMedia/images/banner-media/ES/20900001/20866153.jpg',
+        title: 'La mejor belleza para lucirte',
+        subtitle: '¡Favoritos con hasta un 50% dto!',
+        buttonText: 'VER LOS PRODUCTOS',
+        view: 'ofertas' as View,
     },
     {
-        imageUrl: 'https://images.unsplash.com/photo-1620469259442-421f1a2f5e23?q=80&w=1887&auto=format&fit=crop',
-        title: 'Colores que Inspiran',
-        subtitle: 'Maquillaje para cada ocasión y estilo.',
-        buttonText: 'Ver Maquillaje',
-        view: 'makeup' as View,
+        imageUrl: 'https://media-cdn.oriflame.com/digitalPromotionsMedia/images/banner-media/ES/20899692/21035391.jpg',
+        title: '12 días. 12 sorpresas. La emoción de la Navidad',
+        subtitle: 'Calendario de Adviento 2025',
+        buttonText: 'Comprar',
+        view: 'ofertas' as View,
     },
 ];
 
