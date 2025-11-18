@@ -6,7 +6,7 @@ interface InteractiveCatalogSectionProps {
 }
 
 const InteractiveCatalogSection: React.FC<InteractiveCatalogSectionProps> = ({ onNavigate }) => {
-    const catalogCoverUrl = 'https://es.oriflame.com/--/media/images/brand-pages/the-one/2024/c10/the-one-brand-page-banner-d.ashx';
+    const catalogCoverUrl = 'https://cdn.ipaper.io/iPaper/Papers/0ae94f9f-dbf1-41ce-8890-85ef3c56310d/Pages/1/Zoom.jpg';
 
     return (
         <section>

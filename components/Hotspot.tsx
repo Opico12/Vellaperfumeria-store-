@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { Product } from './types';
-import type { Currency } from './currency';
-import { formatCurrency } from './currency';
 import { allProducts } from './products';
 import type { HotspotData } from './catalogData';
+import { formatCurrency, type Currency } from './currency';
 
-const CartPlusIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+const BasketIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+    </svg>
+);
+
+const CheckIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
     </svg>
 );
 
@@ -19,92 +23,69 @@ interface HotspotProps {
 }
 
 const Hotspot: React.FC<HotspotProps> = ({ data, currency, onAddToCart }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isAdded, setIsAdded] = useState(false);
     const product = allProducts.find(p => p.id === data.productId);
     const btnRef = useRef<HTMLButtonElement>(null);
-    const popoverRef = useRef<HTMLDivElement>(null);
+    const timeoutRef = useRef<number | null>(null);
 
-    // Close popover when clicking outside
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (popoverRef.current && !popoverRef.current.contains(event.target as Node) && btnRef.current && !btnRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
-
+        // Cleanup timeout on component unmount
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
         };
-    }, [isOpen]);
-
+    }, []);
 
     if (!product) return null;
 
-    const popoverClasses = () => {
-        let classes = 'absolute z-20 transform ';
-        // Position popover based on hotspot location to keep it in view
-        classes += data.y > 60 ? 'bottom-full mb-3 ' : 'top-full mt-3 ';
-        classes += data.x > 50 ? 'right-0 ' : 'left-0 ';
-        return classes;
-    };
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        if (isAdded) return; // Prevent multiple clicks while animation is running
 
+        onAddToCart(product, btnRef.current, null);
+        setIsAdded(true);
+        
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+        timeoutRef.current = window.setTimeout(() => {
+            setIsAdded(false);
+        }, 1500);
+    };
 
     return (
         <div
-            className="absolute z-10"
-            style={{ left: `${data.x}%`, top: `${data.y}%`, transform: 'translate(-50%, -50%)' }}
+            className="absolute z-10 group"
+            style={{ left: `${data.x}%`, top: `${data.y}%` }}
         >
+            {/* Tooltip with product name and price */}
+            <div className="absolute bottom-full mb-3 w-max max-w-xs left-1/2 -translate-x-1/2 bg-black bg-opacity-80 text-white text-center rounded-md px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20 whitespace-nowrap shadow-lg">
+                <p className="font-bold text-sm">{product.name}</p>
+                <p className="text-xs">{formatCurrency(product.price, currency)}</p>
+            </div>
+
             <button
                 ref={btnRef}
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transform transition-transform hover:scale-110"
-                aria-label={`Ver producto ${product.name}`}
+                onClick={handleClick}
+                style={{ transform: 'translate(-50%, -50%)' }}
+                className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 ease-in-out transform group-hover:scale-110 ${isAdded ? 'bg-green-500 scale-110' : 'bg-brand-primary bg-opacity-70'}`}
+                aria-label={`Añadir ${product.name} al carrito`}
             >
-                <span className="relative flex h-5 w-5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-purple opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-5 w-5 bg-brand-purple-dark"></span>
-                </span>
-            </button>
+                {isAdded ? (
+                    <CheckIcon />
+                ) : (
+                    <>
+                        {/* Pulsing ring */}
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-purple opacity-75 group-hover:hidden"></span>
+                        
+                        {/* The static dot */}
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-white group-hover:opacity-0 transition-opacity duration-300"></span>
 
-            {isOpen && (
-                <div className={popoverClasses()} ref={popoverRef}>
-                     <div className="bg-white rounded-lg shadow-2xl w-64 overflow-hidden border animate-fade-in-up">
-                        <img src={product.imageUrl} alt={product.name} className="w-full h-40 object-contain p-2" />
-                        <div className="p-3">
-                            <h4 className="font-bold text-sm truncate">{product.name}</h4>
-                            <p className="text-gray-600 text-xs mb-2">{product.brand}</p>
-                            <p className="font-bold text-lg mb-3">{formatCurrency(product.price, currency)}</p>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onAddToCart(product, e.currentTarget, null);
-                                    setIsOpen(false);
-                                }}
-                                className="w-full bg-brand-purple text-brand-primary font-semibold py-2 px-3 rounded-md hover:bg-brand-purple-dark transition-colors text-sm flex items-center justify-center"
-                            >
-                                <CartPlusIcon /> Añadir
-                            </button>
+                        {/* Basket Icon - visible on hover */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                             <BasketIcon />
                         </div>
-                    </div>
-                </div>
-            )}
-             <style>
-                {`
-                @keyframes fade-in-up {
-                    from { opacity: 0; transform: translateY(10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-fade-in-up {
-                    animation: fade-in-up 0.2s ease-out forwards;
-                }
-                `}
-            </style>
+                    </>
+                )}
+            </button>
         </div>
     );
 };

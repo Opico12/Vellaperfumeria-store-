@@ -1,5 +1,4 @@
 
-
 import React, { useState, useMemo, useEffect } from 'react';
 import ProductList from './components/ProductList';
 import ProductDetailPage from './components/ProductDetailPage';
@@ -198,7 +197,7 @@ const App: React.FC = () => {
             case 'ia':
                 return <AsistenteIAPage />;
             case 'catalog':
-                return <CatalogPage />;
+                return <CatalogPage currency={currency} onAddToCart={handleAddToCart} />;
              case 'about':
                 return <div className="text-center p-8 container mx-auto"><h1 className="text-3xl font-bold text-gray-900">Sobre Nosotros</h1><p className="mt-4 max-w-2xl mx-auto text-gray-800">Somos Vellaperfumeria, tu tienda de confianza para cosméticos y bienestar. Descubre fragancias que definen tu esencia y productos que cuidan de ti. Calidad y exclusividad en cada artículo.</p></div>;
             case 'contact':
