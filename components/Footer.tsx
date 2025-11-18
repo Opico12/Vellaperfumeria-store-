@@ -1,6 +1,4 @@
 
-
-
 import React from 'react';
 import type { View } from './types';
 
@@ -82,13 +80,13 @@ const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> =
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     return (
-        <footer className="bg-brand-primary text-white border-t border-gray-800">
+        <footer className="bg-black border-t border-gray-800 text-white font-sans">
             <div className="container mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center md:text-left">
-                    <div className="sm:col-span-2 lg:col-span-1">
+                    <div className="sm:col-span-2 lg:col-span-1 flex flex-col items-center text-center md:items-center md:text-center">
                          <form action="https://vellaperfumeria.com" method="GET" target="_top">
                             <button type="submit" className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer">
-                                <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-36 w-auto mx-auto md:mx-0 logo-inverted" />
+                                <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-36 w-auto mx-auto" />
                             </button>
                         </form>
                         <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>
@@ -127,7 +125,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                             <FooterLink onClick={() => onNavigate('about')}>Sobre Nosotros</FooterLink>
                             <FooterLink onClick={() => onNavigate('contact')}>Contacto</FooterLink>
                             <FooterLink onClick={() => onNavigate('blog')}>Blog</FooterLink>
-                            <li className="text-gray-400">Política de Privacidad</li>
+                            <li className="text-gray-500">Política de Privacidad</li>
                         </ul>
                     </div>
 
@@ -148,7 +146,11 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                         </div>
                     </div>
                 </div>
-
+            </div>
+            <div className="bg-black border-t border-gray-800 py-6 text-center text-sm text-gray-500">
+                <div className="container mx-auto px-4">
+                    <p>&copy; {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
+                </div>
             </div>
         </footer>
     );
