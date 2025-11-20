@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { View } from './types';
 
 const ThreadsIcon = () => (
@@ -79,13 +79,26 @@ const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> =
 );
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+    const [vParam, setVParam] = useState<string | null>(null);
+
+    useEffect(() => {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            setVParam(urlParams.get('v'));
+        } catch (e) {
+            console.error("Error extracting params", e);
+        }
+    }, []);
+
+    const homeUrl = `https://vellaperfumeria.com${vParam ? `?v=${vParam}` : ''}`;
+
     return (
         <footer className="bg-black border-t border-gray-800 text-white font-sans">
             <div className="container mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center md:text-left">
                     <div className="sm:col-span-2 lg:col-span-1 flex flex-col items-center text-center md:items-center md:text-center">
                          <a 
-                             href="https://vellaperfumeria.com" 
+                             href={homeUrl}
                              target="_top"
                              className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer"
                          >
@@ -102,7 +115,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                         <ul className="space-y-2 text-sm">
                            <li>
                                 <a
-                                    href="https://vellaperfumeria.com" 
+                                    href={homeUrl}
                                     target="_top"
                                     className="text-gray-400 hover:text-white transition-colors hover:underline"
                                 >

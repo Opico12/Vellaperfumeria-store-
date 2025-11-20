@@ -32,6 +32,17 @@ const App: React.FC = () => {
     const [currency, setCurrency] = useState<Currency>('EUR');
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+    const [vParam, setVParam] = useState<string | null>(null);
+
+    // Extract 'v' parameter to maintain session
+    useEffect(() => {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            setVParam(urlParams.get('v'));
+        } catch (e) {
+            console.error("Error extracting params", e);
+        }
+    }, []);
 
     // Load cart from local storage on initial render
     useEffect(() => {
@@ -143,10 +154,12 @@ const App: React.FC = () => {
     };
     
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
-        // Always start with Inicio link to main site
+        // Construct Home URL preserving the 'v' parameter if it exists
+        const homeUrl = `https://vellaperfumeria.com${vParam ? `?v=${vParam}` : ''}`;
+        
         const homeCrumb: BreadcrumbItem = { 
             label: 'Inicio', 
-            href: 'https://vellaperfumeria.com',
+            href: homeUrl,
             target: '_top'
         };
         const crumbs = [homeCrumb];

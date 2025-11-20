@@ -67,7 +67,19 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange, cartCount, onCartClick }) => {
     const [cartPulse, setCartPulse] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [vParam, setVParam] = useState<string | null>(null);
     const navRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            setVParam(urlParams.get('v'));
+        } catch (e) {
+            console.error("Error extracting params", e);
+        }
+    }, []);
+
+    const homeUrl = `https://vellaperfumeria.com${vParam ? `?v=${vParam}` : ''}`;
 
     useEffect(() => {
         if (cartCount > 0) {
@@ -117,7 +129,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 <div className="flex justify-center py-4 relative">
                      {/* Standard anchor tag with target=_top for reliable redirection */}
                     <a 
-                        href="https://vellaperfumeria.com" 
+                        href={homeUrl}
                         target="_top"
                         className="hover:opacity-80 transition-opacity inline-block"
                         aria-label="Volver a Vellaperfumeria.com"
@@ -144,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     </div>
 
                     <nav className="hidden md:flex flex-auto justify-center items-center space-x-6">
-                        <NavLink href="https://vellaperfumeria.com">Inicio</NavLink>
+                        <NavLink href={homeUrl}>Inicio</NavLink>
                         <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
                         <NavLink onClick={() => onNavigate('products', 'skincare')}>Cuidado Facial</NavLink>
                         <NavLink onClick={() => onNavigate('products', 'makeup')}>Maquillaje</NavLink>
@@ -177,7 +189,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             {isMobileMenuOpen && (
                  <div ref={navRef} className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t z-20">
                      <nav className="flex flex-col space-y-1 p-4">
-                         <NavLink href="https://vellaperfumeria.com" className="py-2">Inicio</NavLink>
+                         <NavLink href={homeUrl} className="py-2">Inicio</NavLink>
                          <NavLink onClick={() => handleMobileNav('products', 'all')} className="py-2">Tienda</NavLink>
                          <NavLink onClick={() => handleMobileNav('products', 'skincare')} className="py-2">Cuidado Facial</NavLink>
                          <NavLink onClick={() => handleMobileNav('products', 'makeup')} className="py-2">Maquillaje</NavLink>

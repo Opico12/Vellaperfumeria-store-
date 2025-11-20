@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { View } from './types';
 
 // Icons
@@ -48,9 +48,21 @@ interface NavItem {
 }
 
 const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) => {
+    const [vParam, setVParam] = useState<string | null>(null);
+
+    useEffect(() => {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            setVParam(urlParams.get('v'));
+        } catch (e) {
+            console.error("Error extracting params", e);
+        }
+    }, []);
+
+    const homeUrl = `https://vellaperfumeria.com${vParam ? `?v=${vParam}` : ''}`;
     
     const navItems: NavItem[] = [
-        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined, isExternal: true, href: 'https://vellaperfumeria.com' },
+        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined, isExternal: true, href: homeUrl },
         { view: 'products', label: 'Tienda', icon: ShopIcon, payload: 'all' },
         { view: 'ofertas', label: 'Ofertas', icon: GiftIcon, payload: undefined },
         { view: 'catalog', label: 'Catálogo', icon: CatalogIcon, payload: undefined },
