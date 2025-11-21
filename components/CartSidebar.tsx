@@ -379,7 +379,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     target="_self"
                                     className="w-full text-center bg-[#f78df685] hover:bg-white text-black hover:text-black border-2 border-[#f78df6] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-purple-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline"
                                 >
-                                     FINALIZAR COMPRA
+                                     FINALIZAR COMPRA EN WEB
                                 </a>
                                 
                                 <div className="flex justify-center items-center gap-3 mt-1 pb-1">

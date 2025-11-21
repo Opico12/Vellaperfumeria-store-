@@ -132,21 +132,21 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Main Header Content - Restored padding for better spacing */}
-                <div className="flex flex-col md:flex-row items-center justify-between py-4 relative">
+                {/* Main Header Content */}
+                <div className="flex flex-col md:flex-row items-center justify-between py-3 relative">
                     <div className="absolute left-0 top-1/2 transform -translate-y-1/2 md:hidden z-20">
                         <button onClick={() => setIsMobileMenuOpen(true)} className="text-black p-2">
                             <MenuIcon />
                         </button>
                     </div>
 
-                    {/* Logo - Adjusted size to be smaller and elegant */}
+                    {/* Logo - Reverted to original cleaner logo and smaller size */}
                     <div className="flex-grow text-center md:text-left flex justify-center md:justify-start w-full md:w-auto">
                         <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300 z-10">
                             <img 
-                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                                src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" 
                                 alt="Vellaperfumeria Logo" 
-                                className="h-16 md:h-24 w-auto object-contain" 
+                                className="h-12 md:h-16 w-auto object-contain" 
                             />
                         </a>
                     </div>
