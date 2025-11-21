@@ -43,13 +43,13 @@ const CartIcon = () => (
 const NavLink: React.FC<{ onClick?: () => void, href?: string, children: React.ReactNode, className?: string }> = ({ onClick, href, children, className }) => {
     if (href) {
         return (
-            <a href={href} target="_self" className={`text-base font-medium text-black hover:text-purple-600 transition-colors duration-200 ${className}`}>
+            <a href={href} target="_self" className={`text-base font-medium text-black hover:text-[#f78df6] transition-colors duration-200 ${className}`}>
                 <span className="hover-underline-effect">{children}</span>
             </a>
         );
     }
     return (
-        <button onClick={onClick} className={`text-base font-medium text-black hover:text-purple-600 transition-colors duration-200 ${className}`}>
+        <button onClick={onClick} className={`text-base font-medium text-black hover:text-[#f78df6] transition-colors duration-200 ${className}`}>
             <span className="hover-underline-effect">{children}</span>
         </button>
     );
@@ -112,115 +112,84 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-30">
-            {/* Purplish-Lilac - #E9D5FF */}
-            <div className="bg-[#E9D5FF] text-black py-2 text-sm font-medium">
+            {/* Top Bar: Transparent Pink Background #f78df685, Black Text, Black Icons */}
+            <div className="bg-[#f78df685] text-black py-2 text-xs md:text-sm font-medium border-b border-[#f78df6]/20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                    <div className="flex items-center space-x-3">
+                    <div className="hidden md:flex items-center space-x-3">
+                        {/* Icons are black for contrast on transparent pink */}
                         <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Threads"><ThreadsIcon /></span>
                         <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Instagram"><InstagramIcon /></span>
                         <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="Facebook"><FacebookIcon /></span>
                         <span className="cursor-pointer hover:opacity-75 transition-opacity text-black" aria-label="WhatsApp"><WhatsAppIcon /></span>
                     </div>
-                    <div className="hidden md:block text-center text-black">
+                    <div className="block w-full text-center text-black">
                         <span>
-                            <span className="font-bold">BLACK FRIDAY</span> | Envío GRATIS en pedidos +35€
+                            <span className="font-bold text-black">BLACK FRIDAY</span> | Envío GRATIS en pedidos +35€
                         </span>
                     </div>
-                    <div className="flex items-center space-x-4">
+                    <div className="hidden md:flex items-center space-x-4">
                     </div>
                 </div>
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-center py-4 relative">
-                     {/* Standard anchor tag with target=_self for reliable internal redirection */}
-                    <a 
-                        href={homeUrl}
-                        target="_self"
-                        className="hover:opacity-80 transition-opacity inline-block"
-                        aria-label="Volver a Vellaperfumeria.com"
-                    >
-                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-32 md:h-44 w-auto" />
-                    </a>
-                </div>
-
-                <div className="flex justify-between items-center pb-4 border-t border-gray-100 pt-2">
-                    <div className="flex-1 hidden md:flex items-center space-x-4">
-                        <select
-                            value={currency}
-                            onChange={(e) => onCurrencyChange(e.target.value as Currency)}
-                            className="text-sm font-medium bg-transparent border-none focus:ring-0 cursor-pointer"
-                            aria-label="Seleccionar moneda"
-                        >
-                            <option value="EUR">EUR €</option>
-                            <option value="USD">USD $</option>
-                            <option value="GBP">GBP £</option>
-                        </select>
-                         <button onClick={() => onNavigate('contact')} className="text-sm font-medium text-gray-600 hover:text-black transition-colors">
-                            Conviértete en Brand Partner
+                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 md:hidden">
+                        <button onClick={() => setIsMobileMenuOpen(true)} className="text-black p-2">
+                            <MenuIcon />
                         </button>
                     </div>
 
-                    <nav className="hidden md:flex flex-auto justify-center items-center space-x-6">
-                        <NavLink href={homeUrl}>Inicio</NavLink>
-                        <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
-                        <NavLink onClick={() => onNavigate('products', 'skincare')}>Cuidado Facial</NavLink>
-                        <NavLink onClick={() => onNavigate('products', 'makeup')}>Maquillaje</NavLink>
-                        <NavLink onClick={() => onNavigate('products', 'hair')}>Cuidado Capilar</NavLink>
-                        <NavLink onClick={() => onNavigate('products', 'perfume')}>Fragancias</NavLink>
-                        <NavLink onClick={() => onNavigate('products', 'wellness')}>Wellness</NavLink>
-                        <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
-                        <NavLink onClick={() => onNavigate('catalog')}>Catálogo</NavLink>
-                        <NavLink onClick={() => onNavigate('ia')}>Asistente IA</NavLink>
-                    </nav>
+                    <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300">
+                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-16 w-auto md:h-20" />
+                    </a>
 
-                    <div className="flex-1 flex justify-end items-center space-x-4">
-                        <button onClick={onCartClick} className="relative text-black hover:text-gray-700 transition-colors" aria-label={`Ver carrito, ${cartCount} artículos`}>
+                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 flex items-center space-x-2 md:space-x-4">
+                        <button 
+                            className={`relative p-2 text-black hover:text-[#f78df6] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
+                            onClick={onCartClick}
+                        >
                             <CartIcon />
                             {cartCount > 0 && (
-                                <span key={cartCount} className={`absolute -top-2 -right-2 bg-purple-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center border border-white shadow-sm ${cartPulse ? 'animate-pop' : ''}`}>
+                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-[#f78df6] rounded-full">
                                     {cartCount}
                                 </span>
                             )}
                         </button>
-                        <div className="md:hidden">
-                            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} aria-label="Abrir menú">
-                                <MenuIcon />
-                            </button>
-                        </div>
                     </div>
                 </div>
-            </div>
 
+                <nav className="hidden md:flex justify-center space-x-8 py-4 border-t border-gray-100">
+                    <NavLink href={homeUrl}>Inicio</NavLink>
+                    <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
+                    <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
+                    <NavLink onClick={() => onNavigate('catalog')}>Catálogo</NavLink>
+                    <NavLink onClick={() => onNavigate('ia')}>Asistente IA</NavLink>
+                    <NavLink onClick={() => onNavigate('blog')}>Blog</NavLink>
+                </nav>
+            </div>
+            
+            {/* Mobile Menu Overlay */}
             {isMobileMenuOpen && (
-                 <div ref={navRef} className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg border-t z-20">
-                     <nav className="flex flex-col space-y-1 p-4">
-                         <NavLink href={homeUrl} className="py-2">Inicio</NavLink>
-                         <NavLink onClick={() => handleMobileNav('products', 'all')} className="py-2">Tienda</NavLink>
-                         <NavLink onClick={() => handleMobileNav('products', 'skincare')} className="py-2">Cuidado Facial</NavLink>
-                         <NavLink onClick={() => handleMobileNav('products', 'makeup')} className="py-2">Maquillaje</NavLink>
-                         <NavLink onClick={() => handleMobileNav('products', 'hair')} className="py-2">Cuidado Capilar</NavLink>
-                         <NavLink onClick={() => handleMobileNav('products', 'perfume')} className="py-2">Fragancias</NavLink>
-                         <NavLink onClick={() => handleMobileNav('products', 'wellness')} className="py-2">Wellness</NavLink>
-                         <NavLink onClick={() => handleMobileNav('ofertas')} className="py-2">Ideas Regalo</NavLink>
-                         <NavLink onClick={() => handleMobileNav('catalog')} className="py-2">Catálogo</NavLink>
-                         <NavLink onClick={() => handleMobileNav('ia')} className="py-2">Asistente IA</NavLink>
-                     </nav>
-                     <div className="p-4 border-t border-gray-100 flex flex-col space-y-4">
-                        <button onClick={() => { handleMobileNav('contact'); }} className="text-sm font-medium text-gray-600 hover:text-black transition-colors text-left">
-                            Conviértete en Brand Partner
-                        </button>
-                        <select
-                            value={currency}
-                            onChange={(e) => onCurrencyChange(e.target.value as Currency)}
-                            className="text-sm font-medium bg-transparent border-none focus:ring-0 w-full"
-                            aria-label="Seleccionar moneda"
-                        >
-                            <option value="EUR">EUR €</option>
-                            <option value="USD">USD $</option>
-                            <option value="GBP">GBP £</option>
-                        </select>
-                     </div>
+                <div className="fixed inset-0 z-50 md:hidden">
+                    <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
+                    <div ref={navRef} className="absolute top-0 left-0 w-4/5 max-w-xs h-full bg-white shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out">
+                        <div className="p-5 flex justify-between items-center border-b bg-[#FAF5FF]">
+                            <span className="font-bold text-lg text-[#f78df6]">Menú</span>
+                            <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-gray-500">
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <div className="flex-grow overflow-y-auto py-4">
+                             <a href={homeUrl} target="_self" className="block px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Inicio</a>
+                             <button onClick={() => handleMobileNav('products', 'all')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Tienda</button>
+                             <button onClick={() => handleMobileNav('ofertas')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Ideas Regalo</button>
+                             <button onClick={() => handleMobileNav('catalog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Catálogo</button>
+                             <button onClick={() => handleMobileNav('ia')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Asistente IA</button>
+                             <button onClick={() => handleMobileNav('blog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Blog</button>
+                             <button onClick={() => handleMobileNav('contact')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Ayuda / Contacto</button>
+                        </div>
+                    </div>
                 </div>
             )}
         </header>

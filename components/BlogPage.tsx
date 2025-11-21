@@ -99,7 +99,7 @@ const TimelineView: React.FC<{ posts: BlogPost[], onSelectPost: (post: BlogPost)
                                          <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80"></div>
                                          <div className="absolute bottom-4 left-4 text-white">
-                                             <span className="inline-block px-2 py-0.5 rounded bg-[#E9D5FF] text-black text-[10px] font-bold uppercase tracking-wider mb-1">{post.category}</span>
+                                             <span className="inline-block px-2 py-0.5 rounded bg-[#D8B4FE] text-black text-[10px] font-bold uppercase tracking-wider mb-1">{post.category}</span>
                                              <div className="text-xs font-medium opacity-90">{post.date}</div>
                                          </div>
                                     </div>

@@ -76,8 +76,6 @@ const App: React.FC = () => {
                  }
             }
             
-            // If no specific params, default to home (or keep current if handled elsewhere, but for init it's home)
-            // We check if we are ALREADY at home to avoid resetting state unnecessarily on popstate if logic matches
         } catch (e) {
             console.error("Error processing URL params", e);
         }
@@ -244,7 +242,6 @@ const App: React.FC = () => {
     ];
 
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
-        // Construct Home URL preserving the 'v' parameter if it exists using URLSearchParams
         const baseUrl = 'https://vellaperfumeria.com';
         const params = new URLSearchParams();
         if (vParam) params.append('v', vParam);
@@ -303,7 +300,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#FAF5FF]/50 font-sans text-gray-800">
+        <div className="flex flex-col min-h-screen bg-[#FAF5FF] font-sans text-gray-800">
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
@@ -311,7 +308,6 @@ const App: React.FC = () => {
                 cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
                 onCartClick={() => setIsCartOpen(true)}
             />
-             {/* Added padding-bottom (mb-20) to prevent content being hidden behind the bottom nav on mobile */}
              <main className="flex-grow py-8 mb-20 md:mb-0">
                 <Breadcrumbs items={buildBreadcrumbs()} />
                 {renderContent()}
@@ -348,45 +344,48 @@ const App: React.FC = () => {
             
             <style>{`
                 :root {
-                    /* Purplish-Lilac Palette */
-                    --color-primary: #9333EA; 
-                    --color-secondary: #FAF5FF; /* Pale Lavender background */
-                    --color-accent: #E9D5FF; /* Lilac */
-                    --color-custom-lilac: #E9D5FF; /* Main Lilac Theme Color */
+                    /* Primary color: Transparent Pink #f78df685 */
+                    --color-primary: #f78df685;
+                    /* Solid fallback: Pink #f78df6 */
+                    --color-primary-solid: #f78df6; 
+                    --color-secondary: #FAF5FF;
+                    --color-accent: #f78df6; 
                 }
                 /* Global Selection Color */
                 ::selection {
-                    background-color: #D8B4FE;
-                    color: black;
+                    background-color: #f78df6;
+                    color: white;
                 }
                 
                 .btn-primary {
-                    background-color: #E9D5FF; /* Lilac */
-                    color: black;
+                    background-color: var(--color-primary);
+                    color: black !important; /* Enforced black text for buttons */
                     padding: 0.75rem 1.5rem;
                     border-radius: 0.75rem;
                     font-weight: 600;
                     transition: all 0.2s;
+                    border: 2px solid var(--color-primary-solid);
                 }
                 .btn-primary:hover {
-                    background-color: #D8B4FE; /* Slightly darker lilac */
+                    background-color: white;
+                    color: black !important;
                     transform: translateY(-1px);
+                    border-color: var(--color-primary-solid);
                 }
-                 .bg-brand-primary { background-color: #9333EA; }
-                 .text-brand-primary { color: #9333EA; }
+                 .bg-brand-primary { background-color: var(--color-primary); }
+                 .text-brand-primary { color: black; }
                  
                  /* Brand Colors */
                  .bg-brand-purple { background-color: #FAF5FF; }
-                 .text-brand-purple { color: #7E22CE; }
+                 .text-brand-purple { color: #f78df6; }
                  
-                 .bg-brand-purple-dark { background-color: #E9D5FF; }
-                 .text-brand-purple-dark { color: #581C87; }
+                 .bg-brand-purple-dark { background-color: var(--color-primary-solid); }
+                 .text-brand-purple-dark { color: #c85cc8; } 
                  
-                 .border-brand-purple { border-color: #E9D5FF; }
-                 .border-brand-purple-dark { border-color: #D8B4FE; }
+                 .border-brand-purple { border-color: var(--color-primary-solid); }
+                 .border-brand-purple-dark { border-color: #f78df6; }
                  
-                 .ring-brand-purple { --tw-ring-color: #E9D5FF; }
-                 .ring-brand-purple-dark { --tw-ring-color: #D8B4FE; }
+                 .ring-brand-purple { --tw-ring-color: var(--color-primary-solid); }
 
                  .hover-underline-effect {
                     display: inline-block;
@@ -400,7 +399,7 @@ const App: React.FC = () => {
                     height: 2px;
                     bottom: -2px;
                     left: 0;
-                    background-color: #D8B4FE;
+                    background-color: var(--color-primary-solid);
                     transform-origin: bottom right;
                     transition: transform 0.25s ease-out;
                  }

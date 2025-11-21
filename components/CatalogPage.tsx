@@ -165,7 +165,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                                 ref={buttonRef}
                                 type="submit"
                                 disabled={!quickAddCode}
-                                className="w-full bg-[#E9D5FF] text-black font-bold py-3 px-4 rounded-md hover:bg-[#D8B4FE] transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed shadow-lg"
+                                className="w-full bg-[#f78df685] text-black border-2 border-[#f78df6] font-bold py-3 px-4 rounded-md hover:bg-white hover:text-black transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed shadow-lg"
                             >
                                 Añadir a la cesta
                             </button>

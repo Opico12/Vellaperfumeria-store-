@@ -155,7 +155,7 @@ const OfertasPage: React.FC<{
                                 <h3 className="text-xl font-bold mb-4 leading-tight shadow-black drop-shadow-md">
                                     {banner.title}
                                 </h3>
-                                <button className="bg-[#E9D5FF] text-black font-bold py-2 px-6 rounded-sm uppercase text-sm tracking-wider hover:bg-white transition-colors shadow-lg">
+                                <button className="bg-[#f78df685] text-black border-2 border-[#f78df6] font-bold py-2 px-6 rounded-sm uppercase text-sm tracking-wider hover:bg-white hover:text-black transition-colors shadow-lg">
                                     {banner.buttonText}
                                 </button>
                             </div>

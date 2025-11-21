@@ -76,7 +76,7 @@ const ShopPage: React.FC<{
                                     onClick={() => setActiveCategory(cat.key)}
                                     className={`w-full text-left px-3 py-2 rounded-md transition-colors text-sm ${
                                         activeCategory === cat.key
-                                            ? 'bg-[#E9D5FF] text-black font-semibold'
+                                            ? 'bg-[#f78df685] text-black font-bold border border-[#f78df6]'
                                             : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                                 >

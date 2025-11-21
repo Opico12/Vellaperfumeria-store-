@@ -21,6 +21,8 @@ const FREE_SHIPPING_THRESHOLD = 35;
 const DISCOUNT_THRESHOLD = 35; 
 const DISCOUNT_PERCENTAGE = 0.15; 
 const SHIPPING_COST = 6.00;
+// Gift Threshold > 35
+const GIFT_THRESHOLD = 35;
 
 const CloseIcon = () => (
     <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -37,6 +39,16 @@ const TrashIcon = () => (
 const WhatsAppIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
         <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" />
+    </svg>
+);
+
+const GiftBoxIcon = ({ color = "black" }: { color?: string }) => (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 12V22H4V12" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M22 7H2V12H22V7Z" fill={color} stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 22V7" stroke={color === 'white' ? 'black' : 'white'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 7H7.5C6.83696 7 6.20107 6.73661 5.73223 6.26777C5.26339 5.79893 5 5.16304 5 4.5C5 3.83696 5.26339 3.20107 5.73223 2.73223C6.20107 2.26339 6.83696 2 7.5 2C11 2 12 7 12 7Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 7H16.5C17.163 7 17.7989 6.73661 18.2678 6.26777C18.7366 5.79893 19 5.16304 19 4.5C19 3.83696 18.7366 3.20107 18.2678 2.73223C17.7989 2.26339 17.163 2 16.5 2C13 2 12 7 12 7Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
 );
 
@@ -89,7 +101,7 @@ const ApplePayIcon = () => (
     <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="38" height="24" rx="2" fill="white" />
         <path d="M16.1 11.3c0 2.7 2.3 3.7 2.4 3.7-.1 0-.2.5-.4.9-.4.8-.8 1.7-1.5 1.7-.7 0-1-.4-1.8-.4-.9 0-1.2.4-1.9.4-.7 0-1.3-1-1.9-2-1.8-2.6-1.5-6.5 1.9-6.5 1.1 0 1.9.7 2.4.7.6 0 1.6-.9 2.8-.9.5 0 1.9.2 2.6 1.2-.1.1-1.6 1-1.6 3.2zM15.8 6.7c.6-.7.9-1.6.8-2.4-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.8.1 1.7-.5 2.3-1.2z" fill="black"/>
-        <path d="M22.5 8h1.3v8h-1.3V8zM25.6 8h3.3c.7 0 1.3.2 1.7.5.4.3.6.9.6 1.5 0 .7-.2 1.3-.7 1.6-.5.4-1.1.5-1.9.5h-1.8v3.9h-1.3V8zm1.3 3.1h1.9c.4 0 .7-.1.9-.2.2-.2.3-.4.3-.8s-.1-.6-.3-.8c-.2-.2-.5-.2-.9-.2h-1.9v2zM35.4 16h-1.4l-.5-1.3h-2.7l-.4 1.3H29l2.3-5.8h1.5l2.6 5.8zm-2.3-2.4l-.9-2.6-.9 2.6h1.8z" fill="black"/>
+        <path d="M22.5 8h1.3v8h-1.3V8zM25.6 8h3.3c.7 0 1.3.2 1.7.5.4.3.6.9.6 1.5 0 .7-.2 1.3-.7 1.6-.5.4-1.1.5-1.9.5h-1.8v3.9h-1.3V8zm1.3 3.1h1.9c.4 0 .7-.1.9-.2.2-.3.4.3-.8s-.1-.6-.3-.8c-.2-.2-.5-.2-.9-.2h-1.9v2zM35.4 16h-1.4l-.5-1.3h-2.7l-.4 1.3H29l2.3-5.8h1.5l2.6 5.8zm-2.3-2.4l-.9-2.6-.9 2.6h1.8z" fill="black"/>
     </svg>
 );
 
@@ -97,6 +109,14 @@ const ApplePayIcon = () => (
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, currency, onUpdateQuantity, onRemoveItem, onCheckout, onNavigate }) => {
     const sidebarRef = useRef<HTMLDivElement>(null);
     
+    // Retrieve 'v' param from URL to maintain tracking
+    const [vParam, setVParam] = useState<string | null>(null);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        setVParam(params.get('v'));
+    }, []);
+
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
@@ -166,6 +186,42 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
     const total = subtotal - discountAmount + shippingCost;
     const amountForFreeShipping = FREE_SHIPPING_THRESHOLD - subtotal;
 
+    // Check if gift box should be shown (Orders > 35 euros)
+    const hasGift = subtotal > GIFT_THRESHOLD;
+
+    // Construct IDs string for external cart transfer
+    const productIdsString = useMemo(() => {
+        const ids: number[] = [];
+        cartItems.forEach(item => {
+            let idToAdd = item.product.id;
+            if (item.selectedVariant && item.product.variants) {
+                Object.entries(item.selectedVariant).forEach(([key, value]) => {
+                    const variantOptions = item.product.variants?.[key];
+                    if (variantOptions) {
+                        const selectedOption = variantOptions.find(opt => opt.value === value);
+                        if (selectedOption && selectedOption.variationId) {
+                            idToAdd = selectedOption.variationId;
+                        }
+                    }
+                });
+            }
+            for (let i = 0; i < item.quantity; i++) {
+                ids.push(idToAdd);
+            }
+        });
+        return ids.join(',');
+    }, [cartItems]);
+
+    // Build the external checkout URL
+    const checkoutUrl = useMemo(() => {
+         const baseUrl = 'https://vellaperfumeria.com/finalizar-compra/';
+         const params = new URLSearchParams();
+         if (vParam) params.append('v', vParam);
+         if (productIdsString) params.append('add-to-cart', productIdsString);
+         const queryString = params.toString();
+         return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    }, [productIdsString, vParam]);
+
     const handleWhatsAppCheckout = () => {
         if (cartItems.length === 0) return;
         
@@ -179,6 +235,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
             message += ` - ${formatCurrency(item.product.price * item.quantity, currency)}\n`;
         });
         
+        if (hasGift) {
+            message += `- 1x Caja de Regalo Mediana (Negra) - GRATIS\n`;
+        }
+
         message += `\nSubtotal: ${formatCurrency(subtotal, currency)}`;
         if (discountAmount > 0) message += `\nDescuento: -${formatCurrency(discountAmount, currency)}`;
         message += `\nEnvío: ${shippingCost === 0 ? 'Gratis' : formatCurrency(shippingCost, currency)}`;
@@ -214,6 +274,23 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                     <>
                         {/* Items List */}
                         <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-[#FAF5FF]/50">
+                            {/* Free Gift Item Logic */}
+                            {hasGift && (
+                                <div className="flex gap-4 items-center bg-black text-white p-3 rounded-xl border border-gray-800 shadow-sm transition-shadow animate-pop">
+                                    {/* Icono negro, fondo blanco (image/icon container) */}
+                                    <div className="w-20 h-20 flex items-center justify-center bg-white rounded-lg border border-gray-200 p-1">
+                                        <GiftBoxIcon color="black" />
+                                    </div>
+                                    <div className="flex-grow flex flex-col">
+                                        <h3 className="font-semibold text-sm leading-tight text-white">Caja de Regalo Mediana (Negra)</h3>
+                                        <p className="text-xs text-gray-400 mt-1">¡Regalo BLACK FRIDAY (+35€)!</p>
+                                        <div className="flex items-center justify-between mt-2">
+                                             <p className="font-bold text-base text-green-400">GRATIS</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             {cartItems.map(item => (
                                 <div key={item.id} className="flex gap-4 items-start bg-white p-3 rounded-xl border border-purple-100 shadow-sm hover:shadow-md transition-shadow">
                                     <img src={item.product.imageUrl} alt={item.product.name} className="w-20 h-20 object-contain rounded-lg border border-gray-50 p-1 bg-white" />
@@ -249,7 +326,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                 </div>
                             ) : amountForFreeShipping > 0 ? (
                                 <div className="text-center text-sm">
-                                    <p className="text-gray-600 mb-2">Te faltan <span className="font-bold text-purple-600">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para envío <b>GRATIS</b>.</p>
+                                    <p className="text-gray-600 mb-2"><span className="font-bold text-black">BLACK FRIDAY:</span> Te faltan <span className="font-bold text-purple-600">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para envío <b>GRATIS</b>.</p>
                                     <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
                                         <div className="bg-gradient-to-r from-purple-300 to-purple-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}></div>
                                     </div>
@@ -257,7 +334,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             ) : (
                                 <div className="text-center text-sm font-semibold text-green-700 p-3 bg-green-50 rounded-xl border border-green-100 flex items-center justify-center gap-2">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"></path></svg>
-                                    <span>¡Tienes envío GRATIS!</span>
+                                    <span>¡BLACK FRIDAY: Envío GRATIS activado!</span>
                                 </div>
                             )}
                             
@@ -290,13 +367,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </div>
                             
                             <div className="flex flex-col gap-3 pt-2">
-                                 {/* Use onCheckout to navigate to the internal summary page */}
-                                <button 
-                                    onClick={onCheckout}
-                                    className="w-full text-center bg-[#E9D5FF] hover:bg-[#D8B4FE] text-black font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-purple-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer"
+                                 {/* Direct link to external checkout with add-to-cart functionality */}
+                                <a 
+                                    href={checkoutUrl}
+                                    target="_self"
+                                    className="w-full text-center bg-[#f78df685] hover:bg-white text-black hover:text-black border-2 border-[#f78df6] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-purple-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline"
                                 >
-                                     REALIZAR PEDIDO
-                                </button>
+                                     FINALIZAR COMPRA
+                                </a>
                                 
                                 <div className="flex justify-center items-center gap-3 mt-1 pb-1">
                                     <VisaIcon />
@@ -341,7 +419,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                 onClose();
                                 onNavigate('products', 'all');
                             }}
-                            className="bg-[#E9D5FF] text-black font-bold py-3 px-10 rounded-full hover:bg-[#D8B4FE] transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+                            className="bg-[#f78df685] text-black border-2 border-[#f78df6] font-bold py-3 px-10 rounded-full hover:bg-white hover:text-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
                         >
                             Explorar Tienda
                         </button>

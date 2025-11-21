@@ -74,7 +74,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
                                 <p className="mt-4 text-lg md:text-xl drop-shadow-md" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.6)'}}>{slide.subtitle}</p>
                                 <button
                                     onClick={() => onNavigate(slide.view)}
-                                    className="mt-8 bg-[#E9D5FF] text-black font-bold py-3 px-8 rounded-lg shadow-md hover:bg-[#D8B4FE] transition-all duration-300 transform hover:scale-105"
+                                    className="mt-8 bg-[#f78df685] text-black font-bold py-3 px-8 rounded-lg shadow-md border-2 border-[#f78df6] hover:bg-white hover:text-black transition-all duration-300 transform hover:scale-105"
                                 >
                                     {slide.buttonText}
                                 </button>

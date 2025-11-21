@@ -164,10 +164,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                         ref={addToCartBtnRef}
                         onClick={handleActionClick}
                         disabled={product.stock === 0}
-                        className={`w-full mt-3 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 shadow-sm hover:shadow-md ${
+                        className={`w-full mt-3 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 shadow-sm hover:shadow-md border-2 border-[#f78df6] ${
                             product.stock === 0
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                : 'bg-[#E9D5FF] text-black hover:bg-[#D8B4FE] hover:shadow-purple-200 transform hover:-translate-y-0.5'
+                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
+                                : 'bg-[#f78df685] text-black hover:bg-white hover:text-black transform hover:-translate-y-0.5'
                         }`}
                     >
                         {product.stock === 0 

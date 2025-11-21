@@ -60,7 +60,7 @@ const ApplePayIcon = () => (
     <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="38" height="24" rx="2" fill="white" />
         <path d="M16.1 11.3c0 2.7 2.3 3.7 2.4 3.7-.1 0-.2.5-.4.9-.4.8-.8 1.7-1.5 1.7-.7 0-1-.4-1.8-.4-.9 0-1.2.4-1.9.4-.7 0-1.3-1-1.9-2-1.8-2.6-1.5-6.5 1.9-6.5 1.1 0 1.9.7 2.4.7.6 0 1.6-.9 2.8-.9.5 0 1.9.2 2.6 1.2-.1.1-1.6 1-1.6 3.2zM15.8 6.7c.6-.7.9-1.6.8-2.4-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.8.1 1.7-.5 2.3-1.2z" fill="black"/>
-        <path d="M22.5 8h1.3v8h-1.3V8zM25.6 8h3.3c.7 0 1.3.2 1.7.5.4.3.6.9.6 1.5 0 .7-.2 1.3-.7 1.6-.5.4-1.1.5-1.9.5h-1.8v3.9h-1.3V8zm1.3 3.1h1.9c.4 0 .7-.1.9-.2.2-.2.3-.4.3-.8s-.1-.6-.3-.8c-.2-.2-.5-.2-.9-.2h-1.9v2zM35.4 16h-1.4l-.5-1.3h-2.7l-.4 1.3H29l2.3-5.8h1.5l2.6 5.8zm-2.3-2.4l-.9-2.6-.9 2.6h1.8z" fill="black"/>
+        <path d="M22.5 8h1.3v8h-1.3V8zM25.6 8h3.3c.7 0 1.3.2 1.7.5.4.3.6.9.6 1.5 0 .7-.2 1.3-.7 1.6-.5.4-1.1.5-1.9.5h-1.8v3.9h-1.3V8zm1.3 3.1h1.9c.4 0 .7-.1.9-.2.2-.3.4.3-.8s-.1-.6-.3-.8c-.2-.2-.5-.2-.9-.2h-1.9v2zM35.4 16h-1.4l-.5-1.3h-2.7l-.4 1.3H29l2.3-5.8h1.5l2.6 5.8zm-2.3-2.4l-.9-2.6-.9 2.6h1.8z" fill="black"/>
     </svg>
 );
 
@@ -125,7 +125,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 <h2 className="text-2xl font-bold mb-4">Tu carrito está vacío</h2>
                 <button 
                     onClick={() => onNavigate('products', 'all')}
-                    className="bg-[#E9D5FF] text-black px-6 py-3 rounded-lg hover:bg-[#D8B4FE] transition-colors font-bold shadow-md"
+                    className="bg-[#f78df685] text-black border-2 border-[#f78df6] px-6 py-3 rounded-lg hover:bg-white hover:text-black transition-colors font-bold shadow-md"
                 >
                     Volver a la tienda
                 </button>
@@ -195,7 +195,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                             href={checkoutUrl}
                             target="_self"
                             rel="noopener noreferrer"
-                            className="w-full bg-[#E9D5FF] text-black font-bold py-4 rounded-xl text-lg shadow-lg hover:bg-[#D8B4FE] hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-3 cursor-pointer"
+                            className="w-full bg-[#f78df685] text-black border-2 border-[#f78df6] font-bold py-4 rounded-xl text-lg shadow-lg hover:bg-white hover:text-black hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-3 cursor-pointer"
                         >
                             <span>Pagar en Vellaperfumeria.com</span>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
