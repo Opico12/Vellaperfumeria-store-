@@ -113,7 +113,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
     return (
         <header className="bg-white shadow-sm sticky top-0 z-30">
             {/* Top Bar: Transparent Pink Background #f78df685, Black Text, Black Icons */}
-            <div className="bg-[#f78df685] text-black py-2 text-xs md:text-sm font-medium border-b border-[#f78df6]/20">
+            <div className="bg-[#f78df685] text-black py-1 text-[10px] md:text-xs font-medium border-b border-[#f78df6]/20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div className="hidden md:flex items-center space-x-3 text-black">
                         <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Threads"><ThreadsIcon /></span>
@@ -123,7 +123,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     </div>
                     <div className="block w-full text-center text-black">
                         <span>
-                            <span className="font-extrabold text-black">BLACK FRIDAY</span> | Envío GRATIS en pedidos +35€
+                            <span className="font-extrabold text-black">BLACK FRIDAY</span> | Envío GRATIS +35€
                         </span>
                     </div>
                     <div className="hidden md:flex items-center space-x-4">
@@ -132,20 +132,20 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Main Header Content - Reduced vertical padding to minimize space use */}
-                <div className="flex flex-col md:flex-col items-center justify-center py-1 md:py-1 relative">
+                {/* Main Header Content - Removed vertical padding (py-0) to maximize space usage */}
+                <div className="flex flex-col md:flex-col items-center justify-center py-0 relative">
                     <div className="absolute left-0 top-1/2 transform -translate-y-1/2 md:hidden z-20">
                         <button onClick={() => setIsMobileMenuOpen(true)} className="text-black p-2">
                             <MenuIcon />
                         </button>
                     </div>
 
-                    {/* Logo - Largest size requested */}
-                    <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300 mb-1 md:mb-0 z-10">
+                    {/* Logo - Maximized size: h-32 on mobile, h-48 on desktop */}
+                    <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300 z-10">
                         <img 
                             src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                             alt="Vellaperfumeria Logo" 
-                            className="h-28 w-auto md:h-40 object-contain" 
+                            className="h-32 w-auto md:h-48 object-contain" 
                         />
                     </a>
 
