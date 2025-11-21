@@ -106,7 +106,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
     }, [cartItems]);
 
     const checkoutUrl = useMemo(() => {
-         const baseUrl = 'https://vellaperfumeria.com/carrito/';
+         const baseUrl = 'https://vellaperfumeria.com/finalizar-compra/';
          const params = new URLSearchParams();
          if (vParam) params.append('v', vParam);
          if (productIdsString) params.append('add-to-cart', productIdsString);

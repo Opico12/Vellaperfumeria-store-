@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import type { View, Product, CartItem } from './components/types';
 import type { Currency } from './components/currency';
 import { blogPosts } from './components/blogData';
+import { allProducts } from './components/products';
 // Components
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -34,13 +35,33 @@ const App: React.FC = () => {
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const [vParam, setVParam] = useState<string | null>(null);
 
-    // Extract 'v' parameter to maintain session
+    // Extract params for session ('v') and deep linking ('product_id', 'category')
     useEffect(() => {
         try {
             const urlParams = new URLSearchParams(window.location.search);
-            setVParam(urlParams.get('v'));
+            const v = urlParams.get('v');
+            if (v) setVParam(v);
+
+            const productId = urlParams.get('product_id');
+            const category = urlParams.get('category');
+            const targetView = urlParams.get('view');
+
+            if (productId) {
+                const product = allProducts.find(p => p.id === parseInt(productId));
+                if (product) {
+                    setView({ current: 'productDetail', payload: product });
+                }
+            } else if (category) {
+                setView({ current: 'products', payload: category });
+            } else if (targetView === 'checkout') {
+                setView({ current: 'checkout' });
+            } else if (targetView) {
+                 if (['home', 'products', 'productDetail', 'ofertas', 'ia', 'catalog', 'about', 'contact', 'blog', 'blogPost', 'checkout'].includes(targetView)) {
+                     setView({ current: targetView as View });
+                 }
+            }
         } catch (e) {
-            console.error("Error extracting params", e);
+            console.error("Error processing URL params", e);
         }
     }, []);
 

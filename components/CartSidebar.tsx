@@ -200,7 +200,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
     }, [cartItems]);
 
     const checkoutUrl = useMemo(() => {
-         const baseUrl = 'https://vellaperfumeria.com/carrito/';
+         const baseUrl = 'https://vellaperfumeria.com/finalizar-compra/';
          const params = new URLSearchParams();
          if (vParam) params.append('v', vParam);
          if (productIdsString) params.append('add-to-cart', productIdsString);
