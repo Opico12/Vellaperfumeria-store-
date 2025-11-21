@@ -1,17 +1,15 @@
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import type { CartItem, View } from './types';
-import type { Currency } from './currency';
-import { formatCurrency } from './currency';
+import { type Currency, formatCurrency } from './currency';
 
 interface CheckoutPageProps {
     cartItems: CartItem[];
     currency: Currency;
-    onClearCart: () => void;
     onNavigate: (view: View, payload?: any) => void;
+    onClearCart: () => void;
 }
 
-// Payment Icons
 const VisaIcon = () => (
     <svg className="w-10 h-6" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
        <rect width="38" height="24" rx="2" fill="white"/>
@@ -35,41 +33,23 @@ const MastercardIcon = () => (
     </svg>
 );
 
-const PayPalIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="24" rx="2" fill="white"/>
-        <path d="M26.5 7.5L23.5 7.5L22.5 13.5L26.5 7.5Z" fill="#003087"/>
-        <path d="M22.5 13.5L20.5 13.5L21.5 7.5L24.5 7.5L22.5 13.5Z" fill="#003087"/>
-        <path d="M14.5 7.5C15.5 7.5 16.5 8 16.5 9.5C16.5 10.5 16 11.5 15 11.5H13.5L14.5 7.5Z" fill="#003087"/>
-        <path d="M10.5 7.5H13.5L12.5 13.5H9.5L10.5 7.5Z" fill="#003087"/>
-        <path d="M13 12.5H11.5L12 9.5L13 12.5Z" fill="#009CDE"/>
-        <path d="M16 10.5C16 11.5 15.5 12.5 14.5 12.5H13L13.5 9.5H15C15.5 9.5 16 9.8 16 10.5Z" fill="#009CDE"/>
-        <path d="M20 7.5L18 13.5H16.5L18.5 7.5H20Z" fill="#009CDE"/>
-    </svg>
-);
-
-const GooglePayIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="24" rx="2" fill="white" />
-        <path d="M10.9 10.4V16h-1.3v-9.5h4c1.3 0 2.3.4 3 .9.7.6 1.1 1.3 1.1 2.2 0 .9-.4 1.6-1.1 2.2-.7.6-1.6.9-3 .9h-2.7zm1.3-4.2v3.1h1.3c.9 0 1.4-.4 1.4-1.5 0-1.1-.5-1.6-1.4-1.6h-1.3zM19.3 7.8h1.3v8.2h-1.3V7.8zM22.8 7.8h1.4l2.8 5.7c.1.2.1.3.2.5h.1c.1-.2.1-.4.2-.5l2.7-5.7h1.4l-4.3 8.4h-1.4l-3.1-8.4z" fill="#5F6368"/>
-        <path d="M6.7 11.5c0 .6-.2 1.2-.5 1.7l-.2.3c-.6.8-1.6 1.3-2.7 1.3-1.5 0-2.8-.9-3.2-2.3-.1-.3-.1-.6-.1-1 0-1.6 1-3.1 2.6-3.6.5-.2 1.1-.2 1.7-.1.6.1 1.2.4 1.6.8l-1 1c-.3-.3-.6-.5-1-.6-.4-.1-.8 0-1.1.2-.8.3-1.3 1.1-1.2 2 0 .4.1.8.3 1.1.4.6 1.1.9 1.8.8.5-.1.9-.3 1.2-.6.2-.2.3-.5.4-.8H3.3V10h3.4v1.5z" fill="#5F6368"/>
-    </svg>
-);
-
-const ApplePayIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="24" rx="2" fill="white" />
-        <path d="M16.1 11.3c0 2.7 2.3 3.7 2.4 3.7-.1 0-.2.5-.4.9-.4.8-.8 1.7-1.5 1.7-.7 0-1-.4-1.8-.4-.9 0-1.2.4-1.9.4-.7 0-1.3-1-1.9-2-1.8-2.6-1.5-6.5 1.9-6.5 1.1 0 1.9.7 2.4.7.6 0 1.6-.9 2.8-.9.5 0 1.9.2 2.6 1.2-.1.1-1.6 1-1.6 3.2zM15.8 6.7c.6-.7.9-1.6.8-2.4-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.8.1 1.7-.5 2.3-1.2z" fill="black"/>
-        <path d="M22.5 8h1.3v8h-1.3V8zM25.6 8h3.3c.7 0 1.3.2 1.7.5.4.3.6.9.6 1.5 0 .7-.2 1.3-.7 1.6-.5.4-1.1.5-1.9.5h-1.8v3.9h-1.3V8zm1.3 3.1h1.9c.4 0 .7-.1.9-.2.2-.3.4.3-.8s-.1-.6-.3-.8c-.2-.2-.5-.2-.9-.2h-1.9v2zM35.4 16h-1.4l-.5-1.3h-2.7l-.4 1.3H29l2.3-5.8h1.5l2.6 5.8zm-2.3-2.4l-.9-2.6-.9 2.6h1.8z" fill="black"/>
-    </svg>
-);
-
-
-const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavigate }) => {
+const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavigate, onClearCart }) => {
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [couponCode, setCouponCode] = useState('');
+    const [couponApplied, setCouponApplied] = useState(false);
     const [vParam, setVParam] = useState<string | null>(null);
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        address: '',
+        city: '',
+        zip: '',
+        phone: ''
+    });
 
     useEffect(() => {
-        window.scrollTo(0, 0);
         try {
             const urlParams = new URLSearchParams(window.location.search);
             setVParam(urlParams.get('v'));
@@ -78,11 +58,27 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         }
     }, []);
 
-    const subtotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
-    const hasShippingSaver = cartItems.some(item => item.product.isShippingSaver);
-    const shippingCost = subtotal >= 35 || hasShippingSaver ? 0 : 6.00;
-    const total = subtotal + shippingCost;
+    const FREE_SHIPPING_THRESHOLD = 35;
+    const DISCOUNT_THRESHOLD = 35;
+    const DISCOUNT_PERCENTAGE = 0.15;
+    const SHIPPING_COST = 6.00;
 
+    const subtotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    
+    // Calculate automatic discount
+    let discountAmount = subtotal >= DISCOUNT_THRESHOLD ? subtotal * DISCOUNT_PERCENTAGE : 0;
+    
+    // Extra coupon discount (e.g., 5 fixed)
+    if (couponApplied) {
+        discountAmount += 5; 
+    }
+
+    const hasShippingSaver = cartItems.some(item => item.product.isShippingSaver);
+    const shippingCost = (hasShippingSaver || subtotal >= FREE_SHIPPING_THRESHOLD) ? 0 : SHIPPING_COST;
+    
+    const total = Math.max(0, subtotal - discountAmount + shippingCost);
+
+    // Construct IDs string for external cart transfer
     const productIdsString = useMemo(() => {
         const ids: number[] = [];
         cartItems.forEach(item => {
@@ -105,6 +101,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         return ids.join(',');
     }, [cartItems]);
 
+    // Build the external checkout URL
     const checkoutUrl = useMemo(() => {
          const baseUrl = 'https://vellaperfumeria.com/finalizar-compra/';
          const params = new URLSearchParams();
@@ -114,111 +111,323 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
          return queryString ? `${baseUrl}?${queryString}` : baseUrl;
     }, [productIdsString, vParam]);
 
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleApplyCoupon = () => {
+        if (couponCode.trim().toLowerCase() === 'vella5') {
+            setCouponApplied(true);
+        } else {
+            alert('Cupón no válido. Prueba con "VELLA5"');
+        }
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!acceptedTerms) {
+            alert('Por favor, acepta los términos y condiciones para continuar.');
+            return;
+        }
+        setIsProcessing(true);
+        
+        // Redirect to external website for real payment
+        window.location.href = checkoutUrl;
+    };
+
     if (cartItems.length === 0) {
         return (
-            <div className="container mx-auto px-4 py-20 text-center">
-                <div className="mb-4 text-gray-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
+            <div className="bg-gray-50 min-h-screen flex flex-col">
+                <header className="bg-white border-b border-gray-200 py-4 sticky top-0 z-10">
+                    <div className="container mx-auto px-4 flex justify-center">
+                         <button onClick={() => onNavigate('home')}>
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-16 w-auto" />
+                        </button>
+                    </div>
+                </header>
+                <div className="container mx-auto px-4 py-16 text-center flex-grow flex flex-col justify-center items-center">
+                    <div className="max-w-md">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Tu bolsa de compra está vacía</h2>
+                        <p className="text-gray-500 mb-8">Parece que aún no has elegido tus productos de belleza favoritos.</p>
+                        <button 
+                            onClick={() => onNavigate('products', 'all')}
+                            className="bg-brand-purple text-brand-primary font-bold py-3 px-8 rounded-lg hover:bg-brand-purple-dark transition-colors shadow-md w-full"
+                        >
+                            Ir a la Tienda
+                        </button>
+                    </div>
                 </div>
-                <h2 className="text-2xl font-bold mb-4">Tu carrito está vacío</h2>
-                <button 
-                    onClick={() => onNavigate('products', 'all')}
-                    className="bg-[#f78df685] text-black border-2 border-[#f78df6] px-6 py-3 rounded-lg hover:bg-white hover:text-black transition-colors font-bold shadow-md"
-                >
-                    Volver a la tienda
-                </button>
+                <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
+                    <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
+                        <img 
+                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                            alt="Vellaperfumeria" 
+                            className="h-12 w-auto" 
+                        />
+                        <p className="text-sm text-gray-400">© {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
+                         <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-xs text-gray-400 uppercase tracking-wide text-center">
+                            <button className="hover:text-white hover:underline transition-colors">Privacidad</button>
+                            <button className="hover:text-white hover:underline transition-colors">Términos</button>
+                            <button className="hover:text-white hover:underline transition-colors">Envíos</button>
+                        </div>
+                    </div>
+                </footer>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="max-w-3xl mx-auto text-center mb-10">
-                <h1 className="text-3xl font-extrabold text-purple-700 mb-4">Finalizar Compra</h1>
-                <p className="text-gray-600">Serás redirigido a tu carrito en Vellaperfumeria.com para completar el pago de forma segura.</p>
-            </div>
-            
-            <div className="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
-                <div className="p-6 md:p-8 bg-[#FAF5FF] border-b">
-                    <h2 className="text-xl font-bold mb-4">Resumen del Pedido</h2>
-                    <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-                         {cartItems.map((item) => (
-                            <a 
-                                key={item.id} 
-                                href={`https://vellaperfumeria.com/products/product?code=${item.product.id}${vParam ? `&v=${vParam}` : ''}`}
-                                target="_self"
-                                className="flex items-center gap-4 bg-white p-3 rounded-lg border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                            >
-                                <div className="relative flex-shrink-0">
-                                    <img src={item.product.imageUrl} alt={item.product.name} className="w-16 h-16 object-contain" />
-                                    <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                                        {item.quantity}
-                                    </span>
-                                </div>
-                                <div className="flex-grow min-w-0">
-                                    <h3 className="font-semibold text-gray-900 text-sm hover:text-purple-600 transition-colors">{item.product.name}</h3>
-                                    {item.selectedVariant && (
-                                        <p className="text-xs text-gray-500">{Object.entries(item.selectedVariant).map(([k, v]) => `${k}: ${v}`).join(', ')}</p>
-                                    )}
-                                </div>
-                                <div className="text-right font-bold text-purple-600 text-sm whitespace-nowrap">
-                                    {formatCurrency(item.product.price * item.quantity, currency)}
-                                </div>
-                            </a>
-                        ))}
+        <div className="bg-gray-50 min-h-screen flex flex-col font-sans">
+             {/* Dedicated Checkout Header */}
+            <header className="bg-white border-b border-gray-200 py-4 sticky top-0 z-20 shadow-sm">
+                <div className="container mx-auto px-4 flex justify-between items-center">
+                    <button onClick={() => onNavigate('home')} className="hover:opacity-80 transition-opacity">
+                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-14 w-auto" />
+                    </button>
+                    <div className="flex items-center text-sm font-medium text-gray-500">
+                        <span className="hidden sm:inline mr-2">¿Necesitas ayuda?</span>
+                        <button className="text-brand-purple-dark hover:underline">Contactar</button>
                     </div>
                 </div>
+            </header>
+
+            <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="mb-8 text-center">
+                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Finalizar Compra</h1>
+                    <p className="text-gray-500 mt-2">Pago seguro y envío rápido.</p>
+                </div>
                 
-                <div className="p-6 md:p-8">
-                    <div className="space-y-2 mb-8 text-sm">
-                        <div className="flex justify-between text-gray-600">
-                            <span>Subtotal</span>
-                            <span>{formatCurrency(subtotal, currency)}</span>
+                <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+                    {/* Left Column: Forms */}
+                    <div className="lg:w-2/3 space-y-6">
+                        {/* Shipping Form */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
+                            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center pb-4 border-b border-gray-100">
+                                <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">1</span>
+                                Datos de Envío
+                            </h2>
+                            <form id="checkout-form" onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Nombre <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" name="firstName" required 
+                                        value={formData.firstName} onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
+                                        placeholder="Tu nombre"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Apellidos <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" name="lastName" required 
+                                        value={formData.lastName} onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
+                                        placeholder="Tus apellidos"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Dirección completa <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" name="address" required 
+                                        value={formData.address} onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
+                                        placeholder="Calle, número, piso..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Ciudad <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" name="city" required 
+                                        value={formData.city} onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Código Postal <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="text" name="zip" required 
+                                        value={formData.zip} onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Correo Electrónico <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="email" name="email" required 
+                                        value={formData.email} onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
+                                        placeholder="ejemplo@email.com"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Teléfono <span className="text-red-500">*</span></label>
+                                    <input 
+                                        type="tel" name="phone" required 
+                                        value={formData.phone} onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
+                                        placeholder="Para notificaciones de entrega"
+                                    />
+                                </div>
+                            </form>
                         </div>
-                        <div className="flex justify-between text-gray-600">
-                            <span>Envío</span>
-                            <span className={shippingCost === 0 ? "text-green-600 font-bold" : ""}>
-                                {shippingCost === 0 ? 'Gratis' : formatCurrency(shippingCost, currency)}
-                            </span>
-                        </div>
-                        <div className="flex justify-between text-xl font-bold text-black pt-4 border-t mt-2">
-                            <span>Total Estimado</span>
-                            <span>{formatCurrency(total, currency)}</span>
+
+                        {/* Payment Methods */}
+                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
+                             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center pb-4 border-b border-gray-100">
+                                <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">2</span>
+                                Método de Pago
+                            </h2>
+                            <div className="space-y-4">
+                                <label className="relative flex items-center p-4 border-2 border-brand-purple bg-brand-purple/5 rounded-xl cursor-pointer transition-all hover:bg-brand-purple/10">
+                                    <input type="radio" name="payment" defaultChecked className="h-5 w-5 text-brand-primary focus:ring-brand-purple border-gray-300" />
+                                    <span className="ml-4 font-bold text-gray-900">Tarjeta de Crédito / Débito</span>
+                                    <div className="ml-auto flex gap-2 grayscale-0">
+                                        <VisaIcon />
+                                        <MastercardIcon />
+                                    </div>
+                                </label>
+                                <label className="flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all hover:border-brand-purple">
+                                    <input type="radio" name="payment" className="h-5 w-5 text-brand-primary focus:ring-brand-purple border-gray-300" />
+                                    <span className="ml-4 font-medium text-gray-700">PayPal</span>
+                                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" className="ml-auto h-6" />
+                                </label>
+                                 <label className="flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all hover:border-brand-purple">
+                                    <input type="radio" name="payment" className="h-5 w-5 text-brand-primary focus:ring-brand-purple border-gray-300" />
+                                    <span className="ml-4 font-medium text-gray-700">Bizum</span>
+                                    <span className="ml-auto font-bold text-brand-primary tracking-tight">bizum</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
-                        {/* Direct link for robust redirection. Target self ensures it stays within the context requested. */}
-                        <a 
-                            href={checkoutUrl}
-                            target="_self"
-                            rel="noopener noreferrer"
-                            className="w-full bg-[#f78df685] text-black border-2 border-[#f78df6] font-bold py-4 rounded-xl text-lg shadow-lg hover:bg-white hover:text-black hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-3 cursor-pointer"
-                        >
-                            <span>Pagar en Vellaperfumeria.com</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                        </a>
-                        
-                        <div className="flex justify-center items-center gap-3 mt-6 opacity-75 hover:opacity-100 transition-opacity">
-                             <VisaIcon />
-                             <MastercardIcon />
-                             <GooglePayIcon />
-                             <ApplePayIcon />
-                             <PayPalIcon />
-                        </div>
-                        
-                        <div className="text-center mt-4">
-                            <p className="text-xs text-gray-500 mb-2">
-                                Tus productos se transferirán automáticamente al carrito oficial.
-                            </p>
+                    {/* Right Column: Summary */}
+                    <div className="lg:w-1/3">
+                        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sticky top-32">
+                            <h3 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">Resumen del Pedido</h3>
+                            
+                            <div className="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                                {cartItems.map(item => (
+                                    <div key={item.id} className="flex gap-4 text-sm">
+                                        <div className="relative flex-shrink-0">
+                                            <img src={item.product.imageUrl} alt={item.product.name} className="w-16 h-16 object-contain rounded-lg border border-gray-100 bg-white" />
+                                            <span className="absolute -top-2 -right-2 bg-brand-purple text-brand-primary font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
+                                                {item.quantity}
+                                            </span>
+                                        </div>
+                                        <div className="flex-grow">
+                                            <p className="font-medium text-gray-800 line-clamp-2">{item.product.name}</p>
+                                            <p className="text-gray-500 mt-1 text-xs">{item.selectedVariant ? Object.values(item.selectedVariant).join(', ') : ''}</p>
+                                        </div>
+                                        <div className="font-bold text-gray-900">
+                                            {formatCurrency(item.product.price * item.quantity, currency)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Coupon Code */}
+                            <div className="mb-6">
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Código de cupón" 
+                                        className="flex-grow border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-purple focus:border-brand-purple outline-none"
+                                        value={couponCode}
+                                        onChange={(e) => setCouponCode(e.target.value)}
+                                    />
+                                    <button 
+                                        type="button"
+                                        onClick={handleApplyCoupon}
+                                        className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-black transition-colors"
+                                    >
+                                        Aplicar
+                                    </button>
+                                </div>
+                                {couponApplied && <p className="text-green-600 text-xs mt-2 font-medium">¡Cupón aplicado correctamente!</p>}
+                            </div>
+
+                            <div className="border-t border-gray-100 pt-4 space-y-3 text-sm mb-6">
+                                <div className="flex justify-between text-gray-600">
+                                    <span>Subtotal</span>
+                                    <span className="font-medium text-gray-900">{formatCurrency(subtotal, currency)}</span>
+                                </div>
+                                {discountAmount > 0 && (
+                                    <div className="flex justify-between text-brand-purple-dark font-medium">
+                                        <span>Descuentos</span>
+                                        <span>-{formatCurrency(discountAmount, currency)}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-gray-600">
+                                    <span>Envío</span>
+                                    <span className="font-medium text-gray-900">{shippingCost === 0 ? 'GRATIS' : formatCurrency(shippingCost, currency)}</span>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-gray-200 pt-4 mb-6">
+                                <div className="flex justify-between items-end">
+                                    <span className="text-base font-bold text-gray-900">Total</span>
+                                    <span className="text-2xl font-extrabold text-brand-primary">{formatCurrency(total, currency)}</span>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1 text-right">IVA incluido</p>
+                            </div>
+
+                             <div className="mb-6">
+                                <label className="flex items-start gap-3 cursor-pointer group">
+                                    <input 
+                                        type="checkbox" 
+                                        className="mt-1 h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-purple" 
+                                        checked={acceptedTerms}
+                                        onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                    />
+                                    <span className="text-xs text-gray-600 group-hover:text-gray-800 transition-colors">
+                                        He leído y acepto los <a href="#" className="underline hover:text-brand-purple-dark">Términos y Condiciones</a> y la <a href="#" className="underline hover:text-brand-purple-dark">Política de Privacidad</a>.
+                                    </span>
+                                </label>
+                            </div>
+                            
+                            <button 
+                                type="submit" 
+                                form="checkout-form"
+                                disabled={isProcessing}
+                                className="w-full bg-black text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition-all shadow-lg transform active:scale-95 flex justify-center items-center disabled:opacity-70 disabled:cursor-wait disabled:transform-none"
+                            >
+                                {isProcessing ? (
+                                    <>
+                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Redirigiendo...
+                                    </>
+                                ) : 'Realizar el Pedido'}
+                            </button>
+                            
+                            <div className="mt-6 flex items-center justify-center gap-2 text-gray-400 text-[10px] uppercase tracking-wider">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                <span>Pago Seguro SSL Encrypt</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+            {/* Dedicated Checkout Footer */}
+             <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
+                <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
+                    <img 
+                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                        alt="Vellaperfumeria" 
+                        className="h-12 w-auto" 
+                    />
+                    <p className="text-sm text-gray-400">© {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
+                    <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-xs text-gray-400 uppercase tracking-wide text-center">
+                        <button className="hover:text-white hover:underline transition-colors">Privacidad</button>
+                        <button className="hover:text-white hover:underline transition-colors">Términos</button>
+                        <button className="hover:text-white hover:underline transition-colors">Envíos</button>
+                    </div>
+                </div>
+            </footer>
         </div>
     );
 };

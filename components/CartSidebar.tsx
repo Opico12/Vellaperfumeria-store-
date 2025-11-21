@@ -374,13 +374,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             
                             <div className="flex flex-col gap-3 pt-2">
                                  {/* Direct link to external checkout with add-to-cart functionality */}
-                                <a 
-                                    href={checkoutUrl}
-                                    target="_self"
+                                <button 
+                                    onClick={() => window.location.href = checkoutUrl}
                                     className="w-full text-center bg-[#f78df685] hover:bg-white text-black hover:text-black border-2 border-[#f78df6] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-purple-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline"
                                 >
                                      FINALIZAR COMPRA EN WEB
-                                </a>
+                                </button>
                                 
                                 <div className="flex justify-center items-center gap-3 mt-1 pb-1">
                                     <VisaIcon />
