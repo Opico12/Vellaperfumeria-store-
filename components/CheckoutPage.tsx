@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { CartItem, View } from './types';
 import { type Currency, formatCurrency } from './currency';
 
@@ -67,10 +67,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
 
     const subtotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
     
-    // Calculate automatic discount
     let discountAmount = subtotal >= DISCOUNT_THRESHOLD ? subtotal * DISCOUNT_PERCENTAGE : 0;
-    
-    // Extra coupon discount (e.g., 5 fixed)
     if (couponApplied) {
         discountAmount += 5; 
     }
@@ -100,27 +97,25 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             return;
         }
         setIsProcessing(true);
-        setStatusMessage("Conectando con la tienda segura...");
-
-        const baseUrl = 'https://vellaperfumeria.com/';
-        const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
         
-        // Determine final redirect URL
-        let redirectUrl = 'https://vellaperfumeria.com/finalizar-compra/';
+        const baseUrl = 'https://vellaperfumeria.com/';
+        
+        let redirectUrl = 'https://vellaperfumeria.com/checkout/';
         if (vParam) redirectUrl += `?v=${vParam}`;
 
-        // Process items sequentially to ensure WooCommerce catches all add-to-cart requests
-        // We use a simple 'fetch' to trigger the server-side add to cart before redirecting.
-        // Note: Due to CORS, we use mode 'no-cors'. We won't know if it succeeded, but it usually works for session-based carts.
         let count = 1;
         const totalItems = cartItems.length;
 
+        // Contenedor invisible para los iframes
+        const iframeContainer = document.createElement('div');
+        iframeContainer.style.display = 'none';
+        document.body.appendChild(iframeContainer);
+
         for (const item of cartItems) {
-            setStatusMessage(`Sincronizando producto ${count} de ${totalItems}...`);
+            setStatusMessage(`Añadiendo producto ${count} de ${totalItems} al carrito oficial...`);
             
             let idToAdd = item.product.id;
             
-            // Check for variant ID
             if (item.selectedVariant && item.product.variants) {
                  Object.entries(item.selectedVariant).forEach(([key, value]) => {
                     const variantOptions = item.product.variants?.[key];
@@ -133,27 +128,29 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 });
             }
 
-            // Construct the add-to-cart URL for this specific item
-            // We add a random timestamp 't' to prevent caching
-            let addToCartUrl = `${baseUrl}?add-to-cart=${idToAdd}&quantity=${item.quantity}&t=${Date.now()}`;
-            if (vParam) addToCartUrl += `&v=${vParam}`;
+            // Usamos iframes para forzar al navegador a procesar la sesión en el dominio destino
+            await new Promise<void>((resolve) => {
+                const iframe = document.createElement('iframe');
+                // Añadimos timestamp para evitar caché
+                let addToCartUrl = `${baseUrl}?add-to-cart=${idToAdd}&quantity=${item.quantity}&t=${Date.now()}`;
+                if (vParam) addToCartUrl += `&v=${vParam}`;
+                
+                iframe.src = addToCartUrl;
+                iframe.onload = () => resolve();
+                iframe.onerror = () => resolve(); // Continuamos aunque haya error visual
+                iframeContainer.appendChild(iframe);
+                
+                // Tiempo de seguridad por si el onload no dispara (común en cross-origin)
+                setTimeout(() => resolve(), 1500); 
+            });
 
-            try {
-                await fetch(addToCartUrl, { mode: 'no-cors' });
-            } catch (err) {
-                console.error("Error syncing item", idToAdd, err);
-            }
-
-            // Small delay to allow server to process session
-            await delay(400);
             count++;
         }
 
-        setStatusMessage("Redirigiendo al pago seguro...");
-        await delay(500);
-        
-        // Redirect to external website for real payment
-        window.location.href = redirectUrl;
+        setStatusMessage("¡Todo listo! Redirigiendo al pago seguro...");
+        setTimeout(() => {
+            window.location.href = redirectUrl;
+        }, 1000);
     };
 
     if (cartItems.length === 0) {
@@ -162,7 +159,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 <header className="bg-white border-b border-gray-200 py-4 sticky top-0 z-10">
                     <div className="container mx-auto px-4 flex justify-center">
                          <button onClick={() => onNavigate('home')}>
-                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-20 w-auto" />
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-20 w-auto" />
                         </button>
                     </div>
                 </header>
@@ -181,16 +178,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
                     <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
                         <img 
-                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
                             alt="Vellaperfumeria" 
                             className="h-12 w-auto" 
                         />
                         <p className="text-sm text-gray-400">© {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
-                         <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-xs text-gray-400 uppercase tracking-wide text-center">
-                            <button className="hover:text-white hover:underline transition-colors">Privacidad</button>
-                            <button className="hover:text-white hover:underline transition-colors">Términos</button>
-                            <button className="hover:text-white hover:underline transition-colors">Envíos</button>
-                        </div>
                     </div>
                 </footer>
             </div>
@@ -203,11 +195,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             <header className="bg-white border-b border-gray-200 py-6 sticky top-0 z-20 shadow-sm">
                 <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-3">
                     <button onClick={() => onNavigate('home')} className="hover:opacity-80 transition-opacity">
-                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-32 w-auto" />
+                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-32 w-auto object-contain" />
                     </button>
                     <div className="flex items-center text-sm font-medium text-gray-500">
                         <span className="mr-2">¿Necesitas ayuda?</span>
-                        <button className="text-brand-purple-dark hover:underline font-semibold">Contactar</button>
+                        <button onClick={() => onNavigate('contact')} className="text-brand-purple-dark hover:underline font-semibold">Contactar</button>
                     </div>
                 </div>
             </header>
@@ -436,7 +428,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
              <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
                 <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
                     <img 
-                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
                         alt="Vellaperfumeria" 
                         className="h-12 w-auto" 
                     />

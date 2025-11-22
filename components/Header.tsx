@@ -145,7 +145,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
                         <a href={homeUrl} target="_self" className="pointer-events-auto block cursor-pointer transition-transform hover:scale-105 duration-300">
                             <img 
-                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
                                 alt="Vellaperfumeria Logo" 
                                 className="h-20 w-auto object-contain" 
                             />
@@ -173,7 +173,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <div className="w-full flex justify-center items-center relative mb-4">
                         <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300">
                             <img 
-                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
                                 alt="Vellaperfumeria Logo" 
                                 className="h-32 w-auto object-contain" 
                             />
