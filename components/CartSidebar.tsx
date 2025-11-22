@@ -100,7 +100,7 @@ const GooglePayIcon = () => (
 const ApplePayIcon = () => (
     <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="38" height="24" rx="2" fill="white" />
-        <path d="M16.1 11.3c0 2.7 2.3 3.7 2.4 3.7-.1 0-.2.5-.4.9-.4.8-.8 1.7-1.5 1.7-.7 0-1-.4-1.8-.4-.9 0-1.2.4-1.9.4-.7 0-1.3-1-1.9-2-1.8-2.6-1.5-6.5 1.9-6.5 1.1 0 1.9.7 2.4.7.6 0 1.6-.9 2.8-.9.5 0 1.9.2 2.6 1.2-.1.1-1.6 1-1.6 3.2zM15.8 6.7c.6-.7.9-1.6.8-2.4-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.8.1 1.7-.5 2.3-1.2z" fill="black"/>
+        <path d="M16.1 11.3c0 2.7 2.3 3.7 2.4 3.7-.1 0-.2.5-.4.9-.4.8 1.7-1.5 1.7-.7 0-1-.4-1.8-.4-.9 0-1.2.4-1.9.4-.7 0-1.3-1-1.9-2-1.8-2.6-1.5-6.5 1.9-6.5 1.1 0 1.9.7 2.4.7.6 0 1.6-.9 2.8-.9.5 0 1.9.2 2.6 1.2-.1.1-1.6 1-1.6 3.2zM15.8 6.7c.6-.7.9-1.6.8-2.4-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.8.1 1.7-.5 2.3-1.2z" fill="black"/>
         <path d="M22.5 8h1.3v8h-1.3V8zM25.6 8h3.3c.7 0 1.3.2 1.7.5.4.3.6.9.6 1.5 0 .7-.2 1.3-.7 1.6-.5.4-1.1.5-1.9.5h-1.8v3.9h-1.3V8zm1.3 3.1h1.9c.4 0 .7-.1.9-.2.2-.3.4.3-.8s-.1-.6-.3-.8c-.2-.2-.5-.2-.9-.2h-1.9v2zM35.4 16h-1.4l-.5-1.3h-2.7l-.4 1.3H29l2.3-5.8h1.5l2.6 5.8zm-2.3-2.4l-.9-2.6-.9 2.6h1.8z" fill="black"/>
     </svg>
 );
@@ -228,9 +228,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                 className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b flex-shrink-0 bg-[#FAF5FF]">
-                    <h2 id="cart-heading" className="text-xl font-bold tracking-wide text-purple-700">Tu Cesta</h2>
-                    <button onClick={onClose} className="p-2 rounded-full hover:bg-white text-purple-800 transition-colors" aria-label="Cerrar carrito">
+                <div className="flex items-center justify-between p-4 border-b flex-shrink-0 bg-orange-50/70">
+                    <h2 id="cart-heading" className="text-xl font-bold tracking-wide text-rose-700">Tu Cesta</h2>
+                    <button onClick={onClose} className="p-2 rounded-full hover:bg-white text-rose-800 transition-colors" aria-label="Cerrar carrito">
                         <CloseIcon />
                     </button>
                 </div>
@@ -238,7 +238,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                 {cartItems.length > 0 ? (
                     <>
                         {/* Items List */}
-                        <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-[#FAF5FF]/50">
+                        <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-orange-50/40">
                             {/* Free Gift Item Logic */}
                             {hasGift && (
                                 <div className="flex gap-4 items-center bg-black text-white p-3 rounded-xl border border-gray-800 shadow-sm transition-shadow animate-pop">
@@ -257,7 +257,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             )}
 
                             {cartItems.map(item => (
-                                <div key={item.id} className="flex gap-4 items-start bg-white p-3 rounded-xl border border-purple-100 shadow-sm hover:shadow-md transition-shadow">
+                                <div key={item.id} className="flex gap-4 items-start bg-white p-3 rounded-xl border border-rose-100 shadow-sm hover:shadow-md transition-shadow">
                                     <img src={item.product.imageUrl} alt={item.product.name} className="w-20 h-20 object-contain rounded-lg border border-gray-50 p-1 bg-white" />
                                     <div className="flex-grow flex flex-col">
                                         <h3 className="font-semibold text-sm leading-tight text-gray-900">{item.product.name}</h3>
@@ -267,15 +267,15 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                             </p>
                                         )}
                                         <div className="flex items-center justify-between mt-3">
-                                             <p className="font-bold text-base text-purple-600">{formatCurrency(item.product.price * item.quantity, currency)}</p>
-                                             <button onClick={() => onRemoveItem(item.id)} className="text-gray-400 hover:text-purple-500 p-1 transition-colors" aria-label={`Eliminar ${item.product.name}`}>
+                                             <p className="font-bold text-base text-rose-600">{formatCurrency(item.product.price * item.quantity, currency)}</p>
+                                             <button onClick={() => onRemoveItem(item.id)} className="text-gray-400 hover:text-rose-500 p-1 transition-colors" aria-label={`Eliminar ${item.product.name}`}>
                                                 <TrashIcon />
                                             </button>
                                         </div>
                                         <div className="flex items-center border border-gray-200 rounded-lg w-fit mt-2 bg-white overflow-hidden">
-                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} className="px-3 py-1 font-semibold text-gray-600 hover:text-purple-500 hover:bg-purple-50 transition-colors" aria-label="Reducir cantidad">-</button>
+                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} className="px-3 py-1 font-semibold text-gray-600 hover:text-rose-500 hover:bg-rose-50 transition-colors" aria-label="Reducir cantidad">-</button>
                                             <span className="px-2 text-sm font-medium text-gray-800">{item.quantity}</span>
-                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} className="px-3 py-1 font-semibold text-gray-600 hover:text-purple-500 hover:bg-purple-50 transition-colors" aria-label="Aumentar cantidad">+</button>
+                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} className="px-3 py-1 font-semibold text-gray-600 hover:text-rose-500 hover:bg-rose-50 transition-colors" aria-label="Aumentar cantidad">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -285,15 +285,15 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                         {/* Footer / Summary */}
                         <div className="p-6 border-t bg-white space-y-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-10">
                              {discountAmount > 0 ? (
-                                <div className="text-center text-sm font-semibold text-purple-700 p-3 bg-[#FAF5FF] rounded-xl border border-purple-100 flex items-center justify-center gap-2">
+                                <div className="text-center text-sm font-semibold text-rose-700 p-3 bg-orange-50 rounded-xl border border-rose-100 flex items-center justify-center gap-2">
                                     <span>🎉</span>
                                     <span>¡Felicidades! <b>15% de descuento</b> aplicado.</span>
                                 </div>
                             ) : amountForFreeShipping > 0 ? (
                                 <div className="text-center text-sm">
-                                    <p className="text-gray-600 mb-2"><span className="font-bold text-black">BLACK FRIDAY:</span> Te faltan <span className="font-bold text-purple-600">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para envío <b>GRATIS</b>.</p>
+                                    <p className="text-gray-600 mb-2"><span className="font-bold text-black">BLACK FRIDAY:</span> Te faltan <span className="font-bold text-rose-600">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para envío <b>GRATIS</b>.</p>
                                     <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-                                        <div className="bg-gradient-to-r from-purple-300 to-purple-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}></div>
+                                        <div className="bg-gradient-to-r from-orange-300 to-rose-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}></div>
                                     </div>
                                 </div>
                             ) : (
@@ -304,7 +304,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             )}
                             
                             {totalBeautyPoints > 0 && (
-                                <div className="flex justify-center items-center gap-2 text-purple-800 font-semibold text-sm p-2 bg-[#FAF5FF] rounded-xl border border-purple-100">
+                                <div className="flex justify-center items-center gap-2 text-rose-800 font-semibold text-sm p-2 bg-orange-50 rounded-xl border border-rose-100">
                                     <span>✨</span>
                                     <span>¡Consigues <b>{totalBeautyPoints} Puntos Beauty</b>!</span>
                                 </div>
@@ -316,7 +316,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     <span className="font-semibold">{formatCurrency(subtotal, currency)}</span>
                                 </div>
                                 {discountAmount > 0 && (
-                                     <div className="flex justify-between text-purple-600">
+                                     <div className="flex justify-between text-rose-600">
                                         <span>Descuento (15%)</span>
                                         <span className="font-semibold">-{formatCurrency(discountAmount, currency)}</span>
                                     </div>
@@ -328,14 +328,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </div>
                             <div className="flex justify-between items-end font-bold text-xl pt-3 border-t border-gray-100 text-gray-900">
                                 <span>Total</span>
-                                <span className="text-3xl text-purple-600 tracking-tight">{formatCurrency(total, currency)}</span>
+                                <span className="text-3xl text-rose-600 tracking-tight">{formatCurrency(total, currency)}</span>
                             </div>
                             
                             <div className="flex flex-col gap-3 pt-2">
                                  {/* Updated to call onCheckout instead of direct redirect */}
                                 <button 
                                     onClick={onCheckout}
-                                    className="w-full text-center bg-[#f78df685] hover:bg-white text-black hover:text-black border-2 border-[#f78df6] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-purple-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline"
+                                    className="w-full text-center bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-rose-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline"
                                 >
                                      FINALIZAR COMPRA EN WEB
                                 </button>
@@ -363,7 +363,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                         onClose();
                                         onNavigate('products', 'all');
                                     }}
-                                    className="w-full bg-transparent text-gray-400 hover:text-purple-500 font-medium py-2 text-sm transition-colors underline decoration-transparent hover:decoration-purple-500"
+                                    className="w-full bg-transparent text-gray-400 hover:text-rose-500 font-medium py-2 text-sm transition-colors underline decoration-transparent hover:decoration-rose-500"
                                 >
                                     Seguir Comprando
                                 </button>
@@ -372,8 +372,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                     </>
                 ) : (
                     <div className="flex-grow flex flex-col items-center justify-center text-center p-8 bg-white">
-                        <div className="bg-[#FAF5FF] p-6 rounded-full mb-6 animate-bounce-slow">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="bg-orange-50 p-6 rounded-full mb-6 animate-bounce-slow">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-rose-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                         </div>
@@ -384,7 +384,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                 onClose();
                                 onNavigate('products', 'all');
                             }}
-                            className="bg-[#f78df685] text-black border-2 border-[#f78df6] font-bold py-3 px-10 rounded-full hover:bg-white hover:text-black transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
+                            className="bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold py-3 px-10 rounded-full hover:bg-white hover:text-[var(--color-primary-solid)] transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
                         >
                             Explorar Tienda
                         </button>

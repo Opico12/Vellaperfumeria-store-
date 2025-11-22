@@ -1,12 +1,10 @@
 
-
-
-
 import React from 'react';
 import type { View, Product } from './types';
 import { allProducts } from './products';
 import { ProductCard } from './ProductCard';
-import HeroBanner from './HeroCarousel';
+// FIX: Changed import to use the actual component name. The error was due to HeroCarousel.tsx not having a default export, which will also be fixed.
+import HeroCarousel from './HeroCarousel';
 import type { Currency } from './currency';
 import FeaturesSection from './FeaturesSection';
 import InteractiveCatalogSection from './InteractiveCatalogSection';
@@ -26,7 +24,7 @@ const ProductList: React.FC<{
     return (
         <div className="space-y-20">
             
-            <HeroBanner onNavigate={onNavigate} />
+            <HeroCarousel onNavigate={onNavigate} />
             
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <section>

@@ -5,7 +5,7 @@ import type { Product } from './types';
 
 // --- ICONS ---
 const HeartIcon: React.FC<{isFilled: boolean}> = ({ isFilled }) => (
-    <svg className={`h-6 w-6 transition-colors duration-300 ${isFilled ? 'text-purple-500 fill-current' : 'text-gray-400'}`} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
+    <svg className={`h-6 w-6 transition-colors duration-300 ${isFilled ? 'text-rose-500 fill-current' : 'text-gray-400'}`} viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none">
         <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z" />
     </svg>
 );
@@ -72,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
 
     return (
         <div 
-            className="group relative bg-white border border-purple-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+            className="group relative bg-white border border-orange-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             role="article"
             aria-label={`Producto: ${product.name}`}
         >
@@ -84,12 +84,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                     </span>
                 )}
                 {isDiscounted && (
-                    <span className="bg-purple-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm">
+                    <span className="bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm">
                         -{discountPercentage}%
                     </span>
                 )}
                 {product.isShippingSaver && (
-                    <span className="bg-orange-300 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm">
+                    <span className="bg-orange-400 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm">
                         ENVÍO GRATIS
                     </span>
                 )}
@@ -97,7 +97,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
 
             {/* Wishlist Button */}
             <button 
-                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/90 hover:bg-white shadow-sm transition-colors text-purple-300 hover:text-purple-500"
+                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/90 hover:bg-white shadow-sm transition-colors text-rose-300 hover:text-rose-500"
                 onClick={(e) => {
                     e.stopPropagation();
                     setIsWishlist(!isWishlist);
@@ -109,7 +109,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
 
             {/* Image Section */}
             <div 
-                className="relative aspect-square overflow-hidden bg-gradient-to-b from-white to-[#FAF5FF] cursor-pointer"
+                className="relative aspect-square overflow-hidden bg-gradient-to-b from-white to-orange-50 cursor-pointer"
                 onClick={() => onProductSelect(product)}
             >
                 <img
@@ -127,7 +127,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                             e.stopPropagation();
                             onQuickView(product);
                         }}
-                        className="bg-white/90 backdrop-blur-sm text-purple-600 hover:text-purple-700 text-sm font-bold py-2 px-4 rounded-full shadow-lg hover:bg-purple-50 transition-colors flex items-center gap-2 border border-purple-100"
+                        className="bg-white/90 backdrop-blur-sm text-rose-600 hover:text-rose-700 text-sm font-bold py-2 px-4 rounded-full shadow-lg hover:bg-rose-50 transition-colors flex items-center gap-2 border border-rose-100"
                     >
                         <EyeIcon /> Vista Rápida
                     </button>
@@ -140,14 +140,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                     <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{product.brand}</span>
                     {product.rating && (
                         <div className="flex items-center gap-1">
-                            <StarIcon className="text-amber-300" />
+                            <StarIcon className="text-amber-400" />
                             <span className="text-xs font-medium text-gray-500">{product.rating}</span>
                         </div>
                     )}
                 </div>
 
                 <h3 
-                    className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 hover:text-purple-600 transition-colors cursor-pointer"
+                    className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 hover:text-rose-600 transition-colors cursor-pointer"
                     onClick={() => onProductSelect(product)}
                 >
                     {product.name}
@@ -156,11 +156,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                 {/* Price Section */}
                 <div className="mt-auto pt-2">
                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`text-lg font-bold ${isDiscounted ? 'text-purple-600' : 'text-gray-900'}`}>
+                        <span className={`text-lg font-bold ${isDiscounted ? 'text-rose-600' : 'text-gray-900'}`}>
                             {formatCurrency(product.price, currency)}
                         </span>
                         {isDiscounted && (
-                            <span className="text-sm text-gray-400 line-through decoration-purple-200">
+                            <span className="text-sm text-gray-400 line-through decoration-rose-200">
                                 {formatCurrency(product.regularPrice!, currency)}
                             </span>
                         )}
@@ -171,10 +171,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                         ref={addToCartBtnRef}
                         onClick={handleActionClick}
                         disabled={product.stock === 0}
-                        className={`w-full mt-3 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 shadow-sm hover:shadow-md border-2 border-[#f78df6] ${
+                        className={`w-full mt-3 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 shadow-sm hover:shadow-md border-2 border-[var(--color-primary-solid)] ${
                             product.stock === 0
                                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
-                                : 'bg-[#f78df685] text-black hover:bg-white hover:text-black transform hover:-translate-y-0.5'
+                                : 'bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] transform hover:-translate-y-0.5'
                         }`}
                     >
                         {product.stock === 0 

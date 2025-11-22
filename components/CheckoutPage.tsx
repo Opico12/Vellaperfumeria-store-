@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { CartItem, View } from './types';
 import { type Currency, formatCurrency } from './currency';
 
@@ -36,130 +36,80 @@ const MastercardIcon = () => (
 const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavigate, onClearCart }) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [acceptedTerms, setAcceptedTerms] = useState(false);
-    const [couponCode, setCouponCode] = useState('');
-    const [couponApplied, setCouponApplied] = useState(false);
-    const [statusMessage, setStatusMessage] = useState<string>("");
-    const [vParam, setVParam] = useState<string | null>(null);
-    
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        address: '',
-        city: '',
-        zip: '',
-        phone: ''
-    });
-
-    useEffect(() => {
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            setVParam(urlParams.get('v'));
-        } catch (e) {
-            console.error("Error extracting params", e);
-        }
-    }, []);
-
-    const FREE_SHIPPING_THRESHOLD = 35;
-    const DISCOUNT_THRESHOLD = 35;
-    const DISCOUNT_PERCENTAGE = 0.15;
-    const SHIPPING_COST = 6.00;
+    const [syncProgress, setSyncProgress] = useState(0);
+    const [syncMessage, setSyncMessage] = useState('Sincronizando...');
 
     const subtotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
-    
-    let discountAmount = subtotal >= DISCOUNT_THRESHOLD ? subtotal * DISCOUNT_PERCENTAGE : 0;
-    if (couponApplied) {
-        discountAmount += 5; 
-    }
+    const total = subtotal; 
 
-    const hasShippingSaver = cartItems.some(item => item.product.isShippingSaver);
-    const shippingCost = (hasShippingSaver || subtotal >= FREE_SHIPPING_THRESHOLD) ? 0 : SHIPPING_COST;
-    
-    const total = Math.max(0, subtotal - discountAmount + shippingCost);
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleApplyCoupon = () => {
-        if (couponCode.trim().toLowerCase() === 'vella5') {
-            setCouponApplied(true);
-        } else {
-            alert('Cupón no válido. Prueba con "VELLA5"');
-        }
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         if (!acceptedTerms) {
             alert('Por favor, acepta los términos y condiciones para continuar.');
             return;
         }
+
         setIsProcessing(true);
-        
-        const baseUrl = 'https://vellaperfumeria.com/';
-        
-        let redirectUrl = 'https://vellaperfumeria.com/checkout/';
-        if (vParam) redirectUrl += `?v=${vParam}`;
+        setSyncProgress(0);
 
-        let count = 1;
-        const totalItems = cartItems.length;
-
-        // Contenedor invisible para los iframes
-        const iframeContainer = document.createElement('div');
-        iframeContainer.style.display = 'none';
-        document.body.appendChild(iframeContainer);
-
-        for (const item of cartItems) {
-            setStatusMessage(`Añadiendo producto ${count} de ${totalItems} al carrito oficial...`);
+        // Step 1: Clear the remote cart to avoid duplicates.
+        setSyncMessage('Preparando tu pedido...');
+        await new Promise<void>(resolve => {
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            // Common WooCommerce endpoint to empty the cart.
+            iframe.src = 'https://vellaperfumeria.com/carrito/?empty-cart';
             
-            let idToAdd = item.product.id;
-            
-            if (item.selectedVariant && item.product.variants) {
-                 Object.entries(item.selectedVariant).forEach(([key, value]) => {
-                    const variantOptions = item.product.variants?.[key];
-                    if (variantOptions) {
-                        const selectedOption = variantOptions.find(opt => opt.value === value);
-                        if (selectedOption && selectedOption.variationId) {
-                            idToAdd = selectedOption.variationId;
-                        }
-                    }
-                });
-            }
+            const cleanup = () => {
+                if (document.body.contains(iframe)) document.body.removeChild(iframe);
+                resolve();
+            };
 
-            // Usamos iframes para forzar al navegador a procesar la sesión en el dominio destino
-            await new Promise<void>((resolve) => {
+            iframe.onload = cleanup;
+            setTimeout(cleanup, 2000); // Timeout fallback
+            document.body.appendChild(iframe);
+        });
+
+        // Step 2: Add each item to the cart sequentially for better reliability.
+        setSyncMessage('Añadiendo productos a tu cesta...');
+        for (let i = 0; i < cartItems.length; i++) {
+            const item = cartItems[i];
+            // Note: This adds the product ID. If variations are complex they might need variation_id, but for simple products ID is sufficient.
+            const addToCartUrl = `https://vellaperfumeria.com/?add-to-cart=${item.product.id}&quantity=${item.quantity}`;
+            
+            await new Promise<void>(resolve => {
                 const iframe = document.createElement('iframe');
-                // Añadimos timestamp para evitar caché
-                let addToCartUrl = `${baseUrl}?add-to-cart=${idToAdd}&quantity=${item.quantity}&t=${Date.now()}`;
-                if (vParam) addToCartUrl += `&v=${vParam}`;
-                
+                iframe.style.display = 'none';
                 iframe.src = addToCartUrl;
-                iframe.onload = () => resolve();
-                iframe.onerror = () => resolve(); // Continuamos aunque haya error visual
-                iframeContainer.appendChild(iframe);
                 
-                // Tiempo de seguridad por si el onload no dispara (común en cross-origin)
-                setTimeout(() => resolve(), 1500); 
+                const cleanup = () => {
+                    if (document.body.contains(iframe)) document.body.removeChild(iframe);
+                    resolve();
+                };
+
+                iframe.onload = () => {
+                    setSyncProgress(Math.round(((i + 1) / cartItems.length) * 100));
+                    cleanup();
+                };
+                setTimeout(cleanup, 3000); // More generous fallback timeout per item
+                document.body.appendChild(iframe);
             });
-
-            count++;
         }
+        
+        setSyncMessage('¡Todo listo! Redirigiendo al pago...');
+        onClearCart();
 
-        setStatusMessage("¡Todo listo! Redirigiendo al pago seguro...");
-        setTimeout(() => {
-            window.location.href = redirectUrl;
-        }, 1000);
+        // Step 3: Redirect the user to the specific Checkout Page ID provided (19037)
+        // Using window.top.location to break out of any frames and ensure full page load.
+        window.top.location.href = 'https://vellaperfumeria.com/?page_id=19037';
     };
 
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0 && !isProcessing) {
         return (
             <div className="bg-gray-50 min-h-screen flex flex-col">
                 <header className="bg-white border-b border-gray-200 py-4 sticky top-0 z-10">
                     <div className="container mx-auto px-4 flex justify-center">
                          <button onClick={() => onNavigate('home')}>
-                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-20 w-auto" />
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-24 w-auto object-contain" />
                         </button>
                     </div>
                 </header>
@@ -169,279 +119,53 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                         <p className="text-gray-500 mb-8">Parece que aún no has elegido tus productos de belleza favoritos.</p>
                         <button 
                             onClick={() => onNavigate('products', 'all')}
-                            className="bg-brand-purple text-brand-primary font-bold py-3 px-8 rounded-lg hover:bg-brand-purple-dark transition-colors shadow-md w-full"
+                            className="bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold py-3 px-8 rounded-lg hover:bg-white hover:text-[var(--color-primary-solid)] transition-colors shadow-md w-full"
                         >
                             Ir a la Tienda
                         </button>
                     </div>
                 </div>
-                <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
-                    <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
-                        <img 
-                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
-                            alt="Vellaperfumeria" 
-                            className="h-12 w-auto" 
-                        />
-                        <p className="text-sm text-gray-400">© {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
-                    </div>
-                </footer>
             </div>
         );
     }
 
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col font-sans">
-             {/* Dedicated Checkout Header - CENTRADO Y ARRIBA */}
             <header className="bg-white border-b border-gray-200 py-6 sticky top-0 z-20 shadow-sm">
                 <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-3">
                     <button onClick={() => onNavigate('home')} className="hover:opacity-80 transition-opacity">
-                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-32 w-auto object-contain" />
+                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-40 w-auto object-contain" />
                     </button>
-                    <div className="flex items-center text-sm font-medium text-gray-500">
-                        <span className="mr-2">¿Necesitas ayuda?</span>
-                        <button onClick={() => onNavigate('contact')} className="text-brand-purple-dark hover:underline font-semibold">Contactar</button>
-                    </div>
                 </div>
             </header>
 
             <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-8 text-center">
-                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Finalizar Compra</h1>
-                    <p className="text-gray-500 mt-2">Pago seguro y envío rápido.</p>
+                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Resumen del Pedido</h1>
+                    <p className="text-gray-500 mt-2">Confirma tus productos para proceder al pago.</p>
                 </div>
                 
                 <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
-                    {/* Left Column: Forms */}
+                    {/* Left Column: Summary Detail */}
                     <div className="lg:w-2/3 space-y-6">
-                        {/* Shipping Form */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
-                            <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center pb-4 border-b border-gray-100">
-                                <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">1</span>
-                                Datos de Envío
+                            <h2 className="text-xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-100">
+                                Artículos seleccionados ({cartItems.length})
                             </h2>
-                            <form id="checkout-form" onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Nombre <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" name="firstName" required 
-                                        value={formData.firstName} onChange={handleInputChange}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
-                                        placeholder="Tu nombre"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Apellidos <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" name="lastName" required 
-                                        value={formData.lastName} onChange={handleInputChange}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
-                                        placeholder="Tus apellidos"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Dirección completa <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" name="address" required 
-                                        value={formData.address} onChange={handleInputChange}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
-                                        placeholder="Calle, número, piso..."
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Ciudad <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" name="city" required 
-                                        value={formData.city} onChange={handleInputChange}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Código Postal <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="text" name="zip" required 
-                                        value={formData.zip} onChange={handleInputChange}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Correo Electrónico <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="email" name="email" required 
-                                        value={formData.email} onChange={handleInputChange}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
-                                        placeholder="ejemplo@email.com"
-                                    />
-                                </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Teléfono <span className="text-red-500">*</span></label>
-                                    <input 
-                                        type="tel" name="phone" required 
-                                        value={formData.phone} onChange={handleInputChange}
-                                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all outline-none"
-                                        placeholder="Para notificaciones de entrega"
-                                    />
-                                </div>
-                            </form>
-                        </div>
-
-                        {/* Payment Methods */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
-                             <h2 className="text-xl font-bold text-gray-800 mb-6 flex items-center pb-4 border-b border-gray-100">
-                                <span className="w-8 h-8 bg-black text-white rounded-full flex items-center justify-center mr-3 text-sm font-bold">2</span>
-                                Método de Pago
-                            </h2>
-                            <div className="space-y-4">
-                                <label className="relative flex items-center p-4 border-2 border-brand-purple bg-brand-purple/5 rounded-xl cursor-pointer transition-all hover:bg-brand-purple/10">
-                                    <input type="radio" name="payment" defaultChecked className="h-5 w-5 text-brand-primary focus:ring-brand-purple border-gray-300" />
-                                    <span className="ml-4 font-bold text-gray-900">Tarjeta de Crédito / Débito</span>
-                                    <div className="ml-auto flex gap-2 grayscale-0">
-                                        <VisaIcon />
-                                        <MastercardIcon />
-                                    </div>
-                                </label>
-                                <label className="flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all hover:border-brand-purple">
-                                    <input type="radio" name="payment" className="h-5 w-5 text-brand-primary focus:ring-brand-purple border-gray-300" />
-                                    <span className="ml-4 font-medium text-gray-700">PayPal</span>
-                                    <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_37x23.jpg" alt="PayPal" className="ml-auto h-6" />
-                                </label>
-                                 <label className="flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all hover:border-brand-purple">
-                                    <input type="radio" name="payment" className="h-5 w-5 text-brand-primary focus:ring-brand-purple border-gray-300" />
-                                    <span className="ml-4 font-medium text-gray-700">Bizum</span>
-                                    <span className="ml-auto font-bold text-brand-primary tracking-tight">bizum</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right Column: Summary */}
-                    <div className="lg:w-1/3">
-                        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sticky top-32">
-                            <h3 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">Resumen del Pedido</h3>
-                            
-                            <div className="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="space-y-6">
                                 {cartItems.map(item => (
-                                    <div key={item.id} className="flex gap-4 text-sm">
+                                    <div key={item.id} className="flex gap-4 sm:gap-6 items-start">
                                         <div className="relative flex-shrink-0">
-                                            <img src={item.product.imageUrl} alt={item.product.name} className="w-16 h-16 object-contain rounded-lg border border-gray-100 bg-white" />
-                                            <span className="absolute -top-2 -right-2 bg-brand-purple text-brand-primary font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
+                                            <img src={item.product.imageUrl} alt={item.product.name} className="w-24 h-24 object-contain rounded-lg border border-gray-100 bg-white" />
+                                            <span className="absolute -top-2 -right-2 bg-rose-500 text-white font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center shadow-sm border border-white">
                                                 {item.quantity}
                                             </span>
                                         </div>
                                         <div className="flex-grow">
-                                            <p className="font-medium text-gray-800 line-clamp-2">{item.product.name}</p>
-                                            <p className="text-gray-500 mt-1 text-xs">{item.selectedVariant ? Object.values(item.selectedVariant).join(', ') : ''}</p>
-                                        </div>
-                                        <div className="font-bold text-gray-900">
-                                            {formatCurrency(item.product.price * item.quantity, currency)}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Coupon Code */}
-                            <div className="mb-6">
-                                <div className="flex gap-2">
-                                    <input 
-                                        type="text" 
-                                        placeholder="Código de cupón" 
-                                        className="flex-grow border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-1 focus:ring-brand-purple focus:border-brand-purple outline-none"
-                                        value={couponCode}
-                                        onChange={(e) => setCouponCode(e.target.value)}
-                                    />
-                                    <button 
-                                        type="button"
-                                        onClick={handleApplyCoupon}
-                                        className="bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-black transition-colors"
-                                    >
-                                        Aplicar
-                                    </button>
-                                </div>
-                                {couponApplied && <p className="text-green-600 text-xs mt-2 font-medium">¡Cupón aplicado correctamente!</p>}
-                            </div>
-
-                            <div className="border-t border-gray-100 pt-4 space-y-3 text-sm mb-6">
-                                <div className="flex justify-between text-gray-600">
-                                    <span>Subtotal</span>
-                                    <span className="font-medium text-gray-900">{formatCurrency(subtotal, currency)}</span>
-                                </div>
-                                {discountAmount > 0 && (
-                                    <div className="flex justify-between text-brand-purple-dark font-medium">
-                                        <span>Descuentos</span>
-                                        <span>-{formatCurrency(discountAmount, currency)}</span>
-                                    </div>
-                                )}
-                                <div className="flex justify-between text-gray-600">
-                                    <span>Envío</span>
-                                    <span className="font-medium text-gray-900">{shippingCost === 0 ? 'GRATIS' : formatCurrency(shippingCost, currency)}</span>
-                                </div>
-                            </div>
-
-                            <div className="border-t border-gray-200 pt-4 mb-6">
-                                <div className="flex justify-between items-end">
-                                    <span className="text-base font-bold text-gray-900">Total</span>
-                                    <span className="text-2xl font-extrabold text-brand-primary">{formatCurrency(total, currency)}</span>
-                                </div>
-                                <p className="text-xs text-gray-500 mt-1 text-right">IVA incluido</p>
-                            </div>
-
-                             <div className="mb-6">
-                                <label className="flex items-start gap-3 cursor-pointer group">
-                                    <input 
-                                        type="checkbox" 
-                                        className="mt-1 h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-purple" 
-                                        checked={acceptedTerms}
-                                        onChange={(e) => setAcceptedTerms(e.target.checked)}
-                                    />
-                                    <span className="text-xs text-gray-600 group-hover:text-gray-800 transition-colors">
-                                        He leído y acepto los <a href="#" className="underline hover:text-brand-purple-dark">Términos y Condiciones</a> y la <a href="#" className="underline hover:text-brand-purple-dark">Política de Privacidad</a>.
-                                    </span>
-                                </label>
-                            </div>
-                            
-                            <button 
-                                type="submit" 
-                                form="checkout-form"
-                                disabled={isProcessing}
-                                className="w-full bg-black text-white font-bold py-4 px-6 rounded-xl hover:bg-gray-800 transition-all shadow-lg transform active:scale-95 flex justify-center items-center disabled:opacity-70 disabled:cursor-wait disabled:transform-none"
-                            >
-                                {isProcessing ? (
-                                    <>
-                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        {statusMessage || 'Procesando...'}
-                                    </>
-                                ) : 'Realizar el Pedido'}
-                            </button>
-                            
-                            <div className="mt-6 flex items-center justify-center gap-2 text-gray-400 text-[10px] uppercase tracking-wider">
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                                <span>Pago Seguro SSL Encrypt</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            {/* Dedicated Checkout Footer */}
-             <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
-                <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
-                    <img 
-                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
-                        alt="Vellaperfumeria" 
-                        className="h-12 w-auto" 
-                    />
-                    <p className="text-sm text-gray-400">© {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
-                    <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-xs text-gray-400 uppercase tracking-wide text-center">
-                        <button className="hover:text-white hover:underline transition-colors">Privacidad</button>
-                        <button className="hover:text-white hover:underline transition-colors">Términos</button>
-                        <button className="hover:text-white hover:underline transition-colors">Envíos</button>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    );
-};
-
-export default CheckoutPage;
+                                            <h3 className="font-bold text-gray-900 text-base sm:text-lg">{item.product.name}</h3>
+                                            <p className="text-sm text-gray-500 mb-2">{item.product.brand}</p>
+                                            {item.selectedVariant && (
+                                                <div className="flex flex-wrap gap-2 mb-2">
+                                                    {Object.entries(item.selectedVariant).map(([key, value]) => (
+                                                        <span key={key} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+                                                            {key

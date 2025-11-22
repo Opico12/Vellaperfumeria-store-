@@ -153,7 +153,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
             <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
                 <div className="md:flex">
                     {/* Product Image Gallery */}
-                    <div className="md:w-1/2 bg-[#FAF5FF] p-8 relative group">
+                    <div className="md:w-1/2 bg-orange-50/50 p-8 relative group">
                         <div className="relative aspect-square rounded-2xl bg-white shadow-inner p-4 cursor-zoom-in" onClick={() => setIsLightboxOpen(true)}>
                             <img 
                                 src={currentImageUrl} 
@@ -161,7 +161,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 className="w-full h-full object-contain transition-transform duration-500 hover:scale-105" 
                             />
                             {isDiscounted && (
-                                <div className="absolute top-4 left-4 bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">
+                                <div className="absolute top-4 left-4 bg-orange-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">
                                     -{discountPercentage}%
                                 </div>
                             )}
@@ -181,7 +181,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                             const type = Object.keys(product.variants!).find(key => product.variants![key].includes(opt));
                                             if (type) handleVariantChange(type, opt.value);
                                         }}
-                                        className={`w-16 h-16 border-2 rounded-lg overflow-hidden flex-shrink-0 ${currentImageUrl === opt.imageUrl ? 'border-purple-500' : 'border-transparent hover:border-purple-300'}`}
+                                        className={`w-16 h-16 border-2 rounded-lg overflow-hidden flex-shrink-0 ${currentImageUrl === opt.imageUrl ? 'border-rose-500' : 'border-transparent hover:border-rose-300'}`}
                                     >
                                         <img src={opt.imageUrl!} alt={opt.value} className="w-full h-full object-cover" />
                                     </button>
@@ -193,7 +193,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     {/* Product Info */}
                     <div className="md:w-1/2 p-8 md:p-12 flex flex-col">
                         <div className="mb-2">
-                            <span className="text-sm font-bold text-purple-600 uppercase tracking-wider">{product.brand}</span>
+                            <span className="text-sm font-bold text-rose-600 uppercase tracking-wider">{product.brand}</span>
                         </div>
                         <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">{product.name}</h1>
                         
@@ -220,7 +220,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
                         <div className="mb-8">
                             <div className="flex items-baseline gap-3">
-                                <span className="text-4xl font-bold text-purple-700">{formatCurrency(product.price, currency)}</span>
+                                <span className="text-4xl font-bold text-rose-700">{formatCurrency(product.price, currency)}</span>
                                 {isDiscounted && (
                                     <span className="text-xl text-gray-400 line-through">{formatCurrency(product.regularPrice!, currency)}</span>
                                 )}
@@ -244,7 +244,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                     return (
                                         <div key={type}>
                                             <h3 className="text-sm font-bold text-gray-800 mb-3 uppercase tracking-wide">
-                                                {type}: <span className="text-purple-600">{selectedVariant?.[type]}</span>
+                                                {type}: <span className="text-rose-600">{selectedVariant?.[type]}</span>
                                             </h3>
                                             <div className="flex flex-wrap gap-3">
                                                 {options.map(option => {
@@ -254,7 +254,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                             <button
                                                                 key={option.value}
                                                                 onClick={() => handleVariantChange(type, option.value)}
-                                                                className={`w-10 h-10 rounded-full border-2 shadow-sm transition-all transform hover:scale-110 ${isSelected ? 'border-purple-600 ring-2 ring-offset-2 ring-purple-200' : 'border-white'}`}
+                                                                className={`w-10 h-10 rounded-full border-2 shadow-sm transition-all transform hover:scale-110 ${isSelected ? 'border-rose-600 ring-2 ring-offset-2 ring-rose-200' : 'border-white'}`}
                                                                 style={{ backgroundColor: option.colorCode }}
                                                                 aria-label={`Seleccionar color ${option.value}`}
                                                                 title={option.value}
@@ -265,7 +265,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                                         <button
                                                             key={option.value}
                                                             onClick={() => handleVariantChange(type, option.value)}
-                                                            className={`px-4 py-2 text-sm font-medium rounded-lg border-2 transition-all ${isSelected ? 'bg-black text-white border-black shadow-md' : 'bg-white text-gray-700 border-gray-200 hover:border-purple-300 hover:text-purple-600'}`}
+                                                            className={`px-4 py-2 text-sm font-medium rounded-lg border-2 transition-all ${isSelected ? 'bg-black text-white border-black shadow-md' : 'bg-white text-gray-700 border-gray-200 hover:border-rose-300 hover:text-rose-600'}`}
                                                         >
                                                             {option.value}
                                                         </button>
@@ -285,7 +285,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                     ref={addToCartBtnRef}
                                     onClick={() => onAddToCart(product, addToCartBtnRef.current, selectedVariant)}
                                     disabled={isOutOfStock}
-                                    className={`flex-1 bg-[#f78df685] text-black border-2 border-[#f78df6] font-bold text-lg py-4 px-8 rounded-xl shadow-lg hover:shadow-purple-200 transition-all transform hover:-translate-y-1 hover:bg-white hover:text-black ${isOutOfStock ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-200 shadow-none' : ''}`}
+                                    className={`flex-1 bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold text-lg py-4 px-8 rounded-xl shadow-lg hover:shadow-rose-200 transition-all transform hover:-translate-y-1 hover:bg-white hover:text-[var(--color-primary-solid)] ${isOutOfStock ? 'bg-gray-200 text-gray-400 cursor-not-allowed border-gray-200 shadow-none hover:text-gray-400 hover:bg-gray-200 hover:transform-none' : ''}`}
                                 >
                                     {isOutOfStock ? 'Agotado' : 'Añadir a la cesta'}
                                 </button>
@@ -294,11 +294,11 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                             {/* Value Props */}
                             <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-100 text-sm text-gray-600">
                                 <div className="flex items-center gap-2">
-                                    <TruckIcon className="text-purple-500" />
+                                    <TruckIcon className="text-rose-500" />
                                     <span>Envío rápido 24/48h</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <SparklesIcon className="text-purple-500" />
+                                    <SparklesIcon className="text-rose-500" />
                                     <span>Garantía de calidad</span>
                                 </div>
                             </div>
@@ -322,7 +322,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                     <div className="border-b border-gray-100 pb-6">
                         <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center">
                                     <UserIcon />
                                 </div>
                                 <span className="font-semibold text-gray-900">María G.</span>
@@ -334,7 +334,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                      <div className="border-b border-gray-100 pb-6">
                         <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                <div className="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center">
                                     <UserIcon />
                                 </div>
                                 <span className="font-semibold text-gray-900">Laura P.</span>

@@ -76,7 +76,7 @@ const ShopPage: React.FC<{
                                     onClick={() => setActiveCategory(cat.key)}
                                     className={`w-full text-left px-3 py-2 rounded-md transition-colors text-sm ${
                                         activeCategory === cat.key
-                                            ? 'bg-[#f78df685] text-black font-bold border border-[#f78df6]'
+                                            ? 'bg-[var(--color-primary)] text-black font-bold border border-[var(--color-primary-solid)]'
                                             : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                                 >
@@ -88,7 +88,7 @@ const ShopPage: React.FC<{
                 </aside>
 
                 <main className="w-full md:w-3/4 lg:w-4/5">
-                    <h1 className="text-2xl font-bold text-purple-600 tracking-tight mb-4">{currentCategoryName}</h1>
+                    <h1 className="text-2xl font-bold text-rose-600 tracking-tight mb-4">{currentCategoryName}</h1>
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 p-4 bg-white rounded-lg shadow-sm border">
                         <p className="text-sm text-gray-700">
                            Mostrando {filteredAndSortedProducts.length} productos
@@ -96,7 +96,7 @@ const ShopPage: React.FC<{
                         <form className="woocommerce-ordering">
                             <select 
                                 name="orderby" 
-                                className="orderby border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-purple-400 focus:border-purple-400 bg-white"
+                                className="orderby border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-rose-400 focus:border-rose-400 bg-white"
                                 aria-label="Pedido de la tienda"
                                 value={sortOrder}
                                 onChange={handleSortChange}

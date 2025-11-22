@@ -6,7 +6,7 @@ import type { Currency } from './currency';
 // Social Icons
 const ThreadsIcon = () => (
     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M8.01 3.51c-1.35 0-2.45 1.1-2.45 2.45v.38c0 .28.22.5.5.5h1.5c.28 0 .5-.22.5-.5v-.38c0-.69.56-1.25 1.25-1.25h.19c.69 0 1.25.56 1.25 1.25v2.87c0 1.35-1.1 2.45-2.45 2.45h-.87c-.28 0-.5.22-.5.5v1.5c0 .28.22.5.5.5h.87c2.21 0 4-1.79 4-4V5.96c0-1.35-1.1-2.45-2.45-2.45h-2.12zm-3.09 3.1h-1.5c-.28 0-.5.22-.5.5v.38c0 1.35 1.1 2.45 2.45 2.45h.19c.69 0 1.25-.56 1.25-1.25V5.96c0-1.35-1.1-2.45-2.45-2.45H3.01c-1.35 0-2.45 1.1-2.45 2.45v2.12c0 2.21 1.79 4 4 4h.87c.28 0 .5-.22.5-.5v-1.5c0-.28-.22-.5-.5-.5h-.87c-.69 0-1.25-.56-1.25-1.25v-.38c0-.28-.22-.5-.5-.5z"/>
+        <path d="M8.01 3.51c-1.35 0-2.45 1.1-2.45 2.45v.38c0 .28.22.5.5.5h1.5c.28 0 .5-.22.5-.5v-.38c0-.69.56-1.25 1.25-1.25h.19c.69 0 1.25.56 1.25 1.25v2.87c0 1.35-1.1 2.45-2.45 2.45h-.87c-.28 0-.5.22-.5.5v1.5c0 .28.22.5.5.5h.87c2.21 0 4-1.79 4-4V5.96c0-1.35-1.1-2.45-2.45-2.45h-2.12zm-3.09 3.1h-1.5c-.28 0-.5.22-.5.5v.38c0 1.35 1.1 2.45 2.45 2.45h.19c.69 0 1.25-.56 1.25-1.25V5.96c0-1.35-1.1-2.45-2.45-2.45H3.01c-1.35 0-2.45 1.1-2.45 2.45v2.12c0 2.21 1.79 4 4 4h.87c-.28 0-.5.22-.5.5v-1.5c0-.28-.22-.5-.5-.5h-.87c-.69 0-1.25-.56-1.25-1.25v-.38c0-.28-.22-.5-.5-.5z"/>
     </svg>
 );
 
@@ -43,13 +43,13 @@ const CartIcon = () => (
 const NavLink: React.FC<{ onClick?: () => void, href?: string, children: React.ReactNode, className?: string }> = ({ onClick, href, children, className }) => {
     if (href) {
         return (
-            <a href={href} target="_self" className={`text-base font-medium text-black hover:text-[#f78df6] transition-colors duration-200 ${className}`}>
+            <a href={href} target="_self" className={`text-base font-medium text-black hover:text-[var(--color-primary-solid)] transition-colors duration-200 ${className}`}>
                 <span className="hover-underline-effect">{children}</span>
             </a>
         );
     }
     return (
-        <button onClick={onClick} className={`text-base font-medium text-black hover:text-[#f78df6] transition-colors duration-200 ${className}`}>
+        <button onClick={onClick} className={`text-base font-medium text-black hover:text-[var(--color-primary-solid)] transition-colors duration-200 ${className}`}>
             <span className="hover-underline-effect">{children}</span>
         </button>
     );
@@ -112,8 +112,8 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-30">
-            {/* Top Bar: Transparent Pink Background #f78df685, Black Text, Black Icons */}
-            <div className="bg-[#f78df685] text-black py-1 text-[10px] md:text-xs font-medium border-b border-[#f78df6]/20">
+            {/* Top Bar */}
+            <div className="bg-[var(--color-primary)] text-black py-1 text-[10px] md:text-xs font-medium border-b border-rose-200/50">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div className="hidden md:flex items-center space-x-3 text-black">
                         <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Threads"><ThreadsIcon /></span>
@@ -145,21 +145,21 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
                         <a href={homeUrl} target="_self" className="pointer-events-auto block cursor-pointer transition-transform hover:scale-105 duration-300">
                             <img 
-                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                                 alt="Vellaperfumeria Logo" 
-                                className="h-20 w-auto object-contain" 
+                                className="h-24 w-auto object-contain" 
                             />
                         </a>
                     </div>
 
                     <div className="z-20">
                         <button 
-                            className={`cart-dest-icon relative p-2 text-black hover:text-[#f78df6] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
+                            className={`cart-dest-icon relative p-2 text-black hover:text-[var(--color-primary-solid)] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
                             onClick={onCartClick}
                         >
                             <CartIcon />
                             {cartCount > 0 && (
-                                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-black rounded-full border-2 border-white">
+                                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-orange-500 rounded-full border-2 border-white">
                                     {cartCount}
                                 </span>
                             )}
@@ -173,21 +173,21 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <div className="w-full flex justify-center items-center relative mb-4">
                         <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300">
                             <img 
-                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                                 alt="Vellaperfumeria Logo" 
-                                className="h-32 w-auto object-contain" 
+                                className="h-28 w-auto object-contain" 
                             />
                         </a>
 
                         {/* Cart Icon - Absolute Right in the Logo Row */}
                         <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
                             <button 
-                                className={`cart-dest-icon relative p-2 text-black hover:text-[#f78df6] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
+                                className={`cart-dest-icon relative p-2 text-black hover:text-[var(--color-primary-solid)] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
                                 onClick={onCartClick}
                             >
                                 <CartIcon />
                                 {cartCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-black rounded-full border-2 border-white">
+                                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-orange-500 rounded-full border-2 border-white">
                                         {cartCount}
                                     </span>
                                 )}
@@ -212,20 +212,20 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 <div className="fixed inset-0 z-50 md:hidden">
                     <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)}></div>
                     <div ref={navRef} className="absolute top-0 left-0 w-4/5 max-w-xs h-full bg-white shadow-xl flex flex-col transform transition-transform duration-300 ease-in-out">
-                        <div className="p-5 flex justify-between items-center border-b bg-[#FAF5FF]">
-                            <span className="font-bold text-lg text-[#f78df6]">Menú</span>
+                        <div className="p-5 flex justify-between items-center border-b bg-[var(--color-secondary)]">
+                            <span className="font-bold text-lg text-[var(--color-primary-solid)]">Menú</span>
                             <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-gray-500">
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                         </div>
                         <div className="flex-grow overflow-y-auto py-4">
-                             <a href={homeUrl} target="_self" className="block px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Inicio</a>
-                             <button onClick={() => handleMobileNav('products', 'all')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Tienda</button>
-                             <button onClick={() => handleMobileNav('ofertas')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Ideas Regalo</button>
-                             <button onClick={() => handleMobileNav('catalog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Catálogo</button>
-                             <button onClick={() => handleMobileNav('ia')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Asistente IA</button>
-                             <button onClick={() => handleMobileNav('blog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Blog</button>
-                             <button onClick={() => handleMobileNav('contact')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-purple-50 hover:text-[#f78df6]">Ayuda / Contacto</button>
+                             <a href={homeUrl} target="_self" className="block px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Inicio</a>
+                             <button onClick={() => handleMobileNav('products', 'all')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Tienda</button>
+                             <button onClick={() => handleMobileNav('ofertas')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Ideas Regalo</button>
+                             <button onClick={() => handleMobileNav('catalog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Catálogo</button>
+                             <button onClick={() => handleMobileNav('ia')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Asistente IA</button>
+                             <button onClick={() => handleMobileNav('blog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Blog</button>
+                             <button onClick={() => handleMobileNav('contact')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Ayuda / Contacto</button>
                         </div>
                     </div>
                 </div>

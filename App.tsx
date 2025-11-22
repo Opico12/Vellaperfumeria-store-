@@ -300,7 +300,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[#FAF5FF] font-sans text-gray-800">
+        <div className="flex flex-col min-h-screen bg-[var(--color-secondary)] font-sans text-gray-800">
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
@@ -344,48 +344,44 @@ const App: React.FC = () => {
             
             <style>{`
                 :root {
-                    /* Primary color: Transparent Pink #f78df685 */
-                    --color-primary: #f78df685;
-                    /* Solid fallback: Pink #f78df6 */
-                    --color-primary-solid: #f78df6; 
-                    --color-secondary: #FAF5FF;
-                    --color-accent: #f78df6; 
+                    --color-primary: #f78df685; /* Transparent Rose requested by user */
+                    --color-primary-solid: #d946ef; /* Solid Fuchsia/Rose for text/borders */
+                    --color-secondary: #fff7ed; /* orange-50 */
+                    --color-accent: #f97316; /* orange-500 */
                 }
                 /* Global Selection Color */
                 ::selection {
-                    background-color: #f78df6;
+                    background-color: var(--color-primary-solid);
                     color: white;
                 }
                 
                 .btn-primary {
                     background-color: var(--color-primary);
-                    color: black !important; /* Enforced black text for buttons */
+                    color: black !important; /* Black text for legibility on light transparent pink */
                     padding: 0.75rem 1.5rem;
                     border-radius: 0.75rem;
                     font-weight: 600;
-                    transition: all 0.2s;
+                    transition: all 0.3s ease;
                     border: 2px solid var(--color-primary-solid);
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
                 }
                 .btn-primary:hover {
                     background-color: white;
-                    color: black !important;
-                    transform: translateY(-1px);
+                    color: var(--color-primary-solid) !important; /* Pink text on white background */
                     border-color: var(--color-primary-solid);
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
                 }
+                
                  .bg-brand-primary { background-color: var(--color-primary); }
-                 .text-brand-primary { color: black; }
+                 .text-brand-primary { color: var(--color-primary-solid); }
                  
-                 /* Brand Colors */
-                 .bg-brand-purple { background-color: #FAF5FF; }
-                 .text-brand-purple { color: #f78df6; }
+                 .bg-brand-secondary { background-color: var(--color-secondary); }
+                 .text-brand-accent { color: var(--color-accent); }
                  
-                 .bg-brand-purple-dark { background-color: var(--color-primary-solid); }
-                 .text-brand-purple-dark { color: #c85cc8; } 
+                 .border-brand-primary { border-color: var(--color-primary-solid); }
                  
-                 .border-brand-purple { border-color: var(--color-primary-solid); }
-                 .border-brand-purple-dark { border-color: #f78df6; }
-                 
-                 .ring-brand-purple { --tw-ring-color: var(--color-primary-solid); }
+                 .ring-brand-primary { --tw-ring-color: var(--color-primary-solid); }
 
                  .hover-underline-effect {
                     display: inline-block;
