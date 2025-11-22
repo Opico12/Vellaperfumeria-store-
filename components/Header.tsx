@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -144,9 +145,9 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
                         <a href={homeUrl} target="_self" className="pointer-events-auto block cursor-pointer transition-transform hover:scale-105 duration-300">
                             <img 
-                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                                 alt="Vellaperfumeria Logo" 
-                                className="h-14 w-auto object-contain" 
+                                className="h-16 w-auto object-contain" 
                             />
                         </a>
                     </div>
@@ -172,7 +173,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                     <div className="w-full flex justify-center items-center relative mb-4">
                         <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300">
                             <img 
-                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                                 alt="Vellaperfumeria Logo" 
                                 className="h-28 w-auto object-contain" 
                             />

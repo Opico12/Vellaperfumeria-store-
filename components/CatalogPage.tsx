@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { allProducts } from './products';
 import { ProductCard } from './ProductCard';
@@ -94,14 +95,13 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                 
                 {/* Catalog Viewer */}
                 <div className="flex-grow flex flex-col min-w-0">
-                    {/* New Centered Header Layout for Catalog Page */}
-                    <div className="mb-8 flex flex-col items-center justify-center text-center">
+                    <div className="mb-4 flex items-center gap-4 flex-wrap md:flex-nowrap justify-center md:justify-start">
                         <img 
-                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
+                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                             alt="Vellaperfumeria Logo" 
-                            className="h-32 w-auto object-contain mb-4" 
+                            className="h-20 w-auto object-contain" 
                         />
-                        <div>
+                        <div className="text-center md:text-left">
                             <h1 className="text-3xl md:text-4xl font-extrabold text-black tracking-tight font-serif">Catálogo Actual (C16)</h1>
                             <p className="text-sm text-gray-600 mt-1">
                                 Explora el Catálogo 16 y descubre las mejores ofertas de temporada.

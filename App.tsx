@@ -158,62 +158,6 @@ const App: React.FC = () => {
         handleNavigate('productDetail', product);
     };
 
-    const runAddToCartAnimation = (buttonElement: HTMLButtonElement) => {
-        // Find the VISIBLE cart icon target (we have two in DOM now, one for mobile, one for desktop)
-        const targets = document.getElementsByClassName('cart-dest-icon');
-        let cartIcon = null;
-        
-        for (let i = 0; i < targets.length; i++) {
-            const rect = targets[i].getBoundingClientRect();
-            // Check if the element has dimensions (is visible)
-            if (rect.width > 0 && rect.height > 0) {
-                cartIcon = targets[i];
-                break;
-            }
-        }
-
-        if (!cartIcon || !buttonElement) return;
-
-        const buttonRect = buttonElement.getBoundingClientRect();
-        const cartRect = cartIcon.getBoundingClientRect();
-
-        // Try to find an image to clone (look in the card)
-        const card = buttonElement.closest('[role="article"]') || buttonElement.closest('.group');
-        const img = card?.querySelector('img');
-        
-        const ghost = document.createElement(img ? 'img' : 'div');
-        if (img && ghost instanceof HTMLImageElement) {
-             ghost.src = img.src;
-             ghost.style.objectFit = 'contain';
-        } else {
-             ghost.style.backgroundColor = '#f78df6';
-        }
-        
-        ghost.style.position = 'fixed';
-        ghost.style.zIndex = '9999';
-        ghost.style.left = `${buttonRect.left}px`;
-        ghost.style.top = `${buttonRect.top}px`;
-        ghost.style.width = '50px';
-        ghost.style.height = '50px';
-        ghost.style.borderRadius = '50%';
-        ghost.style.pointerEvents = 'none';
-        ghost.style.transition = 'all 0.8s cubic-bezier(0.2, 1, 0.3, 1)';
-        ghost.classList.add('shadow-xl', 'border-2', 'border-white');
-
-        document.body.appendChild(ghost);
-
-        requestAnimationFrame(() => {
-            ghost.style.left = `${cartRect.left + cartRect.width / 2 - 25}px`;
-            ghost.style.top = `${cartRect.top + cartRect.height / 2 - 25}px`;
-            ghost.style.opacity = '0';
-            ghost.style.transform = 'scale(0.1)';
-        });
-
-        ghost.addEventListener('transitionend', () => {
-            if (ghost.parentNode) document.body.removeChild(ghost);
-        });
-    };
-
     const handleAddToCart = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
         const cartItemId = selectedVariant 
             ? `${product.id}-${Object.values(selectedVariant).join('-')}`
@@ -229,11 +173,6 @@ const App: React.FC = () => {
             setCartItems([...cartItems, { id: cartItemId, product, quantity: 1, selectedVariant }]);
         }
         
-        // Trigger Animation if button ref exists
-        if (buttonElement) {
-            runAddToCartAnimation(buttonElement);
-        }
-
         setIsCartOpen(true);
     };
     
@@ -360,26 +299,20 @@ const App: React.FC = () => {
         return crumbs;
     };
 
-    const isCheckout = view.current === 'checkout';
-
     return (
         <div className="flex flex-col min-h-screen bg-[#FAF5FF] font-sans text-gray-800">
-            {!isCheckout && (
-                <Header
-                    onNavigate={handleNavigate}
-                    currency={currency}
-                    onCurrencyChange={setCurrency}
-                    cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                    onCartClick={() => setIsCartOpen(true)}
-                />
-            )}
+            <Header
+                onNavigate={handleNavigate}
+                currency={currency}
+                onCurrencyChange={setCurrency}
+                cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                onCartClick={() => setIsCartOpen(true)}
+            />
              <main className="flex-grow py-8 mb-20 md:mb-0">
-                {!isCheckout && <Breadcrumbs items={buildBreadcrumbs()} />}
+                <Breadcrumbs items={buildBreadcrumbs()} />
                 {renderContent()}
             </main>
-            {!isCheckout && (
-                <Footer onNavigate={handleNavigate} />
-            )}
+            <Footer onNavigate={handleNavigate} />
 
             <CartSidebar
                 isOpen={isCartOpen}

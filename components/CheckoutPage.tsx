@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import type { CartItem, View } from './types';
 import { type Currency, formatCurrency } from './currency';
@@ -141,7 +142,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 <header className="bg-white border-b border-gray-200 py-4 sticky top-0 z-10">
                     <div className="container mx-auto px-4 flex justify-center">
                          <button onClick={() => onNavigate('home')}>
-                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-16 w-auto" />
+                            <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-20 w-auto" />
                         </button>
                     </div>
                 </header>
@@ -160,7 +161,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
                     <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
                         <img 
-                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
+                            src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                             alt="Vellaperfumeria" 
                             className="h-12 w-auto" 
                         />
@@ -178,11 +179,11 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
 
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col font-sans">
-             {/* Dedicated Checkout Header - LOGO CENTERED, MENU BELOW */}
+             {/* Dedicated Checkout Header - CENTRADO Y ARRIBA */}
             <header className="bg-white border-b border-gray-200 py-6 sticky top-0 z-20 shadow-sm">
                 <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-3">
                     <button onClick={() => onNavigate('home')} className="hover:opacity-80 transition-opacity">
-                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-20 w-auto" />
+                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-28 w-auto" />
                     </button>
                     <div className="flex items-center text-sm font-medium text-gray-500">
                         <span className="mr-2">¿Necesitas ayuda?</span>
@@ -415,7 +416,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
              <footer className="bg-black border-t border-gray-800 py-12 mt-auto text-white">
                 <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-6">
                     <img 
-                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
+                        src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                         alt="Vellaperfumeria" 
                         className="h-12 w-auto" 
                     />
