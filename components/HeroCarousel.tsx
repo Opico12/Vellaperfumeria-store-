@@ -74,7 +74,7 @@ const HeroCarousel: React.FC<HeroCarouselProps> = ({ onNavigate }) => {
                             <p className="text-xl lg:text-2xl font-light mb-6 drop-shadow-lg">{slide.title}</p>
                             <button
                                 onClick={() => onNavigate(slide.view, (slide as any).payload)}
-                                className="bg-white text-black font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition-colors shadow-lg transform hover:scale-105"
+                                className="bg-[#f78df685] text-black border-2 border-[#f78df6] font-bold py-3 px-8 rounded-full hover:bg-white hover:text-[#d946ef] transition-colors shadow-lg transform hover:scale-105"
                             >
                                 {slide.buttonText}
                             </button>

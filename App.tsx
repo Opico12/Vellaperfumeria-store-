@@ -300,7 +300,7 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-[var(--color-secondary)] font-sans text-gray-800">
+        <div className="flex flex-col min-h-screen bg-white font-sans text-gray-800">
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
@@ -346,7 +346,7 @@ const App: React.FC = () => {
                 :root {
                     --color-primary: #f78df685; /* Transparent Rose requested by user */
                     --color-primary-solid: #d946ef; /* Solid Fuchsia/Rose for text/borders */
-                    --color-secondary: #fff7ed; /* orange-50 */
+                    --color-secondary: #ffffff; /* White background */
                     --color-accent: #f97316; /* orange-500 */
                 }
                 /* Global Selection Color */
