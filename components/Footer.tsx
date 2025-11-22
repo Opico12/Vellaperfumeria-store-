@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import type { View } from './types';
 
@@ -108,7 +107,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                              target="_self"
                              className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer"
                          >
-                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-36 w-auto mx-auto" />
+                             <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" alt="Vellaperfumeria Logo" className="h-36 w-auto mx-auto" />
                          </a>
                         <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>
                         <p className="text-gray-400 text-sm mt-2">

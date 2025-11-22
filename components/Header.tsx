@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -132,37 +131,29 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
             </div>
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Main Header Content */}
-                <div className="flex flex-col md:flex-row items-center justify-between py-3 relative">
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 md:hidden z-20">
+                
+                {/* MOBILE HEADER: Centered Logo, Left Menu, Right Cart */}
+                <div className="md:hidden flex items-center justify-between py-3 relative">
+                    <div className="z-20">
                         <button onClick={() => setIsMobileMenuOpen(true)} className="text-black p-2">
                             <MenuIcon />
                         </button>
                     </div>
 
-                    {/* Logo - Reverted to original cleaner logo and smaller size */}
-                    <div className="flex-grow text-center md:text-left flex justify-center md:justify-start w-full md:w-auto">
-                        <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300 z-10">
+                    {/* Logo Centered Absolute for mobile */}
+                    <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+                        <a href={homeUrl} target="_self" className="pointer-events-auto block cursor-pointer transition-transform hover:scale-105 duration-300">
                             <img 
-                                src="https://vellaperfumeria.com/wp-content/uploads/2024/06/vellaperfumeralogo.png" 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
                                 alt="Vellaperfumeria Logo" 
-                                className="h-12 md:h-16 w-auto object-contain" 
+                                className="h-14 w-auto object-contain" 
                             />
                         </a>
                     </div>
 
-                    <div className="absolute right-0 top-1/2 transform -translate-y-1/2 md:static md:transform-none flex items-center space-x-2 md:space-x-4 z-20">
-                         <nav className="hidden md:flex justify-center space-x-6 mr-6">
-                            <NavLink href={homeUrl}>Inicio</NavLink>
-                            <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
-                            <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
-                            <NavLink onClick={() => onNavigate('catalog')}>Catálogo</NavLink>
-                            <NavLink onClick={() => onNavigate('ia')}>Asistente IA</NavLink>
-                            <NavLink onClick={() => onNavigate('blog')}>Blog</NavLink>
-                        </nav>
-
+                    <div className="z-20">
                         <button 
-                            className={`relative p-2 text-black hover:text-[#f78df6] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
+                            className={`cart-dest-icon relative p-2 text-black hover:text-[#f78df6] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
                             onClick={onCartClick}
                         >
                             <CartIcon />
@@ -173,6 +164,45 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                             )}
                         </button>
                     </div>
+                </div>
+
+                {/* DESKTOP HEADER: Stacked Layout - Logo Centered Top, Nav Below */}
+                <div className="hidden md:flex flex-col items-center py-4 relative">
+                    {/* Row 1: Logo Centered */}
+                    <div className="w-full flex justify-center items-center relative mb-4">
+                        <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300">
+                            <img 
+                                src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png?fit=225%2C225&ssl=1" 
+                                alt="Vellaperfumeria Logo" 
+                                className="h-28 w-auto object-contain" 
+                            />
+                        </a>
+
+                        {/* Cart Icon - Absolute Right in the Logo Row */}
+                        <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
+                            <button 
+                                className={`cart-dest-icon relative p-2 text-black hover:text-[#f78df6] transition-colors ${cartPulse ? 'animate-pop' : ''}`}
+                                onClick={onCartClick}
+                            >
+                                <CartIcon />
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-black rounded-full border-2 border-white">
+                                        {cartCount}
+                                    </span>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Row 2: Navigation Menu Centered */}
+                    <nav className="flex justify-center space-x-8 w-full border-t border-gray-100 pt-4">
+                        <NavLink href={homeUrl}>Inicio</NavLink>
+                        <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
+                        <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
+                        <NavLink onClick={() => onNavigate('catalog')}>Catálogo</NavLink>
+                        <NavLink onClick={() => onNavigate('ia')}>Asistente IA</NavLink>
+                        <NavLink onClick={() => onNavigate('blog')}>Blog</NavLink>
+                    </nav>
                 </div>
             </div>
             
