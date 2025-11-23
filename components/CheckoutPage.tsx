@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import type { CartItem, View } from './types';
 import { type Currency, formatCurrency } from './currency';
 
@@ -33,15 +33,54 @@ const MastercardIcon = () => (
     </svg>
 );
 
+const GiftBoxIcon = ({ color = "black" }: { color?: string }) => (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 12V22H4V12" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M22 7H2V12H22V7Z" fill={color} stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 22V7" stroke={color === 'white' ? 'black' : 'white'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 7H7.5C6.83696 7 6.20107 6.73661 5.73223 6.26777C5.26339 5.79893 5 5.16304 5 4.5C5 3.83696 5.26339 3.20107 5.73223 2.73223C6.20107 2.26339 6.83696 2 7.5 2C11 2 12 7 12 7Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M12 7H16.5C17.163 7 17.7989 6.73661 18.2678 6.26777C18.7366 5.79893 19 5.16304 19 4.5C19 3.83696 18.7366 3.20107 18.2678 2.73223C17.7989 2.26339 17.163 2 16.5 2C13 2 12 7 12 7Z" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+);
+
 const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavigate, onClearCart }) => {
     const [isProcessing, setIsProcessing] = useState(false);
-    const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [syncProgress, setSyncProgress] = useState(0);
     const [syncMessage, setSyncMessage] = useState('Sincronizando...');
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    const subtotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
-    const total = subtotal; 
+    // Constants for calculations matching CartSidebar
+    const FREE_SHIPPING_THRESHOLD = 35;
+    const DISCOUNT_THRESHOLD = 35; 
+    const DISCOUNT_PERCENTAGE = 0.15; 
+    const SHIPPING_COST = 6.00;
+    const GIFT_THRESHOLD = 35;
+
+    // Calculations
+    const subtotal = useMemo(() => {
+        return cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    }, [cartItems]);
+
+    const discountAmount = useMemo(() => {
+        if (subtotal >= DISCOUNT_THRESHOLD) {
+            return subtotal * DISCOUNT_PERCENTAGE;
+        }
+        return 0;
+    }, [subtotal]);
+
+    const hasShippingSaver = useMemo(() => {
+        return cartItems.some(item => item.product.isShippingSaver);
+    }, [cartItems]);
+
+    const shippingCost = useMemo(() => {
+        if (hasShippingSaver || subtotal >= FREE_SHIPPING_THRESHOLD) {
+            return 0;
+        }
+        return SHIPPING_COST;
+    }, [subtotal, hasShippingSaver]);
+
+    const total = subtotal - discountAmount + shippingCost;
+    const hasGift = subtotal > GIFT_THRESHOLD;
 
     const loadUrlInIframe = (url: string): Promise<void> => {
         return new Promise((resolve, reject) => {
@@ -54,7 +93,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             const timeout = setTimeout(() => {
                 cleanup();
                 resolve();
-            }, 6000); // Timeout de seguridad
+            }, 6000);
 
             const cleanup = () => {
                 iframe.onload = null;
@@ -76,21 +115,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
     };
 
     const handleSubmit = async () => {
-        if (!acceptedTerms) {
-            alert('Por favor, acepta los términos y condiciones para continuar.');
-            return;
-        }
-
         setIsProcessing(true);
         setSyncProgress(0);
         
         try {
-            // 1. Limpiar carrito remoto para asegurar estado limpio
             setSyncMessage('Preparando tu cesta en la web...');
             setSyncProgress(10);
             await loadUrlInIframe('https://vellaperfumeria.com/carrito/?empty-cart');
             
-            // 2. Sincronizar productos uno a uno
             const totalItems = cartItems.length;
             for (let i = 0; i < totalItems; i++) {
                 const item = cartItems[i];
@@ -98,7 +130,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 
                 let idToAdd = item.product.id;
 
-                // Lógica precisa para detectar ID de variación si existe
                 if (item.selectedVariant && item.product.variants) {
                     for (const type in item.selectedVariant) {
                         const value = item.selectedVariant[type];
@@ -110,7 +141,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                     }
                 }
 
-                // URL estándar de WooCommerce para añadir al carrito
                 const addToCartUrl = `https://vellaperfumeria.com/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
                 await loadUrlInIframe(addToCartUrl);
                 
@@ -122,10 +152,8 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             
             await new Promise(resolve => setTimeout(resolve, 1000));
             
-            // Limpiar carrito local
             onClearCart();
             
-            // 3. Redirección final al CARRITO (/carrito/) explícitamente
             const cartUrl = 'https://vellaperfumeria.com/carrito/';
             if (window.top) {
                 window.top.location.href = cartUrl;
@@ -201,6 +229,25 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                                 Artículos seleccionados ({cartItems.length})
                             </h2>
                             <div className="space-y-6">
+                                {/* Gift Item */}
+                                {hasGift && (
+                                    <div className="flex gap-4 sm:gap-6 items-start bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                        <div className="relative flex-shrink-0 w-24 h-24 flex items-center justify-center bg-white rounded-lg border border-gray-200">
+                                            <GiftBoxIcon color="black" />
+                                            <span className="absolute -top-2 -right-2 bg-green-500 text-white font-bold text-xs px-2 py-0.5 rounded-full shadow-sm">
+                                                GRATIS
+                                            </span>
+                                        </div>
+                                        <div className="flex-grow">
+                                            <h3 className="font-bold text-gray-900 text-base sm:text-lg">Caja de Regalo Mediana (Negra)</h3>
+                                            <p className="text-sm text-gray-500 mb-2">Regalo BLACK FRIDAY (+35€)</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-bold text-green-600 text-lg">0,00 €</p>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {cartItems.map(item => (
                                     <div key={item.id} className="flex gap-4 sm:gap-6 items-start">
                                         <div className="relative flex-shrink-0">
@@ -234,6 +281,25 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                     <div className="lg:w-1/3">
                         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sticky top-32">
                             <h3 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">Total Estimado</h3>
+                            
+                            <div className="space-y-3 mb-6">
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">Subtotal</span>
+                                    <span className="font-semibold">{formatCurrency(subtotal, currency)}</span>
+                                </div>
+                                {discountAmount > 0 && (
+                                    <div className="flex justify-between text-sm text-rose-600">
+                                        <span>Descuento (15%)</span>
+                                        <span className="font-semibold">-{formatCurrency(discountAmount, currency)}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">Envío</span>
+                                    <span className={`font-semibold ${shippingCost === 0 ? 'text-green-600' : ''}`}>
+                                        {shippingCost === 0 ? 'Gratis' : formatCurrency(shippingCost, currency)}
+                                    </span>
+                                </div>
+                            </div>
 
                             <div className="border-t border-gray-200 pt-4 mb-6">
                                 <div className="flex justify-between items-end">
@@ -243,23 +309,9 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                                 <p className="text-xs text-gray-500 mt-1 text-right">Impuestos incluidos</p>
                             </div>
 
-                             <div className="mb-6">
-                                <label className="flex items-start gap-3 cursor-pointer group">
-                                    <input 
-                                        type="checkbox" 
-                                        className="mt-1 h-4 w-4 text-rose-600 border-gray-300 rounded focus:ring-rose-500" 
-                                        checked={acceptedTerms}
-                                        onChange={(e) => setAcceptedTerms(e.target.checked)}
-                                    />
-                                    <span className="text-xs text-gray-600 group-hover:text-gray-800 transition-colors">
-                                        Acepto los <a href="#" className="underline hover:text-rose-600">Términos y Condiciones</a>.
-                                    </span>
-                                </label>
-                            </div>
-
                             <button 
                                 onClick={handleSubmit}
-                                disabled={isProcessing || !acceptedTerms}
+                                disabled={isProcessing}
                                 className="w-full bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold py-3 px-6 rounded-xl hover:bg-white hover:text-[var(--color-primary-solid)] transition-all shadow-lg transform active:scale-95 flex justify-center items-center disabled:opacity-70 disabled:cursor-wait"
                             >
                                 {isProcessing ? (
