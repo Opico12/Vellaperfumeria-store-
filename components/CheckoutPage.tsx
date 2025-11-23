@@ -43,7 +43,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
     const subtotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
     const total = subtotal; 
 
-    // Helper function to load a URL in the iframe and wait for it to finish
     const loadUrlInIframe = (url: string): Promise<void> => {
         return new Promise((resolve, reject) => {
             const iframe = iframeRef.current;
@@ -55,7 +54,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             const timeout = setTimeout(() => {
                 cleanup();
                 resolve();
-            }, 5000);
+            }, 6000);
 
             const cleanup = () => {
                 iframe.onload = null;
@@ -85,68 +84,55 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         setIsProcessing(true);
         setSyncProgress(0);
         
-        // Esta es la función clave de la configuración del día 14.
-        // Construye la URL usando el ID base o el Variation ID según corresponda.
-        const buildAddToCartUrl = (item: CartItem): string => {
-            const baseUrl = 'https://vellaperfumeria.com/';
-            const params = new URLSearchParams();
-            
-            let idToAdd = item.product.id;
-
-            // Lógica exacta para detectar variaciones (tonos, etc.)
-            if (item.selectedVariant && item.product.variants) {
-                for (const type in item.selectedVariant) {
-                    const value = item.selectedVariant[type];
-                    const option = item.product.variants[type]?.find(opt => opt.value === value);
-                    if (option?.variationId) {
-                        idToAdd = option.variationId;
-                        break; 
-                    }
-                }
-            }
-
-            params.set('add-to-cart', idToAdd.toString());
-            params.set('quantity', item.quantity.toString());
-            
-            return `${baseUrl}?${params.toString()}`;
-        };
-
         try {
-            // Paso 1: Limpiar carrito remoto (usando el endpoint standard)
+            // 1. Limpiar carrito remoto
             setSyncMessage('Preparando tu pedido...');
             setSyncProgress(10);
             await loadUrlInIframe('https://vellaperfumeria.com/carrito/?empty-cart');
             
-            // Paso 2: Añadir cada producto secuencialmente
+            // 2. Añadir productos
             const totalItems = cartItems.length;
             for (let i = 0; i < totalItems; i++) {
                 const item = cartItems[i];
                 setSyncMessage(`Añadiendo producto ${i + 1} de ${totalItems}...`);
                 
-                const addToCartUrl = buildAddToCartUrl(item);
+                let idToAdd = item.product.id;
+
+                // Lógica de variantes exacta y limpia
+                if (item.selectedVariant && item.product.variants) {
+                    for (const type in item.selectedVariant) {
+                        const value = item.selectedVariant[type];
+                        const option = item.product.variants[type]?.find(opt => opt.value === value);
+                        if (option?.variationId) {
+                            idToAdd = option.variationId;
+                            break; 
+                        }
+                    }
+                }
+
+                const addToCartUrl = `https://vellaperfumeria.com/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
                 await loadUrlInIframe(addToCartUrl);
                 
                 setSyncProgress(10 + Math.round(((i + 1) / totalItems) * 80));
             }
             
-            setSyncMessage('¡Todo listo! Redirigiendo al pago seguro...');
+            setSyncMessage('¡Todo listo! Redirigiendo al carrito...');
             setSyncProgress(100);
             
             await new Promise(resolve => setTimeout(resolve, 1000));
             
             onClearCart();
-            // Redirección final al checkout oficial
-            window.top.location.href = 'https://vellaperfumeria.com/checkout/';
+            // Redirección al CARRITO (/carrito/) para ver los productos antes de pagar
+            window.top.location.href = 'https://vellaperfumeria.com/carrito/';
 
         } catch (error) {
-            console.error("Error during checkout process:", error);
-            setSyncMessage('Hubo un error al sincronizar. Redirigiendo al carrito...');
+            console.error("Error sync:", error);
+            setSyncMessage('Redirigiendo...');
              setTimeout(() => {
                  window.top.location.href = 'https://vellaperfumeria.com/carrito/';
-             }, 2000);
+             }, 1500);
         }
     };
-
 
     if (cartItems.length === 0 && !isProcessing) {
         return (
@@ -196,7 +182,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 </div>
                 
                 <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
-                    {/* Left Column: Summary Detail */}
                     <div className="lg:w-2/3 space-y-6">
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
                             <h2 className="text-xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-100">
@@ -233,7 +218,6 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                         </div>
                     </div>
 
-                    {/* Right Column: Total */}
                     <div className="lg:w-1/3">
                         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sticky top-32">
                             <h3 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">Total Estimado</h3>
@@ -278,7 +262,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                                             <div className="bg-black h-1.5 rounded-full transition-all duration-300" style={{ width: `${syncProgress}%` }}></div>
                                         </div>
                                     </div>
-                                ) : 'REALIZAR PEDIDO (PAGO SEGURO)'}
+                                ) : 'PROCEDER AL PAGO (VER CARRITO)'}
                             </button>
                             
                             <div className="mt-6 flex justify-center gap-3 opacity-60">
