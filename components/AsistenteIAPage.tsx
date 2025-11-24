@@ -1,10 +1,16 @@
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
+import type { CartItem } from './types';
 
 interface Message {
     role: 'user' | 'model';
     text: string;
+}
+
+interface AsistenteIAPageProps {
+    cartItems?: CartItem[];
 }
 
 const SparklesIcon = () => (
@@ -20,7 +26,7 @@ const UserIcon = () => (
 );
 
 
-const AsistenteIAPage: React.FC = () => {
+const AsistenteIAPage: React.FC<AsistenteIAPageProps> = ({ cartItems = [] }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [input, setInput] = useState('');
     const [isProcessing, setIsProcessing] = useState(false);
@@ -33,10 +39,18 @@ const AsistenteIAPage: React.FC = () => {
         // Initialize the AI chat session
         try {
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            
+            let cartContext = "";
+            if (cartItems.length > 0) {
+                cartContext = "El cliente tiene actualmente los siguientes productos en su carrito: " + 
+                    cartItems.map(item => `${item.product.name} (x${item.quantity})`).join(', ') + 
+                    ". Ten esto en cuenta para dar recomendaciones complementarias o resolver dudas sobre estos productos.";
+            }
+
             const newChat = ai.chats.create({
                 model: 'gemini-2.5-flash',
                 config: {
-                    systemInstruction: 'Eres un asistente de belleza y experto en perfumes para la tienda online "Vellaperfumeria". Tu objetivo es ayudar a los clientes a encontrar los productos perfectos. Sé amable, servicial y conocedor de los productos de la tienda. Ofrece recomendaciones personalizadas basadas en las preferencias del cliente. Utiliza un lenguaje cercano y profesional. Bajo ninguna circunstancia menciones marcas de la competencia o productos que no se vendan en Vellaperfumeria. Céntrate exclusivamente en el catálogo de Vellaperfumeria.',
+                    systemInstruction: `Eres un asistente de belleza y experto en perfumes para la tienda online "Vellaperfumeria". Tu objetivo es ayudar a los clientes a encontrar los productos perfectos. Sé amable, servicial y conocedor de los productos de la tienda. Ofrece recomendaciones personalizadas basadas en las preferencias del cliente. Utiliza un lenguaje cercano y profesional. Bajo ninguna circunstancia menciones marcas de la competencia o productos que no se vendan en Vellaperfumeria. Céntrate exclusivamente en el catálogo de Vellaperfumeria. ${cartContext}`,
                 },
             });
             setChat(newChat);
@@ -44,7 +58,7 @@ const AsistenteIAPage: React.FC = () => {
             console.error("Error initializing Gemini:", e);
             setError("No se pudo inicializar el asistente de IA. Por favor, contacta con el soporte.");
         }
-    }, []);
+    }, [cartItems]); // Re-initialize if cart items change drastically (though typically on mount is enough)
 
     useEffect(() => {
         // Scroll to the bottom of the chat on new message

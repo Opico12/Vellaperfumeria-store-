@@ -92,7 +92,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     }, []);
 
     const homeUrl = (() => {
-        const baseUrl = 'https://vellaperfumeria.com';
+        const baseUrl = 'https://vellaperfumeria.com/tienda'; // Changed from root to /tienda
         const params = new URLSearchParams();
         if (vParam) params.append('v', vParam);
         const queryString = params.toString();

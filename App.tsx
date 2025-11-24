@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 // Types
@@ -21,6 +22,7 @@ import BlogPostPage from './components/BlogPostPage';
 import QuickViewModal from './components/QuickViewModal';
 import Breadcrumbs, { type BreadcrumbItem } from './components/Breadcrumbs';
 import BottomNavBar from './components/BottomNavBar';
+import CheckoutSummaryPage from './components/CheckoutSummaryPage';
 
 type AppView = {
     current: View;
@@ -69,7 +71,7 @@ const App: React.FC = () => {
             }
 
             if (targetView) {
-                 if (['home', 'products', 'productDetail', 'ofertas', 'ia', 'catalog', 'about', 'contact', 'blog', 'blogPost'].includes(targetView)) {
+                 if (['home', 'products', 'productDetail', 'ofertas', 'ia', 'catalog', 'about', 'contact', 'blog', 'blogPost', 'checkoutSummary'].includes(targetView)) {
                      setView({ current: targetView as View });
                      return;
                  }
@@ -196,7 +198,8 @@ const App: React.FC = () => {
 
     // Checkout is now handled entirely in CartSidebar via direct redirect
     const handleCheckout = () => {
-        setIsCartOpen(true);
+        handleNavigate('checkoutSummary');
+        setIsCartOpen(false);
     };
 
     const handleSelectPost = (post: any) => {
@@ -214,13 +217,15 @@ const App: React.FC = () => {
             case 'ofertas':
                 return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ia':
-                return <AsistenteIAPage />;
+                return <AsistenteIAPage cartItems={cartItems} />;
             case 'catalog':
                 return <CatalogPage onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} currency={currency} />;
             case 'blog':
                  return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
                  return <BlogPostPage post={view.payload} allPosts={blogPosts} onSelectPost={handleSelectPost} onBack={() => handleNavigate('blog')} />;
+            case 'checkoutSummary':
+                return <CheckoutSummaryPage cartItems={cartItems} currency={currency} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} onNavigate={handleNavigate} />;
             default:
                 return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} currency={currency} onQuickView={setQuickViewProduct} />;
         }
@@ -239,7 +244,7 @@ const App: React.FC = () => {
     ];
 
     const buildBreadcrumbs = (): BreadcrumbItem[] => {
-        const baseUrl = 'https://vellaperfumeria.com';
+        const baseUrl = 'https://vellaperfumeria.com/tienda'; // Changed from root to /tienda
         const params = new URLSearchParams();
         if (vParam) params.append('v', vParam);
         const queryString = params.toString();
@@ -287,6 +292,9 @@ const App: React.FC = () => {
             case 'blogPost':
                 crumbs.push({ label: 'Blog', onClick: () => handleNavigate('blog') });
                 crumbs.push({ label: view.payload.title });
+                break;
+            case 'checkoutSummary':
+                crumbs.push({ label: 'Carrito' });
                 break;
         }
 

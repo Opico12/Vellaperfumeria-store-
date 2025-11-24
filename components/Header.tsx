@@ -81,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
     }, []);
 
     const homeUrl = (() => {
-        const baseUrl = 'https://vellaperfumeria.com';
+        const baseUrl = 'https://vellaperfumeria.com/tienda'; // Changed from root to /tienda
         const params = new URLSearchParams();
         if (vParam) params.append('v', vParam);
         const queryString = params.toString();
