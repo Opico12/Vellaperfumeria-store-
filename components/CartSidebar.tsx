@@ -22,7 +22,6 @@ const FREE_SHIPPING_THRESHOLD = 35;
 const DISCOUNT_THRESHOLD = 35; 
 const DISCOUNT_PERCENTAGE = 0.15; 
 const SHIPPING_COST = 6.00;
-// Gift Threshold > 35
 const GIFT_THRESHOLD = 35;
 
 const CloseIcon = () => (
@@ -84,34 +83,10 @@ const PayPalIcon = () => (
     </svg>
 );
 
-const GooglePayIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="24" rx="2" fill="white" />
-        <path d="M10.9 10.4V16h-1.3v-9.5h4c1.3 0 2.3.4 3 .9.7.6 1.1 1.3 1.1 2.2 0 .9-.4 1.6-1.1 2.2-.7.6-1.6.9-3 .9h-2.7zm1.3-4.2v3.1h1.3c.9 0 1.4-.4 1.4-1.5 0-1.1-.5-1.6-1.4-1.6h-1.3zM19.3 7.8h1.3v8.2h-1.3V7.8zM22.8 7.8h1.4l2.8 5.7c.1.2.1.3.2.5h.1c.1-.2.1-.4.2-.5l2.7-5.7h1.4l-4.3 8.4h-1.4l-3.1-8.4z" fill="#5F6368"/>
-        <path d="M6.7 11.5c0 .6-.2 1.2-.5 1.7l-.2.3c-.6.8-1.6 1.3-2.7 1.3-1.5 0-2.8-.9-3.2-2.3-.1-.3-.1-.6-.1-1 0-1.6 1-3.1 2.6-3.6.5-.2 1.1-.2 1.7-.1.6.1 1.2.4 1.6.8l-1 1c-.3-.3-.6-.5-1-.6-.4-.1-.8 0-1.1.2-.8.3-1.3 1.1-1.2 2 0 .4.1.8.3 1.1.4.6 1.1.9 1.8.8.5-.1.9-.3 1.2-.6.2-.2.3-.5.4-.8H3.3V10h3.4v1.5z" fill="#5F6368"/>
-    </svg>
-);
-
-const ApplePayIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="24" rx="2" fill="white" />
-        <path d="M16.1 11.3c0 2.7 2.3 3.7 2.4 3.7-.1 0-.2.5-.4.9-.4.8 1.7-1.5 1.7-.7 0-1-.4-1.8-.4-.9 0-1.2.4-1.9.4-.7 0-1.3-1-1.9-2-1.8-2.6-1.5-6.5 1.9-6.5 1.1 0 1.9.7 2.4.7.6 0 1.6-.9 2.8-.9.5 0 1.9.2 2.6 1.2-.1.1-1.6 1-1.6 3.2zM15.8 6.7c.6-.7.9-1.6.8-2.4-.8 0-1.8.5-2.3 1.2-.5.6-.9 1.5-.8 2.4.8.1 1.7-.5 2.3-1.2z" fill="black"/>
-        <path d="M22.5 8h1.3v8h-1.3V8zM25.6 8h3.3c.7 0 1.3.2 1.7.5.4.3.6.9.6 1.5 0 .7-.2 1.3-.7 1.6-.5.4-1.1.5-1.9.5h-1.8v3.9h-1.3V8zm1.3 3.1h1.9c.4 0 .7-.1.9-.2.2-.3.4.3-.8s-.1-.6-.3-.8c-.2-.2-.5-.2-.9-.2h-1.9v2zM35.4 16h-1.4l-.5-1.3h-2.7l-.4 1.3H29l2.3-5.8h1.5l2.6 5.8zm-2.3-2.4l-.9-2.6-.9 2.6h1.8z" fill="black"/>
-    </svg>
-);
-
-const BizumIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="24" rx="2" fill="#00D1E5"/>
-        <path d="M9 12L14 17L29 7" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-);
 
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, currency, onUpdateQuantity, onRemoveItem, onNavigate, onClearCart }) => {
     const sidebarRef = useRef<HTMLDivElement>(null);
-    const iframeRef = useRef<HTMLIFrameElement>(null);
     const [isProcessing, setIsProcessing] = useState(false);
-    const [syncMessage, setSyncMessage] = useState('');
     
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -123,33 +98,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
 
-    useEffect(() => {
-        if (!isOpen || !sidebarRef.current) return;
-        const focusableElements = sidebarRef.current.querySelectorAll<HTMLElement>(
-            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        );
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-        const handleTabKeyPress = (event: KeyboardEvent) => {
-            if (event.key === 'Tab') {
-                if (event.shiftKey) {
-                    if (document.activeElement === firstElement) {
-                        lastElement.focus();
-                        event.preventDefault();
-                    }
-                } else {
-                    if (document.activeElement === lastElement) {
-                        firstElement.focus();
-                        event.preventDefault();
-                    }
-                }
-            }
-        };
-        firstElement?.focus();
-        sidebarRef.current.addEventListener('keydown', handleTabKeyPress);
-        return () => sidebarRef.current?.removeEventListener('keydown', handleTabKeyPress);
-    }, [isOpen]);
-
     const subtotal = useMemo(() => {
         return cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
     }, [cartItems]);
@@ -160,13 +108,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
         }
         return 0;
     }, [subtotal]);
-
-    const totalBeautyPoints = useMemo(() => {
-        return cartItems.reduce((total, item) => {
-            const points = item.product.beautyPoints || 0;
-            return total + (points * item.quantity);
-        }, 0);
-    }, [cartItems]);
 
     const hasShippingSaver = useMemo(() => {
         return cartItems.some(item => item.product.isShippingSaver);
@@ -181,94 +122,58 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
 
     const total = subtotal - discountAmount + shippingCost;
     const amountForFreeShipping = FREE_SHIPPING_THRESHOLD - subtotal;
-
-    // Check if gift box should be shown (Orders > 35 euros)
     const hasGift = subtotal > GIFT_THRESHOLD;
 
-    // --- MAGIC SYNC LOGIC ("DAY 9 STYLE") ---
-    const loadUrlInIframe = (url: string): Promise<void> => {
-        return new Promise((resolve, reject) => {
-            const iframe = iframeRef.current;
-            if (!iframe) {
-                reject(new Error("Iframe not found"));
-                return;
-            }
-
-            const timeout = setTimeout(() => {
-                resolve();
-            }, 3500); // Slightly faster check
-
-            const cleanup = () => {
-                iframe.onload = null;
-                iframe.onerror = null;
-                clearTimeout(timeout);
-            };
-            
-            iframe.onload = () => {
-                cleanup();
-                resolve();
-            };
-            iframe.onerror = () => {
-                cleanup();
-                resolve();
-            };
-
-            iframe.src = url;
-        });
-    };
-
-    const handleDirectCheckout = async () => {
+    // --- WHATSAPP ORDER LOGIC ---
+    const handleWhatsAppOrder = () => {
         if (cartItems.length === 0) return;
 
-        setIsProcessing(true);
-        setSyncMessage('Iniciando transferencia...');
-
-        try {
-            // 1. Clear external cart to avoid duplicates
-            await loadUrlInIframe('https://vellaperfumeria.com/carrito/?empty-cart');
-            
-            // 2. Add items sequentially
-            for (let i = 0; i < cartItems.length; i++) {
-                const item = cartItems[i];
-                setSyncMessage(`Añadiendo ${item.product.name}...`);
-                
-                let idToAdd = item.product.id;
-
-                // Correct variant handling logic (standard WooCommerce)
-                if (item.selectedVariant && item.product.variants) {
-                    for (const type in item.selectedVariant) {
-                        const value = item.selectedVariant[type];
-                        const variantOptions = item.product.variants[type];
-                        if (variantOptions) {
-                            const option = variantOptions.find(opt => opt.value === value);
-                            if (option?.variationId) {
-                                idToAdd = option.variationId; // Use specific variation ID
-                                break; 
-                            }
-                        }
-                    }
-                }
-
-                // Standard WooCommerce add-to-cart URL
-                const addToCartUrl = `https://vellaperfumeria.com/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
-                await loadUrlInIframe(addToCartUrl);
+        let message = `¡Hola! Quiero realizar un pedido en Vellaperfumeria:\n\n`;
+        
+        cartItems.forEach(item => {
+            let itemLine = `- ${item.product.name} (x${item.quantity})`;
+            if (item.selectedVariant) {
+                const variantInfo = Object.values(item.selectedVariant).join(', ');
+                itemLine += ` [${variantInfo}]`;
             }
+            message += `${itemLine}\n`;
+        });
 
-            // 3. Final Redirect to Cart Page
-            setSyncMessage('Redirigiendo al carrito...');
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            // Clear local cart so it's empty when/if user returns
-            if(onClearCart) onClearCart();
-            
-            // Go to external cart
-            window.location.href = 'https://vellaperfumeria.com/carrito/';
+        message += `\nTotal estimado: ${formatCurrency(total, currency)}`;
+        message += `\n\nPor favor, indicadme los pasos para finalizar el pago. ¡Gracias!`;
 
-        } catch (error) {
-            console.error("Error syncing cart:", error);
-            // Fallback redirect
-            window.location.href = 'https://vellaperfumeria.com/carrito/';
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappNumber = '34600000000'; // Replace with real number
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
+    };
+
+
+    // --- DIRECT WEB CHECKOUT ---
+    const handleDirectCheckout = () => {
+        if (cartItems.length === 0) return;
+        
+        setIsProcessing(true);
+
+        // Use standard WooCommerce add-to-cart URL format
+        const item = cartItems[0];
+        let idToAdd = item.product.id;
+             
+        // Check for variation ID for the first item
+        if (item.selectedVariant && item.product.variants) {
+            for (const type in item.selectedVariant) {
+                const value = item.selectedVariant[type];
+                const variantOptions = item.product.variants[type];
+                const option = variantOptions?.find(opt => opt.value === value);
+                if (option?.variationId) {
+                    idToAdd = option.variationId;
+                    break;
+                }
+            }
         }
+            
+        // Force redirect to the official checkout page
+        // This is the safest method without backend API access
+        window.location.href = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
     };
 
     return (
@@ -279,13 +184,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
             className={`fixed inset-0 z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         >
             <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm" onClick={onClose} aria-hidden="true" />
-            
-            {/* Hidden Iframe for "Magic" Sync */}
-            <iframe
-                ref={iframeRef}
-                title="Cart Sync Helper"
-                style={{ display: 'none', width: '0', height: '0' }}
-            />
 
             <div
                 ref={sidebarRef}
@@ -306,7 +204,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             {/* Free Gift Item Logic */}
                             {hasGift && (
                                 <div className="flex gap-4 items-center bg-black text-white p-3 rounded-xl border border-gray-800 shadow-sm transition-shadow animate-pop">
-                                    {/* Icono negro, fondo blanco (image/icon container) */}
                                     <div className="w-20 h-20 flex items-center justify-center bg-white rounded-lg border border-gray-200 p-1">
                                         <GiftBoxIcon color="black" />
                                     </div>
@@ -348,6 +245,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
 
                         {/* Footer / Summary */}
                         <div className="p-6 border-t bg-white space-y-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-10">
+                             {/* Promo Messages */}
                              {discountAmount > 0 ? (
                                 <div className="text-center text-sm font-semibold text-rose-700 p-3 bg-orange-50 rounded-xl border border-rose-100 flex items-center justify-center gap-2">
                                     <span>🎉</span>
@@ -364,13 +262,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                 <div className="text-center text-sm font-semibold text-green-700 p-3 bg-green-50 rounded-xl border border-green-100 flex items-center justify-center gap-2">
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"></path></svg>
                                     <span>¡BLACK FRIDAY: Envío GRATIS activado!</span>
-                                </div>
-                            )}
-                            
-                            {totalBeautyPoints > 0 && (
-                                <div className="flex justify-center items-center gap-2 text-rose-800 font-semibold text-sm p-2 bg-orange-50 rounded-xl border border-rose-100">
-                                    <span>✨</span>
-                                    <span>¡Consigues <b>{totalBeautyPoints} Puntos Beauty</b>!</span>
                                 </div>
                             )}
 
@@ -396,41 +287,30 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </div>
                             
                             <div className="flex flex-col gap-3 pt-2">
-                                 {/* Button calls handleDirectCheckout - NO internal navigation */}
+                                
+                                {/* Option 1: Web Checkout */}
                                 <button 
                                     onClick={handleDirectCheckout}
                                     disabled={isProcessing}
                                     className="w-full text-center bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-rose-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline disabled:opacity-70 disabled:cursor-wait"
                                 >
-                                     {isProcessing ? (
-                                        <>
-                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                            {syncMessage}
-                                        </>
-                                     ) : 'PAGAR EN VELLAPERFUMERIA.COM'}
+                                     {isProcessing ? 'Conectando...' : 'PAGAR EN VELLAPERFUMERIA.COM'}
+                                </button>
+
+                                {/* Option 2: WhatsApp Order (Reliable Fallback) */}
+                                <button 
+                                    onClick={handleWhatsAppOrder}
+                                    className="w-full flex items-center justify-center gap-2 bg-green-500 text-white hover:bg-green-600 font-bold py-3 px-6 rounded-xl transition-all shadow-md"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" /></svg>
+                                    PEDIR POR WHATSAPP
                                 </button>
                                 
-                                <div className="flex justify-center items-center gap-3 mt-1 pb-1">
+                                <div className="flex justify-center items-center gap-3 mt-1 pb-1 opacity-70 grayscale hover:grayscale-0 transition-all">
                                     <VisaIcon />
                                     <MastercardIcon />
-                                    <GooglePayIcon />
-                                    <ApplePayIcon />
                                     <PayPalIcon />
-                                    <BizumIcon />
                                 </div>
-                                
-                                <button
-                                    onClick={() => {
-                                        onClose();
-                                        onNavigate('products', 'all');
-                                    }}
-                                    className="w-full bg-transparent text-gray-400 hover:text-rose-500 font-medium py-2 text-sm transition-colors underline decoration-transparent hover:decoration-rose-500"
-                                >
-                                    Seguir Comprando
-                                </button>
                             </div>
                         </div>
                     </>
@@ -455,15 +335,6 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                     </div>
                 )}
             </div>
-            <style>{`
-                @keyframes bounce-slow {
-                    0%, 100% { transform: translateY(0); }
-                    50% { transform: translateY(-10px); }
-                }
-                .animate-bounce-slow {
-                    animation: bounce-slow 3s infinite ease-in-out;
-                }
-            `}</style>
         </div>
     );
 };
