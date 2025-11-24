@@ -1,4 +1,6 @@
 
+
+
 import React from 'react';
 
 export interface BreadcrumbItem {
@@ -39,14 +41,14 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                    <a 
                       href={item.href}
                       target={item.target || '_self'}
-                      className="hover:text-brand-purple-dark hover-underline-effect"
+                      className="hover:text-[var(--color-primary-solid)] hover-underline-effect"
                    >
                       {item.label}
                    </a>
               ) : (
                 <button
                   onClick={item.onClick}
-                  className="hover:text-brand-purple-dark hover-underline-effect"
+                  className="hover:text-[var(--color-primary-solid)] hover-underline-effect"
                 >
                   {item.label}
                 </button>

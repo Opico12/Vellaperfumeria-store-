@@ -1,5 +1,4 @@
 
-
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat } from "@google/genai";
 
@@ -9,7 +8,7 @@ interface Message {
 }
 
 const SparklesIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[var(--color-primary-solid)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m1-9l2-2 2 2m-2 4v6m2-6l2 2-2 2M15 3l2 2-2 2m-2-4v4m2 4l2 2-2 2m-8 4h12" />
     </svg>
 );
@@ -113,14 +112,14 @@ const AsistenteIAPage: React.FC = () => {
                 <p className="mt-2 text-lg text-gray-600">¿Necesitas ayuda? Pide recomendaciones y consejos sobre nuestros productos.</p>
             </div>
 
-            <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col h-[70vh]">
+            <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-xl border border-fuchsia-100 flex flex-col h-[70vh]">
                 <div ref={chatContainerRef} className="flex-grow p-6 overflow-y-auto space-y-6">
                     {messages.length === 0 && !isProcessing && (
                          <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-fuchsia-100 flex items-center justify-center">
                                 <SparklesIcon />
                             </div>
-                            <div className="max-w-md p-4 rounded-2xl bg-purple-50 text-gray-800 rounded-bl-none border border-purple-100">
+                            <div className="max-w-md p-4 rounded-2xl bg-fuchsia-50 text-gray-800 rounded-bl-none border border-fuchsia-100">
                                 <p>¡Hola! Soy tu asistente de belleza personal de Vellaperfumeria. ¿En qué puedo ayudarte hoy?</p>
                             </div>
                         </div>
@@ -131,16 +130,16 @@ const AsistenteIAPage: React.FC = () => {
                         return (
                             <div key={index} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : ''}`}>
                                  {msg.role === 'model' && (
-                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-fuchsia-100 flex items-center justify-center">
                                         <SparklesIcon />
                                     </div>
                                 )}
-                                <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-purple-50 text-gray-800 rounded-bl-none border border-purple-100'}`}>
+                                <div className={`max-w-md p-4 rounded-2xl ${msg.role === 'user' ? 'bg-gray-100 text-gray-800 rounded-br-none' : 'bg-fuchsia-50 text-gray-800 rounded-bl-none border border-fuchsia-100 shadow-sm'}`}>
                                      {isProcessing && isLastMessage && msg.text === '' ? (
                                          <div className="flex items-center space-x-2">
-                                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
-                                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse [animation-delay:0.2s]"></div>
-                                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse [animation-delay:0.4s]"></div>
+                                            <div className="w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse"></div>
+                                            <div className="w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse [animation-delay:0.2s]"></div>
+                                            <div className="w-2 h-2 bg-fuchsia-400 rounded-full animate-pulse [animation-delay:0.4s]"></div>
                                         </div>
                                     ) : (
                                          <p className="whitespace-pre-wrap">{msg.text}</p>
@@ -175,7 +174,7 @@ const AsistenteIAPage: React.FC = () => {
                                 <button
                                     key={prompt}
                                     onClick={() => handleSendMessage(prompt)}
-                                    className="bg-gray-100 hover:bg-gray-200 text-sm px-3 py-1.5 rounded-full transition-colors"
+                                    className="bg-gray-50 hover:bg-fuchsia-50 text-gray-600 hover:text-fuchsia-600 border border-gray-200 hover:border-fuchsia-200 text-sm px-3 py-1.5 rounded-full transition-all"
                                 >
                                     "{prompt}"
                                 </button>
@@ -185,7 +184,7 @@ const AsistenteIAPage: React.FC = () => {
                 )}
 
 
-                <div className="p-4 border-t bg-gray-50">
+                <div className="p-4 border-t border-gray-100 bg-gray-50 rounded-b-lg">
                     <form onSubmit={handleFormSubmit} className="flex items-center gap-3">
                         <input
                             type="text"
@@ -193,16 +192,16 @@ const AsistenteIAPage: React.FC = () => {
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Escribe tu mensaje..."
                             aria-label="Escribe tu mensaje"
-                            className="flex-grow px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-400"
+                            className="flex-grow px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:border-transparent transition-all"
                             disabled={isProcessing}
                         />
                         <button 
                             type="submit" 
                             disabled={isProcessing || !input.trim()}
-                            className="bg-black text-white font-semibold rounded-full p-2.5 shadow-sm hover:bg-gray-800 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            className="bg-[var(--color-primary-solid)] text-white font-semibold rounded-full p-3 shadow-md hover:bg-fuchsia-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed transform hover:scale-105"
                             aria-label="Enviar mensaje"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
                         </button>

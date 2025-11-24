@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { ProductCard } from './ProductCard';
 import type { Product } from './types';
@@ -165,7 +166,7 @@ const OfertasPage: React.FC<{
             </div>
 
             {/* Black Friday Section */}
-            <div id="black-friday-section" className="bg-[#FAF5FF] py-12 border-t border-purple-100 scroll-mt-24">
+            <div id="black-friday-section" className="bg-fuchsia-50 py-12 border-t border-fuchsia-100 scroll-mt-24">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-10">
                         <span className="inline-block py-1 px-3 rounded-full bg-black text-white text-xs font-bold uppercase tracking-wider mb-4">Black Friday</span>
@@ -204,7 +205,7 @@ const OfertasPage: React.FC<{
                     <div className="grid lg:grid-cols-12 gap-10">
                         {/* Step 1: The Trigger Products */}
                         <div className="lg:col-span-8">
-                             <div className="flex items-center gap-3 mb-6 border-b border-purple-200 pb-4">
+                             <div className="flex items-center gap-3 mb-6 border-b border-fuchsia-200 pb-4">
                                 <div className="bg-gray-900 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">1</div>
                                 <h3 className="text-xl font-bold text-gray-900">Elige tu producto de selección</h3>
                              </div>
@@ -224,8 +225,8 @@ const OfertasPage: React.FC<{
                         </div>
 
                         {/* Step 2: The Reward */}
-                        <div className="lg:col-span-4 bg-[#FAF5FF] rounded-xl p-6 border border-purple-100 h-fit sticky top-24 shadow-sm">
-                             <div className="flex items-center gap-3 mb-6 border-b border-purple-100 pb-4">
+                        <div className="lg:col-span-4 bg-fuchsia-50 rounded-xl p-6 border border-fuchsia-100 h-fit sticky top-24 shadow-sm">
+                             <div className="flex items-center gap-3 mb-6 border-b border-fuchsia-100 pb-4">
                                 <div className="bg-brand-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">2</div>
                                 <h3 className="text-xl font-bold text-gray-900">Elige tu Acondicionador</h3>
                              </div>

@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import type { View } from './types';
 
@@ -86,7 +87,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
                     const Icon = item.icon;
 
                     const commonClasses = `flex flex-col items-center justify-center w-full h-full transition-all duration-200 active:scale-90 touch-manipulation ${
-                                isActive ? 'text-purple-600' : 'text-gray-500 hover:text-purple-500'
+                                isActive ? 'text-fuchsia-600' : 'text-gray-500 hover:text-fuchsia-500'
                             }`;
 
                     if (item.isExternal && item.href) {
@@ -98,7 +99,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
                                 className={commonClasses}
                                 aria-label={item.label}
                             >
-                                <div className={`p-1 rounded-full transition-all ${isActive ? 'bg-purple-50' : ''}`}>
+                                <div className={`p-1 rounded-full transition-all ${isActive ? 'bg-fuchsia-50' : ''}`}>
                                     <Icon isActive={isActive} />
                                 </div>
                                 <span className={`text-[10px] font-medium mt-1 leading-none transition-all ${isActive ? 'font-bold translate-y-0' : 'font-normal'}`}>{item.label}</span>
@@ -117,7 +118,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) 
                             aria-label={item.label}
                             aria-current={isActive ? 'page' : undefined}
                         >
-                            <div className={`p-1 rounded-full transition-all ${isActive ? 'bg-purple-50' : ''}`}>
+                            <div className={`p-1 rounded-full transition-all ${isActive ? 'bg-fuchsia-50' : ''}`}>
                                 <Icon isActive={isActive} />
                             </div>
                             <span className={`text-[10px] font-medium mt-1 leading-none transition-all ${isActive ? 'font-bold translate-y-0' : 'font-normal'}`}>{item.label}</span>

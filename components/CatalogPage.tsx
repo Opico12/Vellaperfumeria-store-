@@ -1,6 +1,7 @@
 
 
 
+
 import React, { useState, useRef } from 'react';
 import { allProducts } from './products';
 import { ProductCard } from './ProductCard';
@@ -126,7 +127,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                         />
                     </div>
                     <div className="text-center mt-4">
-                        <a href={FALLBACK_CATALOG_URL} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-purple-700 hover:underline font-medium">
+                        <a href={FALLBACK_CATALOG_URL} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-fuchsia-700 hover:underline font-medium">
                             ¿No puedes ver el catálogo? Abrir en ventana externa
                         </a>
                     </div>
@@ -135,14 +136,14 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                 {/* Quick Order Sidebar */}
                 <div className="w-full md:w-80 lg:w-96 flex-shrink-0 space-y-6">
                     <div className="bg-white p-6 rounded-lg shadow-xl border border-gray-100 sticky top-24">
-                        <div className="flex items-center gap-2 mb-4 text-purple-800">
+                        <div className="flex items-center gap-2 mb-4 text-fuchsia-800">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                             </svg>
                             <h2 className="text-lg font-bold text-black">Pedido Rápido</h2>
                         </div>
                         
-                        <div className="bg-[#FAF5FF] p-4 rounded-md mb-6 border border-purple-100">
+                        <div className="bg-fuchsia-50 p-4 rounded-md mb-6 border border-fuchsia-100">
                             <p className="text-sm font-bold text-gray-800 mb-2">¿Cómo comprar?</p>
                             <ol className="list-decimal list-inside text-sm text-gray-700 space-y-2">
                                 <li>Mira el <strong>Código</strong> del producto en el catálogo.</li>
@@ -158,7 +159,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                                     type="number"
                                     id="quickCode"
                                     placeholder="Código (ej: 38497)"
-                                    className="w-full border border-gray-300 rounded-md px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent"
+                                    className="w-full border border-gray-300 rounded-md px-4 py-3 text-lg focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:border-transparent"
                                     value={quickAddCode}
                                     onChange={(e) => setQuickAddCode(e.target.value)}
                                 />

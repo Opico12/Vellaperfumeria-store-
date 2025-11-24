@@ -154,7 +154,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
         
         setIsProcessing(true);
 
-        // Use standard WooCommerce add-to-cart URL format
+        // Use standard WooCommerce add-to-cart URL format with ABSOLUTE PATH to main domain
         const item = cartItems[0];
         let idToAdd = item.product.id;
              
@@ -170,10 +170,20 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                 }
             }
         }
+        
+        // Get 'v' param from current URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const vParam = urlParams.get('v');
             
-        // Force redirect to the official checkout page
-        // This is the safest method without backend API access
-        window.location.href = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
+        // Force redirect to the official checkout page on the MAIN domain
+        let redirectUrl = `https://vellaperfumeria.com/carrito/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
+        
+        // Append 'v' parameter if it exists
+        if (vParam) {
+            redirectUrl += `&v=${vParam}`;
+        }
+        
+        window.location.href = redirectUrl;
     };
 
     return (
@@ -190,9 +200,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                 className={`fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col transition-transform duration-300 ease-in-out transform ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b flex-shrink-0 bg-orange-50/70">
-                    <h2 id="cart-heading" className="text-xl font-bold tracking-wide text-rose-700">Tu Cesta</h2>
-                    <button onClick={onClose} className="p-2 rounded-full hover:bg-white text-rose-800 transition-colors" aria-label="Cerrar carrito">
+                <div className="flex items-center justify-between p-4 border-b flex-shrink-0 bg-fuchsia-50/70">
+                    <h2 id="cart-heading" className="text-xl font-bold tracking-wide text-[var(--color-primary-solid)]">Tu Cesta</h2>
+                    <button onClick={onClose} className="p-2 rounded-full hover:bg-white text-fuchsia-800 transition-colors" aria-label="Cerrar carrito">
                         <CloseIcon />
                     </button>
                 </div>
@@ -200,7 +210,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                 {cartItems.length > 0 ? (
                     <>
                         {/* Items List */}
-                        <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-orange-50/40">
+                        <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-gray-50/40">
                             {/* Free Gift Item Logic */}
                             {hasGift && (
                                 <div className="flex gap-4 items-center bg-black text-white p-3 rounded-xl border border-gray-800 shadow-sm transition-shadow animate-pop">
@@ -218,7 +228,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             )}
 
                             {cartItems.map(item => (
-                                <div key={item.id} className="flex gap-4 items-start bg-white p-3 rounded-xl border border-rose-100 shadow-sm hover:shadow-md transition-shadow">
+                                <div key={item.id} className="flex gap-4 items-start bg-white p-3 rounded-xl border border-fuchsia-100 shadow-sm hover:shadow-md transition-shadow">
                                     <img src={item.product.imageUrl} alt={item.product.name} className="w-20 h-20 object-contain rounded-lg border border-gray-50 p-1 bg-white" />
                                     <div className="flex-grow flex flex-col">
                                         <h3 className="font-semibold text-sm leading-tight text-gray-900">{item.product.name}</h3>
@@ -228,15 +238,15 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                             </p>
                                         )}
                                         <div className="flex items-center justify-between mt-3">
-                                             <p className="font-bold text-base text-rose-600">{formatCurrency(item.product.price * item.quantity, currency)}</p>
-                                             <button onClick={() => onRemoveItem(item.id)} className="text-gray-400 hover:text-rose-500 p-1 transition-colors" aria-label={`Eliminar ${item.product.name}`}>
+                                             <p className="font-bold text-base text-[var(--color-primary-solid)]">{formatCurrency(item.product.price * item.quantity, currency)}</p>
+                                             <button onClick={() => onRemoveItem(item.id)} className="text-gray-400 hover:text-red-500 p-1 transition-colors" aria-label={`Eliminar ${item.product.name}`}>
                                                 <TrashIcon />
                                             </button>
                                         </div>
                                         <div className="flex items-center border border-gray-200 rounded-lg w-fit mt-2 bg-white overflow-hidden">
-                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} className="px-3 py-1 font-semibold text-gray-600 hover:text-rose-500 hover:bg-rose-50 transition-colors" aria-label="Reducir cantidad">-</button>
+                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} className="px-3 py-1 font-semibold text-gray-600 hover:text-[var(--color-primary-solid)] hover:bg-fuchsia-50 transition-colors" aria-label="Reducir cantidad">-</button>
                                             <span className="px-2 text-sm font-medium text-gray-800">{item.quantity}</span>
-                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} className="px-3 py-1 font-semibold text-gray-600 hover:text-rose-500 hover:bg-rose-50 transition-colors" aria-label="Aumentar cantidad">+</button>
+                                            <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} className="px-3 py-1 font-semibold text-gray-600 hover:text-[var(--color-primary-solid)] hover:bg-fuchsia-50 transition-colors" aria-label="Aumentar cantidad">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -247,15 +257,15 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                         <div className="p-6 border-t bg-white space-y-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-10">
                              {/* Promo Messages */}
                              {discountAmount > 0 ? (
-                                <div className="text-center text-sm font-semibold text-rose-700 p-3 bg-orange-50 rounded-xl border border-rose-100 flex items-center justify-center gap-2">
+                                <div className="text-center text-sm font-semibold text-[var(--color-primary-solid)] p-3 bg-fuchsia-50 rounded-xl border border-fuchsia-100 flex items-center justify-center gap-2">
                                     <span>🎉</span>
                                     <span>¡Felicidades! <b>15% de descuento</b> aplicado.</span>
                                 </div>
                             ) : amountForFreeShipping > 0 ? (
                                 <div className="text-center text-sm">
-                                    <p className="text-gray-600 mb-2"><span className="font-bold text-black">BLACK FRIDAY:</span> Te faltan <span className="font-bold text-rose-600">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para envío <b>GRATIS</b>.</p>
+                                    <p className="text-gray-600 mb-2"><span className="font-bold text-black">BLACK FRIDAY:</span> Te faltan <span className="font-bold text-[var(--color-primary-solid)]">{formatCurrency(amountForFreeShipping, currency, { decimals: 2 })}</span> para envío <b>GRATIS</b>.</p>
                                     <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-                                        <div className="bg-gradient-to-r from-orange-300 to-rose-500 h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}></div>
+                                        <div className="bg-gradient-to-r from-fuchsia-300 to-[var(--color-primary-solid)] h-full rounded-full transition-all duration-500 ease-out" style={{ width: `${Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)}%` }}></div>
                                     </div>
                                 </div>
                             ) : (
@@ -271,7 +281,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     <span className="font-semibold">{formatCurrency(subtotal, currency)}</span>
                                 </div>
                                 {discountAmount > 0 && (
-                                     <div className="flex justify-between text-rose-600">
+                                     <div className="flex justify-between text-[var(--color-primary-solid)]">
                                         <span>Descuento (15%)</span>
                                         <span className="font-semibold">-{formatCurrency(discountAmount, currency)}</span>
                                     </div>
@@ -283,7 +293,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </div>
                             <div className="flex justify-between items-end font-bold text-xl pt-3 border-t border-gray-100 text-gray-900">
                                 <span>Total</span>
-                                <span className="text-3xl text-rose-600 tracking-tight">{formatCurrency(total, currency)}</span>
+                                <span className="text-3xl text-[var(--color-primary-solid)] tracking-tight">{formatCurrency(total, currency)}</span>
                             </div>
                             
                             <div className="flex flex-col gap-3 pt-2">
@@ -292,7 +302,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                 <button 
                                     onClick={handleDirectCheckout}
                                     disabled={isProcessing}
-                                    className="w-full text-center bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-rose-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline disabled:opacity-70 disabled:cursor-wait"
+                                    className="w-full text-center bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-fuchsia-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline disabled:opacity-70 disabled:cursor-wait"
                                 >
                                      {isProcessing ? 'Conectando...' : 'PAGAR EN VELLAPERFUMERIA.COM'}
                                 </button>
@@ -302,41 +312,4 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                                     onClick={handleWhatsAppOrder}
                                     className="w-full flex items-center justify-center gap-2 bg-green-500 text-white hover:bg-green-600 font-bold py-3 px-6 rounded-xl transition-all shadow-md"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" /></svg>
-                                    PEDIR POR WHATSAPP
-                                </button>
-                                
-                                <div className="flex justify-center items-center gap-3 mt-1 pb-1 opacity-70 grayscale hover:grayscale-0 transition-all">
-                                    <VisaIcon />
-                                    <MastercardIcon />
-                                    <PayPalIcon />
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <div className="flex-grow flex flex-col items-center justify-center text-center p-8 bg-white">
-                        <div className="bg-orange-50 p-6 rounded-full mb-6 animate-bounce-slow">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-rose-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                            </svg>
-                        </div>
-                        <h3 className="text-2xl font-bold text-gray-800 mb-2">Tu carrito está vacío</h3>
-                        <p className="text-gray-500 mb-8 max-w-md mx-auto">¡Llénalo de belleza y cosas bonitas!</p>
-                        <button
-                            onClick={() => {
-                                onClose();
-                                onNavigate('products', 'all');
-                            }}
-                            className="bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold py-3 px-10 rounded-full hover:bg-white hover:text-[var(--color-primary-solid)] transition-all shadow-lg hover:shadow-xl hover:-translate-y-1"
-                        >
-                            Explorar Tienda
-                        </button>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-};
-
-export default CartSidebar;
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="currentColor" viewBox="0 0 24

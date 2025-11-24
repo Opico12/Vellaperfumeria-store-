@@ -342,7 +342,7 @@ const App: React.FC = () => {
                     --color-primary: #f78df685; /* Transparent Rose */
                     --color-primary-solid: #d946ef; /* Solid Rose */
                     --color-secondary: #ffffff; 
-                    --color-accent: #f97316; /* orange-500 */
+                    --color-accent: #c026d3; /* fuchsia-600 */
                 }
                 /* Global Selection Color */
                 ::selection {

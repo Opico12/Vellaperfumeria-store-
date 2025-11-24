@@ -1,6 +1,8 @@
 
 
 
+
+
 import React, { useEffect, useRef, useState } from 'react';
 import type { Product } from './types';
 import type { Currency } from './currency';
@@ -116,11 +118,11 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                     <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
                     
                      <div className="flex items-baseline flex-wrap gap-x-3 gap-y-1 mb-4">
-                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-purple-600' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
+                        <p className={`text-3xl font-bold ${isDiscounted ? 'text-fuchsia-600' : 'text-gray-900'}`}>{formatCurrency(product.price, currency)}</p>
                         {isDiscounted && (
                             <>
                                 <p className="text-xl text-gray-500 line-through">{formatCurrency(product.regularPrice!, currency)}</p>
-                                <span className="bg-purple-400 text-white text-xs font-bold px-2 py-1 rounded-full uppercase">
+                                <span className="bg-fuchsia-400 text-white text-xs font-bold px-2 py-1 rounded-full uppercase">
                                     AHORRA {Math.round(((product.regularPrice! - product.price) / product.regularPrice!) * 100)}%
                                 </span>
                             </>
@@ -149,7 +151,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, currency, onCl
                                                             <button
                                                                 key={option.value}
                                                                 onClick={() => handleVariantChange(type, option.value)}
-                                                                className={`w-6 h-6 rounded-full border-2 transition-all ${isSelected ? 'border-purple-400 ring-1 ring-offset-1 ring-purple-300' : 'border-gray-300'}`}
+                                                                className={`w-6 h-6 rounded-full border-2 transition-all ${isSelected ? 'border-fuchsia-400 ring-1 ring-offset-1 ring-fuchsia-300' : 'border-gray-300'}`}
                                                                 style={{ backgroundColor: option.colorCode }}
                                                                 aria-label={`Seleccionar color ${option.value}`}
                                                             />

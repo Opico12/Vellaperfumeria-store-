@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import type { View } from './types';
 import type { Currency } from './currency';
@@ -113,7 +114,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
     return (
         <header className="bg-white shadow-sm sticky top-0 z-30">
             {/* Top Bar */}
-            <div className="bg-[var(--color-primary)] text-black py-1 text-[10px] md:text-xs font-medium border-b border-rose-200/50">
+            <div className="bg-[var(--color-primary)] text-black py-1 text-[10px] md:text-xs font-medium border-b border-fuchsia-200/50">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
                     <div className="hidden md:flex items-center space-x-3 text-black">
                         <span className="cursor-pointer hover:opacity-75 transition-opacity" aria-label="Threads"><ThreadsIcon /></span>
@@ -159,7 +160,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                         >
                             <CartIcon />
                             {cartCount > 0 && (
-                                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-orange-500 rounded-full border-2 border-white">
+                                <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-fuchsia-600 rounded-full border-2 border-white">
                                     {cartCount}
                                 </span>
                             )}
@@ -187,7 +188,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                             >
                                 <CartIcon />
                                 {cartCount > 0 && (
-                                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-orange-500 rounded-full border-2 border-white">
+                                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold leading-none text-white bg-fuchsia-600 rounded-full border-2 border-white">
                                         {cartCount}
                                     </span>
                                 )}
@@ -219,13 +220,13 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                             </button>
                         </div>
                         <div className="flex-grow overflow-y-auto py-4">
-                             <a href={homeUrl} target="_self" className="block px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Inicio</a>
-                             <button onClick={() => handleMobileNav('products', 'all')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Tienda</button>
-                             <button onClick={() => handleMobileNav('ofertas')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Ideas Regalo</button>
-                             <button onClick={() => handleMobileNav('catalog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Catálogo</button>
-                             <button onClick={() => handleMobileNav('ia')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Asistente IA</button>
-                             <button onClick={() => handleMobileNav('blog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Blog</button>
-                             <button onClick={() => handleMobileNav('contact')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-orange-50 hover:text-[var(--color-primary-solid)]">Ayuda / Contacto</button>
+                             <a href={homeUrl} target="_self" className="block px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Inicio</a>
+                             <button onClick={() => handleMobileNav('products', 'all')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Tienda</button>
+                             <button onClick={() => handleMobileNav('ofertas')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Ideas Regalo</button>
+                             <button onClick={() => handleMobileNav('catalog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Catálogo</button>
+                             <button onClick={() => handleMobileNav('ia')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Asistente IA</button>
+                             <button onClick={() => handleMobileNav('blog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Blog</button>
+                             <button onClick={() => handleMobileNav('contact')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Ayuda / Contacto</button>
                         </div>
                     </div>
                 </div>
