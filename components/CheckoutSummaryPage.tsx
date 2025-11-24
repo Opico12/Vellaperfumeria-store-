@@ -17,6 +17,13 @@ const DISCOUNT_THRESHOLD = 35;
 const DISCOUNT_PERCENTAGE = 0.15; 
 const SHIPPING_COST = 6.00;
 
+// Icono de Verificado para la tienda
+const VerifiedBadge = () => (
+    <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+        <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+    </svg>
+);
+
 const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({ 
     cartItems, 
     currency, 
@@ -25,11 +32,11 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     onNavigate
 }) => {
     const [isProcessing, setIsProcessing] = useState(false);
-    // State to track selected (marked) items. Initialize with all items selected.
     const [selectedItemIds, setSelectedItemIds] = useState<Set<string>>(new Set());
 
     // Initialize selection when cart items load - Mark ALL by default
     useEffect(() => {
+        // Seleccionamos TODOS los items por defecto, tanto locales como del servidor
         const allIds = new Set(cartItems.map(item => item.id));
         setSelectedItemIds(allIds);
     }, [cartItems]);
@@ -87,40 +94,46 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         
         setIsProcessing(true);
 
-        // Logic for "Normal Page" checkout behavior:
-        // We construct a URL that tells WooCommerce to add these items and go to checkout.
-        // Since we can't easily add multiple items via URL without plugins, 
-        // we prioritize the first item to ensure the redirect works, 
-        // and append the session ID so WooCommerce knows who we are.
+        // --- LÓGICA DE URL MULTI-PRODUCTO PARA WOOCOMMERCE ---
+        // Construimos una lista de IDs separados por comas.
+        // Esto permite añadir múltiples productos a la cesta de WooCommerce en un solo enlace.
         
-        const item = selectedItemsList[0];
-        let idToAdd = item.product.id;
+        const idsToAdd: string[] = [];
+
+        selectedItemsList.forEach(item => {
+            let idToAdd = item.product.id;
              
-        // Check for variation ID
-        if (item.selectedVariant && item.product.variants) {
-            for (const type in item.selectedVariant) {
-                const value = item.selectedVariant[type];
-                const variantOptions = item.product.variants[type];
-                const option = variantOptions?.find(opt => opt.value === value);
-                if (option?.variationId) {
-                    idToAdd = option.variationId;
-                    break;
+            // Comprobamos si es una variante específica
+            if (item.selectedVariant && item.product.variants) {
+                for (const type in item.selectedVariant) {
+                    const value = item.selectedVariant[type];
+                    const variantOptions = item.product.variants[type];
+                    const option = variantOptions?.find(opt => opt.value === value);
+                    if (option?.variationId) {
+                        idToAdd = option.variationId;
+                        break;
+                    }
                 }
             }
-        }
+            
+            // Si la cantidad es mayor a 1, añadimos el ID tantas veces como cantidad haya
+            // (Esta es la forma más compatible con enlaces GET estándar de WooCommerce)
+            for (let i = 0; i < item.quantity; i++) {
+                idsToAdd.push(idToAdd.toString());
+            }
+        });
         
-        // Retrieve the session ID from the URL if it exists
         const urlParams = new URLSearchParams(window.location.search);
         const vParam = urlParams.get('v');
             
-        // Redirect directly to the checkout page
-        let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
+        // Creamos la URL final con todos los IDs
+        let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idsToAdd.join(',')}`;
         
         if (vParam) {
             redirectUrl += `&v=${vParam}`;
         }
         
-        // Redirect
+        // Redirigimos
         window.location.href = redirectUrl;
     };
 
@@ -194,10 +207,10 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                             </div>
                                             <p className="text-sm text-gray-500 mb-1 font-medium">{item.product.brand}</p>
                                             
-                                            {/* Store Marking - Requested by User */}
-                                            <div className="flex items-center gap-1.5 mb-2 bg-green-50 w-fit px-2 py-0.5 rounded-md border border-green-100">
-                                                <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                <p className="text-xs text-green-700 font-bold">Vendido por Vellaperfumeria</p>
+                                            {/* Etiqueta Unificada para TODOS los productos - VISIBLEMENTE DESTACADA */}
+                                            <div className="flex items-center gap-1.5 mb-2 bg-blue-600 w-fit px-2 py-1 rounded-md shadow-sm">
+                                                <VerifiedBadge />
+                                                <p className="text-xs text-white font-bold tracking-wide uppercase">Vendido por Vellaperfumeria</p>
                                             </div>
 
                                             {item.selectedVariant && (
@@ -306,7 +319,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                     Redirigiendo...
                                 </span>
                             ) : (
-                                `PAGAR (${selectedItemsList.length}) PRODUCTOS`
+                                `PAGAR (${selectedItemsList.length} PRODUCTOS)`
                             )}
                         </button>
                         

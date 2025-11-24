@@ -100,8 +100,8 @@ const App: React.FC = () => {
                     const serverCart = await fetchServerCart(v);
                     if (serverCart && serverCart.length > 0) {
                         setCartItems(serverCart);
-                        // Optionally open cart to show user
-                        // setIsCartOpen(true); 
+                        // DIRECTLY SHOW THE CART SUMMARY PAGE
+                        setView({ current: 'checkoutSummary' });
                     } else {
                         // Fallback to local storage if server has nothing
                         loadLocalCart();
