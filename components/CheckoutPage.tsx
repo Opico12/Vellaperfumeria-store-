@@ -93,7 +93,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             const timeout = setTimeout(() => {
                 cleanup();
                 resolve();
-            }, 6000);
+            }, 5000);
 
             const cleanup = () => {
                 iframe.onload = null;
@@ -126,17 +126,20 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             const totalItems = cartItems.length;
             for (let i = 0; i < totalItems; i++) {
                 const item = cartItems[i];
-                setSyncMessage(`Añadiendo producto ${i + 1} de ${totalItems}...`);
+                setSyncMessage(`Añadiendo ${item.product.name}...`);
                 
                 let idToAdd = item.product.id;
 
                 if (item.selectedVariant && item.product.variants) {
                     for (const type in item.selectedVariant) {
                         const value = item.selectedVariant[type];
-                        const option = item.product.variants[type]?.find(opt => opt.value === value);
-                        if (option?.variationId) {
-                            idToAdd = option.variationId;
-                            break; 
+                        const variantOptions = item.product.variants[type];
+                        if (variantOptions) {
+                            const option = variantOptions.find(opt => opt.value === value);
+                            if (option?.variationId) {
+                                idToAdd = option.variationId;
+                                break; 
+                            }
                         }
                     }
                 }
@@ -150,28 +153,19 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             setSyncMessage('¡Listo! Abriendo tu carrito...');
             setSyncProgress(100);
             
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await new Promise(resolve => setTimeout(resolve, 800));
             
             onClearCart();
             
             const cartUrl = 'https://vellaperfumeria.com/carrito/';
-            if (window.top) {
-                window.top.location.href = cartUrl;
-            } else {
-                window.location.href = cartUrl;
-            }
+            window.location.href = cartUrl;
 
         } catch (error) {
             console.error("Error durante la sincronización:", error);
             setSyncMessage('Redirigiendo al carrito...');
-             setTimeout(() => {
-                 const cartUrl = 'https://vellaperfumeria.com/carrito/';
-                 if (window.top) {
-                    window.top.location.href = cartUrl;
-                 } else {
-                    window.location.href = cartUrl;
-                 }
-             }, 1500);
+            setTimeout(() => {
+                 window.location.href = 'https://vellaperfumeria.com/carrito/';
+             }, 1000);
         }
     };
 
