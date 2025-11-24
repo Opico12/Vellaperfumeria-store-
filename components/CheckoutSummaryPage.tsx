@@ -28,7 +28,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     // State to track selected (marked) items. Initialize with all items selected.
     const [selectedItemIds, setSelectedItemIds] = useState<Set<string>>(new Set());
 
-    // Initialize selection when cart items load
+    // Initialize selection when cart items load - Mark ALL by default
     useEffect(() => {
         const allIds = new Set(cartItems.map(item => item.id));
         setSelectedItemIds(allIds);
@@ -87,13 +87,16 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         
         setIsProcessing(true);
 
-        // Logic to construct checkout URL. 
-        // Note: Standard WooCommerce GET links usually handle one product well.
-        // We will prioritize the first selected product for the direct link,
-        // relying on the session 'v' to hopefully carry the context if backend sync was real.
+        // Logic for "Normal Page" checkout behavior:
+        // We construct a URL that tells WooCommerce to add these items and go to checkout.
+        // Since we can't easily add multiple items via URL without plugins, 
+        // we prioritize the first item to ensure the redirect works, 
+        // and append the session ID so WooCommerce knows who we are.
+        
         const item = selectedItemsList[0];
         let idToAdd = item.product.id;
              
+        // Check for variation ID
         if (item.selectedVariant && item.product.variants) {
             for (const type in item.selectedVariant) {
                 const value = item.selectedVariant[type];
@@ -106,15 +109,18 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
             }
         }
         
+        // Retrieve the session ID from the URL if it exists
         const urlParams = new URLSearchParams(window.location.search);
         const vParam = urlParams.get('v');
             
-        let redirectUrl = `https://vellaperfumeria.com/carrito/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
+        // Redirect directly to the checkout page
+        let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
         
         if (vParam) {
             redirectUrl += `&v=${vParam}`;
         }
         
+        // Redirect
         window.location.href = redirectUrl;
     };
 
@@ -148,13 +154,15 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                         {/* Header with Select All */}
                         <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3 bg-gray-50/50">
-                            <input 
-                                type="checkbox" 
-                                className="w-5 h-5 text-fuchsia-600 rounded focus:ring-fuchsia-500 border-gray-300 cursor-pointer"
-                                checked={selectedItemIds.size === cartItems.length && cartItems.length > 0}
-                                onChange={handleSelectAll}
-                                id="select-all"
-                            />
+                            <div className="relative flex items-center">
+                                <input 
+                                    type="checkbox" 
+                                    className="w-5 h-5 text-fuchsia-600 rounded focus:ring-fuchsia-500 border-gray-300 cursor-pointer"
+                                    checked={selectedItemIds.size === cartItems.length && cartItems.length > 0}
+                                    onChange={handleSelectAll}
+                                    id="select-all"
+                                />
+                            </div>
                             <label htmlFor="select-all" className="text-sm font-bold text-gray-700 cursor-pointer select-none">
                                 Seleccionar todos los productos ({cartItems.length})
                             </label>
@@ -162,39 +170,40 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
 
                         <div className="p-6 space-y-6">
                             {cartItems.map((item) => (
-                                <div key={item.id} className={`flex flex-col sm:flex-row gap-4 pb-6 border-b border-gray-100 last:border-0 last:pb-0 transition-opacity ${selectedItemIds.has(item.id) ? 'opacity-100' : 'opacity-50 grayscale-[0.5]'}`}>
+                                <div key={item.id} className={`flex flex-col sm:flex-row gap-4 pb-6 border-b border-gray-100 last:border-0 last:pb-0 transition-all duration-300 ${selectedItemIds.has(item.id) ? 'opacity-100' : 'opacity-50 grayscale-[0.5]'}`}>
                                     {/* Item Checkbox */}
-                                    <div className="flex items-start pt-2">
+                                    <div className="flex items-start pt-2 pr-2">
                                         <input 
                                             type="checkbox" 
-                                            className="w-5 h-5 text-fuchsia-600 rounded focus:ring-fuchsia-500 border-gray-300 cursor-pointer"
+                                            className="w-6 h-6 text-fuchsia-600 rounded-md focus:ring-fuchsia-500 border-gray-300 cursor-pointer transition-transform transform active:scale-95"
                                             checked={selectedItemIds.has(item.id)}
                                             onChange={() => handleToggleSelect(item.id)}
                                             aria-label={`Seleccionar ${item.product.name}`}
                                         />
                                     </div>
 
-                                    <div className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-gray-50 rounded-xl p-2 border border-gray-200">
+                                    <div className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 bg-white rounded-xl p-2 border border-gray-200 shadow-sm">
                                         <img src={item.product.imageUrl} alt={item.product.name} className="w-full h-full object-contain" />
                                     </div>
                                     
                                     <div className="flex-grow flex flex-col justify-between">
                                         <div>
                                             <div className="flex justify-between items-start">
-                                                <h3 className="text-lg font-bold text-gray-900 mb-1 leading-tight">{item.product.name}</h3>
+                                                <h3 className="text-lg font-bold text-gray-900 mb-1 leading-tight hover:text-fuchsia-600 cursor-pointer">{item.product.name}</h3>
                                                 <p className="text-lg font-bold text-[var(--color-primary-solid)] whitespace-nowrap">{formatCurrency(item.product.price * item.quantity, currency)}</p>
                                             </div>
-                                            <p className="text-sm text-gray-500 mb-1">{item.product.brand}</p>
-                                            {/* Store Marking */}
-                                            <p className="text-xs text-green-600 font-medium mb-2 flex items-center gap-1">
-                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"></path></svg>
-                                                Vendido por Vellaperfumeria
-                                            </p>
+                                            <p className="text-sm text-gray-500 mb-1 font-medium">{item.product.brand}</p>
+                                            
+                                            {/* Store Marking - Requested by User */}
+                                            <div className="flex items-center gap-1.5 mb-2 bg-green-50 w-fit px-2 py-0.5 rounded-md border border-green-100">
+                                                <svg className="w-3.5 h-3.5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                <p className="text-xs text-green-700 font-bold">Vendido por Vellaperfumeria</p>
+                                            </div>
 
                                             {item.selectedVariant && (
                                                 <div className="flex flex-wrap gap-2 mb-3">
                                                     {Object.entries(item.selectedVariant).map(([key, value]) => (
-                                                        <span key={key} className="text-xs font-medium bg-fuchsia-50 text-fuchsia-800 px-2 py-1 rounded-md border border-fuchsia-100">
+                                                        <span key={key} className="text-xs font-medium bg-gray-100 text-gray-800 px-2 py-1 rounded-md border border-gray-200">
                                                             {key}: {value}
                                                         </span>
                                                     ))}
@@ -203,25 +212,26 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                         </div>
                                         
                                         <div className="flex justify-between items-end mt-4 sm:mt-0">
-                                            <div className="flex items-center border-2 border-gray-100 rounded-xl bg-white overflow-hidden">
+                                            <div className="flex items-center border border-gray-300 rounded-lg bg-white overflow-hidden shadow-sm">
                                                 <button 
                                                     onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
-                                                    className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 font-bold transition-colors"
+                                                    className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 font-bold transition-colors border-r border-gray-200"
                                                 >
                                                     -
                                                 </button>
-                                                <span className="w-10 text-center font-semibold text-gray-900">{item.quantity}</span>
+                                                <span className="w-10 text-center font-semibold text-gray-900 text-sm">{item.quantity}</span>
                                                 <button 
                                                     onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                                                    className="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 font-bold transition-colors"
+                                                    className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-100 font-bold transition-colors border-l border-gray-200"
                                                 >
                                                     +
                                                 </button>
                                             </div>
                                             <button 
                                                 onClick={() => onRemoveItem(item.id)}
-                                                className="text-gray-400 hover:text-red-500 text-sm font-medium underline transition-colors"
+                                                className="text-gray-400 hover:text-red-500 text-sm font-medium transition-colors flex items-center gap-1"
                                             >
+                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                                 Eliminar
                                             </button>
                                         </div>
@@ -236,38 +246,40 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                 <div className="lg:w-1/3">
                     <div className="bg-white rounded-3xl shadow-lg border border-fuchsia-100 p-6 sticky top-24">
                         <h2 className="text-xl font-bold text-gray-900 mb-6">Resumen del Pedido</h2>
-                        <p className="text-sm text-gray-500 mb-4">{selectedItemsList.length} productos seleccionados</p>
+                        <p className="text-sm text-gray-500 mb-4 flex items-center gap-2">
+                            <span className="font-bold text-black">{selectedItemsList.length}</span> productos seleccionados
+                        </p>
                         
-                        <div className="space-y-4 mb-6 text-gray-600">
+                        <div className="space-y-4 mb-6 text-gray-600 text-sm">
                             <div className="flex justify-between">
                                 <span>Subtotal</span>
                                 <span className="font-semibold text-gray-900">{formatCurrency(subtotal, currency)}</span>
                             </div>
                             
                             {discountAmount > 0 ? (
-                                <div className="flex justify-between text-fuchsia-600">
+                                <div className="flex justify-between text-fuchsia-600 bg-fuchsia-50 p-2 rounded-lg">
                                     <span>Descuento (15%)</span>
                                     <span className="font-semibold">-{formatCurrency(discountAmount, currency)}</span>
                                 </div>
                             ) : (
                                 selectedItemsList.length > 0 && (
-                                    <div className="text-sm bg-gray-50 p-2 rounded-lg text-center">
+                                    <div className="text-xs bg-gray-50 p-2 rounded-lg text-center text-gray-500">
                                         ¡Añade {formatCurrency(Math.max(0, DISCOUNT_THRESHOLD - subtotal), currency)} más para obtener un 15% de descuento!
                                     </div>
                                 )
                             )}
 
-                            <div className="flex justify-between">
+                            <div className="flex justify-between items-center">
                                 <span>Envío</span>
                                 {shippingCost === 0 ? (
-                                    <span className="font-semibold text-green-600">GRATIS</span>
+                                    <span className="font-bold text-green-600 bg-green-50 px-2 py-1 rounded">GRATIS</span>
                                 ) : (
                                     <span className="font-semibold text-gray-900">{formatCurrency(shippingCost, currency)}</span>
                                 )}
                             </div>
                             {amountForFreeShipping > 0 && selectedItemsList.length > 0 && (
                                 <div className="text-xs text-center text-gray-500 mt-1">
-                                    Faltan {formatCurrency(amountForFreeShipping, currency)} para envío gratis
+                                    Faltan <span className="font-bold">{formatCurrency(amountForFreeShipping, currency)}</span> para envío gratis
                                 </div>
                             )}
                         </div>
@@ -291,19 +303,20 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                     </svg>
-                                    Procesando...
+                                    Redirigiendo...
                                 </span>
                             ) : (
                                 `PAGAR (${selectedItemsList.length}) PRODUCTOS`
                             )}
                         </button>
                         
-                        <div className="mt-4 text-center">
-                            <p className="text-xs text-gray-400 mb-2">Pago 100% Seguro</p>
-                            <div className="flex justify-center gap-2 grayscale opacity-60">
-                                <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                                <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                                <div className="w-8 h-5 bg-gray-200 rounded"></div>
+                        <div className="mt-6">
+                            <p className="text-xs text-center text-gray-400 mb-3 uppercase tracking-wider">Pago Seguro Garantizado</p>
+                            <div className="flex justify-center gap-3 opacity-70">
+                                {/* Simple CSS placeholders for card icons to avoid clutter */}
+                                <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
+                                <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
+                                <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
                             </div>
                         </div>
                     </div>
