@@ -10,6 +10,7 @@ interface CheckoutPageProps {
     onClearCart: () => void;
 }
 
+// --- Icons ---
 const VisaIcon = () => (
     <svg className="w-10 h-6" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
        <rect width="38" height="24" rx="2" fill="white"/>
@@ -49,14 +50,14 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
     const [syncMessage, setSyncMessage] = useState('Sincronizando...');
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
-    // Constants for calculations matching CartSidebar
+    // --- Configuration Logic (Day 9 Standard) ---
     const FREE_SHIPPING_THRESHOLD = 35;
     const DISCOUNT_THRESHOLD = 35; 
     const DISCOUNT_PERCENTAGE = 0.15; 
     const SHIPPING_COST = 6.00;
     const GIFT_THRESHOLD = 35;
 
-    // Calculations
+    // --- Totals Calculation ---
     const subtotal = useMemo(() => {
         return cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0);
     }, [cartItems]);
@@ -82,6 +83,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
     const total = subtotal - discountAmount + shippingCost;
     const hasGift = subtotal > GIFT_THRESHOLD;
 
+    // --- Sync Helper ("Check from time to time") ---
     const loadUrlInIframe = (url: string): Promise<void> => {
         return new Promise((resolve, reject) => {
             const iframe = iframeRef.current;
@@ -91,7 +93,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             }
 
             const timeout = setTimeout(() => {
-                cleanup();
+                // Assuming success on timeout for opaque responses or slow loads
                 resolve();
             }, 5000);
 
@@ -114,15 +116,18 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         });
     };
 
+    // --- Main Sync Handler ("Putting things in the car") ---
     const handleSubmit = async () => {
         setIsProcessing(true);
         setSyncProgress(0);
         
         try {
-            setSyncMessage('Preparando tu cesta en la web...');
+            // Step 1: Clear external cart
+            setSyncMessage('Iniciando sincronización...');
             setSyncProgress(10);
             await loadUrlInIframe('https://vellaperfumeria.com/carrito/?empty-cart');
             
+            // Step 2: Add items one by one
             const totalItems = cartItems.length;
             for (let i = 0; i < totalItems; i++) {
                 const item = cartItems[i];
@@ -130,6 +135,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 
                 let idToAdd = item.product.id;
 
+                // Handle variants if selected
                 if (item.selectedVariant && item.product.variants) {
                     for (const type in item.selectedVariant) {
                         const value = item.selectedVariant[type];
@@ -150,28 +156,29 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 setSyncProgress(10 + Math.round(((i + 1) / totalItems) * 80));
             }
             
-            setSyncMessage('¡Listo! Abriendo tu carrito...');
+            // Step 3: Redirect
+            setSyncMessage('¡Listo! Abriendo web oficial...');
             setSyncProgress(100);
             
             await new Promise(resolve => setTimeout(resolve, 800));
             
+            // Clear local React cart before redirecting so it's empty when they return
             onClearCart();
             
-            const cartUrl = 'https://vellaperfumeria.com/carrito/';
-            window.location.href = cartUrl;
+            window.location.href = 'https://vellaperfumeria.com/carrito/';
 
         } catch (error) {
             console.error("Error durante la sincronización:", error);
-            setSyncMessage('Redirigiendo al carrito...');
-            setTimeout(() => {
-                 window.location.href = 'https://vellaperfumeria.com/carrito/';
-             }, 1000);
+            setSyncMessage('Redirigiendo...');
+            // Fallback redirect
+            window.location.href = 'https://vellaperfumeria.com/carrito/';
         }
     };
 
+    // --- Empty State ---
     if (cartItems.length === 0 && !isProcessing) {
         return (
-            <div className="bg-gray-50 min-h-screen flex flex-col">
+            <div className="bg-gray-50 min-h-screen flex flex-col font-sans">
                 <header className="bg-white border-b border-gray-200 py-4 sticky top-0 z-10">
                     <div className="container mx-auto px-4 flex justify-center">
                          <button onClick={() => onNavigate('home')}>
@@ -181,7 +188,12 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                 </header>
                 <div className="container mx-auto px-4 py-16 text-center flex-grow flex flex-col justify-center items-center">
                     <div className="max-w-md">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Tu bolsa de compra está vacía</h2>
+                        <div className="bg-white p-6 rounded-full inline-block mb-6 shadow-sm">
+                            <svg className="h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                        </div>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-4">Tu bolsa está vacía</h2>
                         <p className="text-gray-500 mb-8">Parece que aún no has elegido tus productos de belleza favoritos.</p>
                         <button 
                             onClick={() => onNavigate('products', 'all')}
@@ -195,6 +207,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
         );
     }
 
+    // --- Main View ---
     return (
         <div className="bg-gray-50 min-h-screen flex flex-col font-sans">
              <iframe
@@ -205,7 +218,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             <header className="bg-white border-b border-gray-200 py-6 sticky top-0 z-20 shadow-sm">
                 <div className="container mx-auto px-4 flex flex-col items-center justify-center space-y-3">
                     <button onClick={() => onNavigate('home')} className="hover:opacity-80 transition-opacity">
-                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-40 w-auto object-contain" />
+                        <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-28 w-auto object-contain" />
                     </button>
                 </div>
             </header>
@@ -213,19 +226,20 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
             <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-8 text-center">
                     <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Resumen del Pedido</h1>
-                    <p className="text-gray-500 mt-2">Revisa tus productos antes de finalizar en la web.</p>
+                    <p className="text-gray-500 mt-2">Revisa tus productos antes de finalizar la compra en la web.</p>
                 </div>
                 
                 <div className="flex flex-col lg:flex-row gap-8 max-w-6xl mx-auto">
+                    {/* Left Column: Items */}
                     <div className="lg:w-2/3 space-y-6">
                         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
                             <h2 className="text-xl font-bold text-gray-800 mb-6 pb-4 border-b border-gray-100">
-                                Artículos seleccionados ({cartItems.length})
+                                Artículos en tu bolsa ({cartItems.length})
                             </h2>
                             <div className="space-y-6">
-                                {/* Gift Item */}
+                                {/* Free Gift Display */}
                                 {hasGift && (
-                                    <div className="flex gap-4 sm:gap-6 items-start bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                    <div className="flex gap-4 sm:gap-6 items-start bg-gray-50 p-4 rounded-xl border border-gray-100 animate-fade-in">
                                         <div className="relative flex-shrink-0 w-24 h-24 flex items-center justify-center bg-white rounded-lg border border-gray-200">
                                             <GiftBoxIcon color="black" />
                                             <span className="absolute -top-2 -right-2 bg-green-500 text-white font-bold text-xs px-2 py-0.5 rounded-full shadow-sm">
@@ -252,7 +266,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                                         </div>
                                         <div className="flex-grow">
                                             <h3 className="font-bold text-gray-900 text-base sm:text-lg">{item.product.name}</h3>
-                                            <p className="text-sm text-gray-500 mb-2">{item.product.brand}</p>
+                                            <p className="text-sm text-gray-500 mb-1">{item.product.brand}</p>
                                             {item.selectedVariant && (
                                                 <div className="flex flex-wrap gap-2 mb-2">
                                                     {Object.entries(item.selectedVariant).map(([key, value]) => (
@@ -272,9 +286,10 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                         </div>
                     </div>
 
+                    {/* Right Column: Totals & Action */}
                     <div className="lg:w-1/3">
                         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sticky top-32">
-                            <h3 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">Total Estimado</h3>
+                            <h3 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b border-gray-100">Resumen</h3>
                             
                             <div className="space-y-3 mb-6">
                                 <div className="flex justify-between text-sm">
@@ -282,7 +297,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                                     <span className="font-semibold">{formatCurrency(subtotal, currency)}</span>
                                 </div>
                                 {discountAmount > 0 && (
-                                    <div className="flex justify-between text-sm text-rose-600">
+                                    <div className="flex justify-between text-sm text-rose-600 bg-rose-50 p-2 rounded">
                                         <span>Descuento (15%)</span>
                                         <span className="font-semibold">-{formatCurrency(discountAmount, currency)}</span>
                                     </div>
@@ -306,25 +321,25 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                             <button 
                                 onClick={handleSubmit}
                                 disabled={isProcessing}
-                                className="w-full bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold py-3 px-6 rounded-xl hover:bg-white hover:text-[var(--color-primary-solid)] transition-all shadow-lg transform active:scale-95 flex justify-center items-center disabled:opacity-70 disabled:cursor-wait"
+                                className="w-full bg-[var(--color-primary)] text-black border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl hover:bg-white hover:text-[var(--color-primary-solid)] transition-all shadow-lg transform active:scale-95 flex justify-center items-center disabled:opacity-70 disabled:cursor-wait"
                             >
                                 {isProcessing ? (
                                     <div className="flex flex-col items-center gap-2 w-full">
-                                        <div className="flex items-center gap-2 text-sm">
+                                        <div className="flex items-center gap-2 text-sm font-medium">
                                             <svg className="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
                                             <span>{syncMessage}</span>
                                         </div>
-                                        <div className="w-full bg-white/50 rounded-full h-1.5 mt-1">
-                                            <div className="bg-black h-1.5 rounded-full transition-all duration-300" style={{ width: `${syncProgress}%` }}></div>
+                                        <div className="w-full bg-white/50 rounded-full h-1 mt-1 overflow-hidden">
+                                            <div className="bg-black h-full transition-all duration-300 ease-out" style={{ width: `${syncProgress}%` }}></div>
                                         </div>
                                     </div>
                                 ) : 'IR AL CARRITO WEB'}
                             </button>
                             
-                            <div className="mt-6 flex justify-center gap-3 opacity-60">
+                            <div className="mt-6 pt-4 border-t border-gray-100 flex justify-center gap-3 opacity-60">
                                 <VisaIcon />
                                 <MastercardIcon />
                             </div>
@@ -337,7 +352,7 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ cartItems, currency, onNavi
                     <img 
                         src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                         alt="Vellaperfumeria" 
-                        className="h-12 w-auto" 
+                        className="h-12 w-auto grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all" 
                     />
                     <p className="text-sm text-gray-400">© {new Date().getFullYear()} Vellaperfumeria. Todos los derechos reservados.</p>
                 </div>
