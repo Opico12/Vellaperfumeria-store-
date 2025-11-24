@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 // Types
@@ -7,6 +6,8 @@ import type { View, Product, CartItem } from './components/types';
 import type { Currency } from './components/currency';
 import { blogPosts } from './components/blogData';
 import { allProducts } from './components/products';
+// API
+import { fetchServerCart } from './components/api';
 // Components
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -36,6 +37,7 @@ const App: React.FC = () => {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const [vParam, setVParam] = useState<string | null>(null);
+    const [isLoadingCart, setIsLoadingCart] = useState(false);
 
     // Function to parse URL parameters and determine view
     const parseUrlParams = useCallback(() => {
@@ -82,9 +84,52 @@ const App: React.FC = () => {
         }
     }, []);
 
-    // Initial Load
+    // Initial Load & API Cart Fetch
     useEffect(() => {
         parseUrlParams();
+        
+        // Logic to fetch cart from server if 'v' param exists
+        const initCart = async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const v = urlParams.get('v');
+            
+            if (v) {
+                setIsLoadingCart(true);
+                try {
+                    // Fetch from API
+                    const serverCart = await fetchServerCart(v);
+                    if (serverCart && serverCart.length > 0) {
+                        setCartItems(serverCart);
+                        // Optionally open cart to show user
+                        // setIsCartOpen(true); 
+                    } else {
+                        // Fallback to local storage if server has nothing
+                        loadLocalCart();
+                    }
+                } catch (error) {
+                    console.error("Failed to sync with server cart", error);
+                    loadLocalCart();
+                } finally {
+                    setIsLoadingCart(false);
+                }
+            } else {
+                loadLocalCart();
+            }
+        };
+
+        const loadLocalCart = () => {
+            try {
+                const storedCart = localStorage.getItem('vellaperfumeria_cart');
+                if (storedCart) {
+                    setCartItems(JSON.parse(storedCart));
+                }
+            } catch (error) {
+                console.error("Failed to load cart from localStorage", error);
+            }
+        };
+
+        initCart();
+
     }, [parseUrlParams]);
 
     // Handle Browser Back/Forward Buttons
@@ -125,26 +170,16 @@ const App: React.FC = () => {
         }
     }, [view]);
 
-    // Load cart from local storage on initial render
-    useEffect(() => {
-        try {
-            const storedCart = localStorage.getItem('vellaperfumeria_cart');
-            if (storedCart) {
-                setCartItems(JSON.parse(storedCart));
-            }
-        } catch (error) {
-            console.error("Failed to load cart from localStorage", error);
-        }
-    }, []);
-
     // Save cart to local storage whenever it changes
     useEffect(() => {
-        try {
-            localStorage.setItem('vellaperfumeria_cart', JSON.stringify(cartItems));
-        } catch (error) {
-            console.error("Failed to save cart to localStorage", error);
+        if (!isLoadingCart) {
+            try {
+                localStorage.setItem('vellaperfumeria_cart', JSON.stringify(cartItems));
+            } catch (error) {
+                console.error("Failed to save cart to localStorage", error);
+            }
         }
-    }, [cartItems]);
+    }, [cartItems, isLoadingCart]);
     
     // Scroll to top on view change
     useEffect(() => {
@@ -303,6 +338,20 @@ const App: React.FC = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-white font-sans text-gray-800">
+            {/* Global Loader if connecting to "Server" */}
+            {isLoadingCart && (
+                <div className="fixed top-0 left-0 w-full h-1 bg-fuchsia-100 z-50">
+                    <div className="h-full bg-fuchsia-600 animate-[loading_1s_ease-in-out_infinite]"></div>
+                    <style>{`
+                        @keyframes loading {
+                            0% { width: 0%; margin-left: 0; }
+                            50% { width: 50%; margin-left: 25%; }
+                            100% { width: 0%; margin-left: 100%; }
+                        }
+                    `}</style>
+                </div>
+            )}
+
             <Header
                 onNavigate={handleNavigate}
                 currency={currency}
