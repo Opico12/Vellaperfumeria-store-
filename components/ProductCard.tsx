@@ -1,6 +1,4 @@
 
-
-
 import React, { useRef, useState, useEffect } from 'react';
 import { type Currency, formatCurrency } from './currency';
 import type { Product } from './types';
@@ -30,14 +28,16 @@ interface ProductCardProps {
     currency: Currency;
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onQuickAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onBuyNow?: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onAddToCart, onQuickAddToCart, onProductSelect, onQuickView }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onAddToCart, onQuickAddToCart, onBuyNow, onProductSelect, onQuickView }) => {
     const [isWishlist, setIsWishlist] = useState(false);
     const [imgSrc, setImgSrc] = useState(product.imageUrl);
     const addToCartBtnRef = useRef<HTMLButtonElement>(null);
+    const buyNowBtnRef = useRef<HTMLButtonElement>(null);
 
     // Reset image when product changes
     useEffect(() => {
@@ -69,6 +69,32 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                 }
             }
             onQuickAddToCart(product, addToCartBtnRef.current, defaultVariant);
+        }
+    };
+
+    const handleBuyNowClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (product.stock === 0) return;
+
+        if (hasManyVariants) {
+            onProductSelect(product);
+        } else {
+            // Default variant selection logic for buy now
+            let defaultVariant = null;
+            if (product.variants) {
+                defaultVariant = {};
+                for (const key in product.variants) {
+                     if (product.variants[key].length > 0) {
+                        defaultVariant[key] = product.variants[key][0].value;
+                     }
+                }
+            }
+            if (onBuyNow) {
+                onBuyNow(product, buyNowBtnRef.current, defaultVariant);
+            } else {
+                // Fallback if prop not provided
+                onQuickAddToCart(product, addToCartBtnRef.current, defaultVariant);
+            }
         }
     };
 
@@ -168,23 +194,34 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                         )}
                     </div>
 
-                    {/* Action Button */}
-                    <button
-                        ref={addToCartBtnRef}
-                        onClick={handleActionClick}
-                        disabled={product.stock === 0}
-                        className={`w-full mt-3 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-300 shadow-sm hover:shadow-md border-2 border-[var(--color-primary-solid)] ${
-                            product.stock === 0
-                                ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200'
-                                : 'bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] transform hover:-translate-y-0.5'
-                        }`}
-                    >
-                        {product.stock === 0 
-                            ? 'Agotado' 
-                            : hasManyVariants 
-                                ? 'Ver Opciones' 
-                                : 'Añadir'}
-                    </button>
+                    {/* Action Buttons Grid */}
+                    <div className="grid grid-cols-2 gap-2 mt-3">
+                        <button
+                            ref={addToCartBtnRef}
+                            onClick={handleActionClick}
+                            disabled={product.stock === 0}
+                            className={`py-2.5 px-2 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-sm hover:shadow-md border border-[var(--color-primary-solid)] ${
+                                product.stock === 0
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed border-gray-200 col-span-2'
+                                    : 'bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)]'
+                            }`}
+                        >
+                            {product.stock === 0 
+                                ? 'Agotado' 
+                                : hasManyVariants 
+                                    ? 'Ver Opciones' 
+                                    : 'Añadir'}
+                        </button>
+                        {product.stock > 0 && (
+                            <button
+                                ref={buyNowBtnRef}
+                                onClick={handleBuyNowClick}
+                                className="py-2.5 px-2 rounded-xl font-bold text-xs md:text-sm transition-all duration-300 shadow-sm hover:shadow-md bg-black text-white hover:bg-gray-800 border border-black"
+                            >
+                                {hasManyVariants ? 'Comprar' : 'Comprar Ya'}
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

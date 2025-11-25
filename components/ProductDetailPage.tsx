@@ -1,6 +1,4 @@
 
-
-
 import React, { useRef, useState, useEffect } from 'react';
 import { ProductCard } from './ProductCard';
 import type { Product, VariantOption } from './types';
@@ -13,6 +11,7 @@ interface ProductDetailPageProps {
     currency: Currency;
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onQuickAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onBuyNow: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
 }
@@ -34,24 +33,6 @@ const TruckIcon: React.FC<{className?: string}> = ({ className }) => (
 const SparklesIcon: React.FC<{className?: string}> = ({ className }) => (
     <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 ${className}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m1-9l2-2 2 2m-2 4v6m2-6l2 2-2 2M15 3l2 2-2 2m-2-4v4m2 4l2 2-2 2m-8 4h12" />
-    </svg>
-);
-
-const WhatsAppIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" />
-    </svg>
-);
-
-const FacebookIcon = () => (
-    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-    </svg>
-);
-
-const TwitterIcon = () => (
-    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
 );
 
@@ -88,11 +69,12 @@ const getStockInfo = (stock: number): { text: string; color: string } => {
     return { text: 'En stock', color: 'text-green-600' };
 };
 
-const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onQuickAddToCart, onProductSelect, onQuickView }) => {
+const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency, onAddToCart, onQuickAddToCart, onBuyNow, onProductSelect, onQuickView }) => {
     const [selectedVariant, setSelectedVariant] = useState<Record<string, string> | null>(getDefaultVariant(product));
     const [currentImageUrl, setCurrentImageUrl] = useState(product.imageUrl);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const addToCartBtnRef = useRef<HTMLButtonElement>(null);
+    const buyNowBtnRef = useRef<HTMLButtonElement>(null);
 
     // Reset state when product changes
     useEffect(() => {
@@ -136,19 +118,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
     const relatedProducts = allProducts
         .filter(p => p.category === product.category && p.id !== product.id)
         .slice(0, 4);
-
-    const handleShare = (platform: 'whatsapp' | 'facebook' | 'twitter') => {
-        const url = encodeURIComponent(window.location.href);
-        const text = encodeURIComponent(`¡Mira este producto increíble! ${product.name} en Vellaperfumeria`);
-        
-        let shareUrl = '';
-        switch (platform) {
-            case 'whatsapp': shareUrl = `https://wa.me/?text=${text}%20${url}`; break;
-            case 'facebook': shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`; break;
-            case 'twitter': shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`; break;
-        }
-        window.open(shareUrl, '_blank');
-    };
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -282,7 +251,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
 
                         {/* Actions */}
                         <div className="mt-auto space-y-4">
-                            <div className="flex gap-4">
+                            <div className="flex flex-col sm:flex-row gap-4">
                                 <button
                                     ref={addToCartBtnRef}
                                     onClick={() => onAddToCart(product, addToCartBtnRef.current, selectedVariant)}
@@ -291,6 +260,16 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 >
                                     {isOutOfStock ? 'Agotado' : 'Añadir a la cesta'}
                                 </button>
+                                
+                                {!isOutOfStock && (
+                                    <button
+                                        ref={buyNowBtnRef}
+                                        onClick={() => onBuyNow(product, buyNowBtnRef.current, selectedVariant)}
+                                        className="flex-1 bg-black text-white border-2 border-black font-bold text-lg py-4 px-8 rounded-xl shadow-lg hover:shadow-gray-400 transition-all transform hover:-translate-y-1 hover:bg-gray-800"
+                                    >
+                                        Comprar Ahora
+                                    </button>
+                                )}
                             </div>
                             
                             {/* Value Props */}
@@ -360,6 +339,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ product, currency
                                 currency={currency}
                                 onAddToCart={onAddToCart}
                                 onQuickAddToCart={onQuickAddToCart}
+                                onBuyNow={onBuyNow}
                                 onProductSelect={onProductSelect}
                                 onQuickView={onQuickView}
                             />

@@ -217,6 +217,26 @@ const App: React.FC = () => {
         if (!isCartOpen) setIsCartOpen(true);
     };
 
+    // New: Buy Now Logic (Add & Navigate directly to Checkout)
+    const handleBuyNow = (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => {
+        const cartItemId = selectedVariant 
+            ? `${product.id}-${Object.values(selectedVariant).join('-')}`
+            : `${product.id}`;
+            
+        const existingItem = cartItems.find(item => item.id === cartItemId);
+
+        if (existingItem) {
+            setCartItems(cartItems.map(item =>
+                item.id === cartItemId ? { ...item, quantity: item.quantity + 1 } : item
+            ));
+        } else {
+            setCartItems([...cartItems, { id: cartItemId, product, quantity: 1, selectedVariant }]);
+        }
+        
+        // Skip sidebar, go straight to checkout summary
+        handleNavigate('checkoutSummary');
+    };
+
     const handleUpdateQuantity = (cartItemId: string, newQuantity: number) => {
         if (newQuantity <= 0) {
             handleRemoveItem(cartItemId);
@@ -244,17 +264,17 @@ const App: React.FC = () => {
     const renderContent = () => {
         switch (view.current) {
             case 'home':
-                return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} currency={currency} onQuickView={setQuickViewProduct} />;
+                return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} currency={currency} onQuickView={setQuickViewProduct} />;
             case 'products':
-                return <ShopPage initialCategory={view.payload || 'all'} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
+                return <ShopPage initialCategory={view.payload || 'all'} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'productDetail':
-                return <ProductDetailPage product={view.payload} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
+                return <ProductDetailPage product={view.payload} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ofertas':
-                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
+                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ia':
                 return <AsistenteIAPage cartItems={cartItems} />;
             case 'catalog':
-                return <CatalogPage onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} currency={currency} />;
+                return <CatalogPage onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} currency={currency} />;
             case 'blog':
                  return <BlogPage posts={blogPosts} onSelectPost={handleSelectPost} />;
             case 'blogPost':
@@ -262,7 +282,7 @@ const App: React.FC = () => {
             case 'checkoutSummary':
                 return <CheckoutSummaryPage cartItems={cartItems} currency={currency} onUpdateQuantity={handleUpdateQuantity} onRemoveItem={handleRemoveItem} onNavigate={handleNavigate} />;
             default:
-                return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} currency={currency} onQuickView={setQuickViewProduct} />;
+                return <ProductList onNavigate={handleNavigate} onProductSelect={handleProductSelect} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} currency={currency} onQuickView={setQuickViewProduct} />;
         }
     };
     

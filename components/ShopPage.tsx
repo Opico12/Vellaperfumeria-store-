@@ -22,9 +22,10 @@ const ShopPage: React.FC<{
     initialCategory: string;
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onQuickAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onBuyNow: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
-}> = ({ currency, initialCategory, onAddToCart, onQuickAddToCart, onProductSelect, onQuickView }) => {
+}> = ({ currency, initialCategory, onAddToCart, onQuickAddToCart, onBuyNow, onProductSelect, onQuickView }) => {
     
     const [activeCategory, setActiveCategory] = useState(initialCategory);
     const [sortOrder, setSortOrder] = useState('menu_order');
@@ -119,6 +120,7 @@ const ShopPage: React.FC<{
                                     currency={currency}
                                     onAddToCart={onAddToCart}
                                     onQuickAddToCart={onQuickAddToCart}
+                                    onBuyNow={onBuyNow}
                                     onProductSelect={onProductSelect}
                                     onQuickView={onQuickView}
                                 />

@@ -1,7 +1,4 @@
 
-
-
-
 import React, { useState, useRef } from 'react';
 import { allProducts } from './products';
 import { ProductCard } from './ProductCard';
@@ -15,6 +12,7 @@ const FALLBACK_CATALOG_URL = 'https://es.oriflame.com/products/digital-catalogue
 interface CatalogPageProps {
     onAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onQuickAddToCart: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
+    onBuyNow: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
     currency: Currency;
@@ -56,7 +54,7 @@ const PayPalIcon = () => (
     </svg>
 );
 
-const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart, onProductSelect, onQuickView, currency }) => {
+const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart, onBuyNow, onProductSelect, onQuickView, currency }) => {
     const [quickAddCode, setQuickAddCode] = useState('');
     const [addStatus, setAddStatus] = useState<'idle' | 'success' | 'error'>('idle');
     const [statusMessage, setStatusMessage] = useState('');
@@ -208,6 +206,7 @@ const CatalogPage: React.FC<CatalogPageProps> = ({ onAddToCart, onQuickAddToCart
                             currency={currency}
                             onAddToCart={onAddToCart}
                             onQuickAddToCart={onQuickAddToCart}
+                            onBuyNow={onBuyNow}
                             onProductSelect={onProductSelect}
                             onQuickView={onQuickView}
                         />
