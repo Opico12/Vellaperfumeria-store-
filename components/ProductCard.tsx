@@ -29,8 +29,8 @@ const CartPlusIcon = () => (
     </svg>
 );
 
-const GooglePlayMiniIcon = () => (
-    <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+const GooglePlayLogoSmall = () => (
+    <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4.5 3.5L13.5 12L4.5 20.5V3.5Z" fill="#2196F3"/>
         <path d="M13.5 12L18.5 17L21.5 12L18.5 7L13.5 12Z" fill="#FFC107"/>
         <path d="M18.5 17L13.5 12L4.5 20.5L18.5 17Z" fill="#F44336"/>
@@ -107,7 +107,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
             if (onBuyNow) {
                 onBuyNow(product, buyNowBtnRef.current, defaultVariant);
             } else {
-                // Fallback if prop not provided
                 onQuickAddToCart(product, addToCartBtnRef.current, defaultVariant);
             }
         }
@@ -238,14 +237,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                                 </button>
                             )}
 
-                            {/* GOOGLE PLAY BUTTON - SPECIFICALLY REQUESTED */}
+                            {/* GOOGLE PLAY BUTTON - NEW SPECIFIC BUTTON */}
                             {product.stock > 0 && (
                                 <button
                                     onClick={handleBuyNowClick}
-                                    className="w-full py-2 px-1 rounded-lg font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 flex items-center justify-center"
+                                    className="w-full py-2 px-1 rounded-lg font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md bg-white text-gray-800 hover:bg-gray-50 border border-gray-300 flex items-center justify-center"
                                     title="Pagar con Google Play"
                                 >
-                                    <GooglePlayMiniIcon />
+                                    <GooglePlayLogoSmall />
                                     Google Pay
                                 </button>
                             )}
