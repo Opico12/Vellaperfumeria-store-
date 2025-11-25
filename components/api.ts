@@ -103,10 +103,11 @@ const mapOrderToCartItems = (orderData: any): CartItem[] => {
 
 const getMockCart = (): CartItem[] => {
     // Usamos productos estrictamente de Perfumería y Maquillaje de lujo
-    // Evitamos cualquier cosa que parezca "protector solar" o tinte.
+    // ID 46801: Eau de Parfum Divine Dark Velvet
+    // ID 44917: Perlas Giordani Gold
     
-    const perfumeProduct = allProducts.find(p => p.id === 46801); // Divine Dark Velvet (Perfume)
-    const makeupProduct = allProducts.find(p => p.id === 44917); // Perlas Giordani Gold (Maquillaje)
+    const perfumeProduct = allProducts.find(p => p.id === 46801); 
+    const makeupProduct = allProducts.find(p => p.id === 44917); 
 
     const mockCart: CartItem[] = [];
 
