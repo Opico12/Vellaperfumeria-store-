@@ -1,5 +1,4 @@
 
-
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { CartItem, View } from './types';
 import type { Currency } from './currency';
@@ -47,47 +46,8 @@ const GiftBoxIcon = ({ color = "black" }: { color?: string }) => (
     </svg>
 );
 
-// Payment Icons
-const VisaIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-       <rect width="38" height="24" rx="2" fill="white"/>
-       <path d="M15.5 15.5L13.5 4.5H11.5L9 10.5L7.5 6.5L7 4.5H5L8.5 15.5H11L13 9.5L14.5 4.5H15.5V15.5Z" fill="#1A1F71"/>
-       <path d="M20.5 15.5L22.5 4.5H20.5L19.5 9L18.5 4.5H16.5L18.5 15.5H20.5Z" fill="#1A1F71"/>
-       <path d="M26.5 15.5L28.5 4.5H26.5L25 8.5L23.5 4.5H21.5L23.5 15.5H26.5Z" fill="#1A1F71"/>
-       <path d="M32.5 4.5H29.5L28.5 9L27.5 4.5H25.5L28.5 15.5H30.5L34.5 4.5H32.5Z" fill="#1A1F71"/>
-       <path d="M11 15.5L13 4.5H15L13 15.5H11Z" fill="#1A1F71"/>
-       <path d="M25.7 6.8C25.2 6.6 24.6 6.5 24 6.5C22.6 6.5 21.5 7.2 21.5 8.6C21.5 9.6 22.4 10.2 23.1 10.5C23.8 10.8 24 11 24 11.3C24 11.7 23.6 11.9 23.1 11.9C22.5 11.9 22 11.8 21.6 11.6L21.3 12.8C21.8 13 22.5 13.1 23.1 13.1C24.7 13.1 25.8 12.3 25.8 10.9C25.8 9.8 25.1 9.2 24.3 8.9C23.6 8.6 23.3 8.3 23.3 8C23.3 7.7 23.7 7.5 24.1 7.5C24.6 7.5 25 7.6 25.4 7.8L25.7 6.8Z" fill="#1A1F71"/>
-       <path d="M30.6 6.5H28.9L28 11.5L28.9 6.5Z" fill="#1A1F71"/>
-       <path d="M32.9 6.5L32.5 8.6C32.3 7.9 32.1 7.2 31.8 6.5H30.2L30.6 8.6L30.2 11.5L31.1 6.5Z" fill="#1A1F71"/>
-    </svg>
-);
-
-const MastercardIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="24" rx="2" fill="white"/>
-        <circle cx="13" cy="12" r="7" fill="#EB001B"/>
-        <circle cx="25" cy="12" r="7" fill="#F79E1B"/>
-        <path d="M19 16.4C20.3 15.4 21.2 13.8 21.2 12C21.2 10.2 20.3 8.6 19 7.6C17.7 8.6 16.8 10.2 16.8 12C16.8 13.8 17.7 15.4 19 16.4Z" fill="#FF5F00"/>
-    </svg>
-);
-
-const PayPalIcon = () => (
-    <svg className="w-8 h-5" viewBox="0 0 38 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="38" height="24" rx="2" fill="white"/>
-        <path d="M26.5 7.5L23.5 7.5L22.5 13.5L26.5 7.5Z" fill="#003087"/>
-        <path d="M22.5 13.5L20.5 13.5L21.5 7.5L24.5 7.5L22.5 13.5Z" fill="#003087"/>
-        <path d="M14.5 7.5C15.5 7.5 16.5 8 16.5 9.5C16.5 10.5 16 11.5 15 11.5H13.5L14.5 7.5Z" fill="#003087"/>
-        <path d="M10.5 7.5H13.5L12.5 13.5H9.5L10.5 7.5Z" fill="#003087"/>
-        <path d="M13 12.5H11.5L12 9.5L13 12.5Z" fill="#009CDE"/>
-        <path d="M16 10.5C16 11.5 15.5 12.5 14.5 12.5H13L13.5 9.5H15C15.5 9.5 16 9.8 16 10.5Z" fill="#009CDE"/>
-        <path d="M20 7.5L18 13.5H16.5L18.5 7.5H20Z" fill="#009CDE"/>
-    </svg>
-);
-
-
 const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, currency, onUpdateQuantity, onRemoveItem, onNavigate, onClearCart }) => {
     const sidebarRef = useRef<HTMLDivElement>(null);
-    const [isProcessing, setIsProcessing] = useState(false);
     
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -144,51 +104,14 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
         message += `\n\nPor favor, indicadme los pasos para finalizar el pago. ¡Gracias!`;
 
         const encodedMessage = encodeURIComponent(message);
-        const whatsappNumber = '34661202616'; // Corrected phone number
+        const whatsappNumber = '34661202616'; // Número confirmado por el usuario
         window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
     };
 
-
-    // --- DIRECT WEB CHECKOUT ---
-    const handleDirectCheckout = () => {
-        if (cartItems.length === 0) return;
-        
-        setIsProcessing(true);
-
-        // Use standard WooCommerce add-to-cart URL format with ABSOLUTE PATH to main domain
-        const item = cartItems[0];
-        let idToAdd = item.product.id;
-             
-        // Check for variation ID for the first item
-        if (item.selectedVariant && item.product.variants) {
-            for (const type in item.selectedVariant) {
-                const value = item.selectedVariant[type];
-                const variantOptions = item.product.variants[type];
-                const option = variantOptions?.find(opt => opt.value === value);
-                if (option?.variationId) {
-                    idToAdd = option.variationId;
-                    break;
-                }
-            }
-        }
-        
-        // Get 'v' param from current URL to maintain session if exists
-        const urlParams = new URLSearchParams(window.location.search);
-        const vParam = urlParams.get('v');
-            
-        // CHANGED: Force redirect to "finalizar-compra" (Checkout) instead of "carrito" (Cart)
-        // This ensures the user lands on the payment page directly.
-        let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idToAdd}&quantity=${item.quantity}`;
-        
-        // Append 'v' parameter if it exists
-        if (vParam) {
-            redirectUrl += `&v=${vParam}`;
-        }
-        
-        window.location.href = redirectUrl;
-    };
-
-    const handleViewFullCart = () => {
+    // --- MAIN ACTION: GO TO SUMMARY ---
+    // Instead of redirecting to external site immediately (which causes issues with multiple items),
+    // we take the user to the internal Checkout Summary page.
+    const handleGoToSummary = () => {
         onNavigate('checkoutSummary');
         onClose();
     };
@@ -304,21 +227,12 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
                             </div>
                             
                             <div className="flex flex-col gap-3 pt-2">
-                                {/* New Link to Full Cart Page */}
-                                <button
-                                    onClick={handleViewFullCart}
-                                    className="w-full text-center text-gray-700 bg-gray-100 hover:bg-gray-200 font-bold py-3 rounded-xl transition-colors"
-                                >
-                                    Ver Carrito Detallado
-                                </button>
-                                
-                                {/* Option 1: Web Checkout - REDIRECTS TO /finalizar-compra/ */}
+                                {/* MAIN CHECKOUT BUTTON: GO TO SUMMARY */}
                                 <button 
-                                    onClick={handleDirectCheckout}
-                                    disabled={isProcessing}
-                                    className="w-full text-center bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-fuchsia-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline disabled:opacity-70 disabled:cursor-wait"
+                                    onClick={handleGoToSummary}
+                                    className="w-full text-center bg-[var(--color-primary)] text-black hover:bg-white hover:text-[var(--color-primary-solid)] border-2 border-[var(--color-primary-solid)] font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-fuchsia-200 transform hover:-translate-y-0.5 flex justify-center items-center cursor-pointer no-underline"
                                 >
-                                     {isProcessing ? 'Conectando...' : 'PAGAR EN VELLAPERFUMERIA.COM'}
+                                     VER RESUMEN / PAGAR
                                 </button>
 
                                 {/* Option 2: WhatsApp Order (Reliable Fallback) */}

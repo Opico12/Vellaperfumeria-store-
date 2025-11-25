@@ -20,7 +20,7 @@ const SHIPPING_COST = 6.00;
 // Icono de Verificado para la tienda
 const VerifiedBadge = () => (
     <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
     </svg>
 );
 
@@ -88,11 +88,24 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
 }) => {
     const [isProcessing, setIsProcessing] = useState(false);
     const [selectedItemIds, setSelectedItemIds] = useState<Set<string>>(new Set());
+    const [originUrl, setOriginUrl] = useState('');
 
     // Initialize selection when cart items load - Mark ALL by default
     useEffect(() => {
         const allIds = new Set(cartItems.map(item => item.id));
         setSelectedItemIds(allIds);
+        
+        // Get current origin for CORS helper
+        if (typeof window !== 'undefined') {
+            const origin = window.location.origin;
+            const href = window.location.href;
+            if (!origin || origin === 'null') {
+                // Fallback attempt to construct origin if it is missing
+                setOriginUrl(window.location.protocol + '//' + window.location.host);
+            } else {
+                setOriginUrl(origin);
+            }
+        }
     }, [cartItems]);
 
     const handleToggleSelect = (id: string) => {
@@ -143,7 +156,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     const total = subtotal - discountAmount + shippingCost;
     const amountForFreeShipping = FREE_SHIPPING_THRESHOLD - subtotal;
 
-    // Lógica principal de checkout (común para Google Pay, Apple Pay y Checkout Normal)
+    // Lógica principal de checkout
     const proceedToCheckout = (method: 'standard' | 'google' | 'apple') => {
         if (selectedItemsList.length === 0) return;
         
@@ -175,7 +188,6 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
             
         let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idsToAdd.join(',')}`;
         
-        // Si es un método express, podríamos añadir un flag (simulado aquí)
         if (method === 'google') console.log("Procesando con Google Pay...");
         if (method === 'apple') console.log("Procesando con Apple Pay...");
 
@@ -193,10 +205,59 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         window.location.href = window.location.pathname + '?v=12470fe406d4';
     };
 
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(originUrl);
+        alert('Dirección copiada: ' + originUrl);
+    };
+
+    // Componente de Ayuda CORS GIGANTE
+    const CorsHelper = () => (
+        <div className="bg-red-600 text-white p-6 md:p-8 rounded-xl shadow-2xl mb-8 border-4 border-yellow-400 relative overflow-hidden">
+             <div className="absolute top-0 right-0 bg-yellow-400 text-black font-bold px-4 py-1 text-xs uppercase tracking-widest transform translate-x-8 translate-y-4 rotate-45 hidden md:block">
+                Importante
+            </div>
+            <h3 className="font-black text-2xl md:text-3xl mb-4 text-yellow-300 uppercase leading-none">
+                ⚠️ CONFIGURACIÓN OBLIGATORIA
+            </h3>
+            <p className="font-medium text-lg mb-4">
+                Para conectar esta vista previa con <strong>Vellaperfumeria.com</strong>, necesitas autorizar esta dirección.
+            </p>
+            <div className="bg-black/20 p-4 rounded-lg mb-6">
+                <ol className="list-decimal list-inside space-y-2 text-base md:text-lg">
+                    <li>Entra a tu WordPress → <strong>Ajustes</strong> → <strong>WP CORS</strong>.</li>
+                    <li>Busca la casilla <strong>"Access-Control-Allow-Origin"</strong>.</li>
+                    <li>Pega la dirección de abajo (borra el * si lo tenías).</li>
+                </ol>
+            </div>
+            
+            <div className="flex flex-col md:flex-row gap-4 items-stretch">
+                <div className="flex-grow relative">
+                    <span className="absolute -top-3 left-4 bg-red-600 px-2 text-xs font-bold text-yellow-300">TU DIRECCIÓN ACTUAL</span>
+                    <input 
+                        type="text" 
+                        readOnly 
+                        value={originUrl} 
+                        className="w-full text-black font-mono text-lg p-4 rounded-lg border-2 border-black focus:outline-none focus:ring-4 focus:ring-yellow-400"
+                    />
+                </div>
+                <button 
+                    onClick={copyToClipboard}
+                    className="bg-yellow-400 text-black font-black text-xl px-8 py-4 rounded-lg hover:bg-white hover:text-black border-2 border-black transition-all transform hover:scale-105 active:scale-95 shadow-lg flex items-center justify-center gap-2 whitespace-nowrap"
+                >
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                    COPIAR
+                </button>
+            </div>
+        </div>
+    );
+
     if (cartItems.length === 0) {
         return (
-            <div className="container mx-auto px-4 py-16 text-center">
-                <div className="bg-white rounded-3xl p-12 shadow-sm border border-fuchsia-50 max-w-2xl mx-auto">
+            <div className="container mx-auto px-4 py-8 text-center">
+                 {/* Mostrar Ayuda CORS AL PRINCIPIO */}
+                 <CorsHelper />
+                 
+                <div className="bg-white rounded-3xl p-12 shadow-sm border border-fuchsia-50 max-w-2xl mx-auto mb-8">
                     <svg className="w-24 h-24 text-fuchsia-200 mx-auto mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -225,6 +286,10 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
 
     return (
         <div className="container mx-auto px-4 py-8">
+            
+            {/* CORS HELPER AT THE VERY TOP */}
+            <CorsHelper />
+
             <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-8 text-center md:text-left">Finalizar Compra</h1>
             
             <div className="flex flex-col lg:flex-row gap-8">

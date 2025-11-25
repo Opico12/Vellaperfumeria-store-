@@ -30,6 +30,52 @@ type AppView = {
     payload?: any;
 };
 
+// Componente de Barra de Depuración CORS
+const CorsDebugBar = () => {
+    const [origin, setOrigin] = React.useState('');
+    const [copied, setCopied] = React.useState(false);
+
+    React.useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setOrigin(window.location.origin);
+        }
+    }, []);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(origin);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    }
+
+    if (!origin) return null;
+
+    return (
+        <div className="bg-black text-[#39FF14] p-4 text-center font-mono text-sm md:text-base border-b-4 border-[#39FF14] z-[9999] relative shadow-2xl">
+            <div className="flex flex-col items-center gap-2">
+                <p className="font-bold uppercase text-lg tracking-wider animate-pulse">👇 CONFIGURACIÓN NECESARIA EN WORDPRESS 👇</p>
+                <div className="bg-[#111] border border-[#39FF14] p-4 rounded-lg max-w-3xl w-full">
+                    <p className="text-white mb-2">Ve a <strong>Ajustes &gt; WP CORS</strong> y pon esto en <em>Access-Control-Allow-Origin</em>:</p>
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+                        <code className="bg-[#222] text-white px-4 py-2 rounded border-2 border-white select-all text-xl font-bold break-all">
+                            {origin}
+                        </code>
+                        <span className="text-white font-bold">O MEJOR AÚN PON UN ASTERISCO:</span>
+                         <code className="bg-[#222] text-white px-4 py-2 rounded border-2 border-white select-all text-xl font-bold">
+                            *
+                        </code>
+                    </div>
+                     <button 
+                        onClick={handleCopy}
+                        className="mt-4 bg-[#39FF14] text-black font-black px-6 py-2 rounded hover:bg-white transition-all shadow-[0_0_10px_#39FF14] uppercase"
+                    >
+                        {copied ? '✅ Dirección Copiada' : 'Copiar Dirección Web'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const App: React.FC = () => {
     const [view, setView] = useState<AppView>({ current: 'home' });
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -338,6 +384,9 @@ const App: React.FC = () => {
 
     return (
         <div className="flex flex-col min-h-screen bg-white font-sans text-gray-800">
+            {/* GLOBAL CORS DEBUG BAR - VISIBLE ON ALL PAGES */}
+            <CorsDebugBar />
+
             {/* Global Loader if connecting to "Server" */}
             {isLoadingCart && (
                 <div className="fixed top-0 left-0 w-full h-1 bg-fuchsia-100 z-50">
