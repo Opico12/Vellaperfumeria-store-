@@ -95,9 +95,6 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         setIsProcessing(true);
 
         // --- LÓGICA DE URL MULTI-PRODUCTO PARA WOOCOMMERCE ---
-        // Construimos una lista de IDs separados por comas.
-        // Esto permite añadir múltiples productos a la cesta de WooCommerce en un solo enlace.
-        
         const idsToAdd: string[] = [];
 
         selectedItemsList.forEach(item => {
@@ -116,8 +113,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                 }
             }
             
-            // Si la cantidad es mayor a 1, añadimos el ID tantas veces como cantidad haya
-            // (Esta es la forma más compatible con enlaces GET estándar de WooCommerce)
+            // Añadimos el ID tantas veces como cantidad haya
             for (let i = 0; i < item.quantity; i++) {
                 idsToAdd.push(idToAdd.toString());
             }
@@ -126,7 +122,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         const urlParams = new URLSearchParams(window.location.search);
         const vParam = urlParams.get('v');
             
-        // Creamos la URL final con todos los IDs
+        // Creamos la URL final
         let redirectUrl = `https://vellaperfumeria.com/finalizar-compra/?add-to-cart=${idsToAdd.join(',')}`;
         
         if (vParam) {
@@ -134,6 +130,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         }
         
         // Redirigimos
+        console.log("Redirigiendo a:", redirectUrl);
         window.location.href = redirectUrl;
     };
 
@@ -207,7 +204,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                                             </div>
                                             <p className="text-sm text-gray-500 mb-1 font-medium">{item.product.brand}</p>
                                             
-                                            {/* Etiqueta Unificada para TODOS los productos - VISIBLEMENTE DESTACADA */}
+                                            {/* Etiqueta Unificada */}
                                             <div className="flex items-center gap-1.5 mb-2 bg-blue-600 w-fit px-2 py-1 rounded-md shadow-sm">
                                                 <VerifiedBadge />
                                                 <p className="text-xs text-white font-bold tracking-wide uppercase">Vendido por Vellaperfumeria</p>
@@ -326,7 +323,6 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                         <div className="mt-6">
                             <p className="text-xs text-center text-gray-400 mb-3 uppercase tracking-wider">Pago Seguro Garantizado</p>
                             <div className="flex justify-center gap-3 opacity-70">
-                                {/* Simple CSS placeholders for card icons to avoid clutter */}
                                 <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
                                 <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
                                 <div className="h-6 w-10 bg-gray-200 rounded border border-gray-300"></div>
