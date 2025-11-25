@@ -104,7 +104,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
         message += `\n\nPor favor, indicadme los pasos para finalizar el pago. ¡Gracias!`;
 
         const encodedMessage = encodeURIComponent(message);
-        const whatsappNumber = '34661202616'; // Número confirmado por el usuario
+        const whatsappNumber = '34661202616'; 
         window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
     };
 

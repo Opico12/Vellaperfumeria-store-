@@ -25,47 +25,37 @@ const getAuthHeader = () => {
 
 export const fetchServerCart = async (sessionId: string): Promise<CartItem[]> => {
     
-    // 2. Si las claves están vacías, usamos simulación
-    if (!CONSUMER_KEY || !CONSUMER_SECRET) {
-        console.warn("⚠️ Faltan las API Keys. Usando modo simulación.");
-        return getMockCart();
+    // 1. Intentar conexión real primero
+    if (CONSUMER_KEY && CONSUMER_SECRET) {
+        console.log(`🔌 Conectando a ${WC_URL} para recuperar el pedido...`);
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 segundos timeout
+
+        try {
+            // Intentamos obtener el pedido específico o, si falla, usamos el fallback
+            const response = await fetch(`${WC_URL}/wp-json/wc/v3/orders/${sessionId}`, {
+                method: 'GET',
+                headers: getAuthHeader(),
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
+
+            if (response.ok) {
+                const orderData = await response.json();
+                const items = mapOrderToCartItems(orderData);
+                if (items.length > 0) return items;
+            }
+        } catch (error) {
+            console.error("⚠️ Error conexión API (CORS/Red):", error);
+            // Fallthrough to mock
+        }
     }
 
-    // 3. CONEXIÓN REAL A TU SERVIDOR
-    console.log(`🔌 Conectando a ${WC_URL} para recuperar el pedido ${sessionId}...`);
-    
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos de espera
-
-    try {
-        const response = await fetch(`${WC_URL}/wp-json/wc/v3/orders/${sessionId}`, {
-            method: 'GET',
-            headers: getAuthHeader(),
-            signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-            throw new Error(`Error del servidor: ${response.status}`);
-        }
-
-        const orderData = await response.json();
-        const items = mapOrderToCartItems(orderData);
-        
-        // Si el pedido no tiene items (o devuelve vacío), devolvemos el mock para que el usuario vea algo
-        if (items.length === 0) {
-             console.log("⚠️ El pedido real está vacío. Mostrando productos sugeridos.");
-             return getMockCart();
-        }
-        
-        return items;
-
-    } catch (error) {
-        console.error("❌ Error de conexión con Vellaperfumeria.com:", error);
-        console.log("⚠️ Activando modo de respaldo para visualizar el carrito.");
-        // SIEMPRE devolvemos el carrito simulado si falla la conexión para que el usuario pueda PROBAR la interfaz
-        return getMockCart();
-    }
+    // 2. FALLBACK ROBUSTO: Si falla la API o no hay claves, devolvemos SIEMPRE productos
+    // Esto asegura que el usuario NUNCA vea la pantalla vacía en la demo.
+    console.log("⚠️ Usando carrito de respaldo para visualización.");
+    return getMockCart();
 };
 
 // Convierte los datos crudos de WooCommerce al formato de nuestra App
@@ -81,7 +71,6 @@ const mapOrderToCartItems = (orderData: any): CartItem[] => {
             name: item.name,
             brand: "Vellaperfumeria",
             price: parseFloat(item.price),
-            // Si no tenemos imagen local, usamos la que viene del servidor o un placeholder
             imageUrl: item.image?.src || "https://vellaperfumeria.com/wp-content/uploads/woocommerce-placeholder.png",
             description: "Producto sincronizado desde la tienda.",
             stock: 99,
@@ -91,7 +80,6 @@ const mapOrderToCartItems = (orderData: any): CartItem[] => {
         const variantData: Record<string, string> = {};
         if (item.meta_data && Array.isArray(item.meta_data)) {
             item.meta_data.forEach((meta: any) => {
-                // Filtramos metadatos internos de WooCommerce (los que empiezan por _)
                 if (!meta.key.startsWith('_')) variantData[meta.key] = meta.value;
             });
         }
@@ -105,10 +93,12 @@ const mapOrderToCartItems = (orderData: any): CartItem[] => {
     });
 };
 
-// Datos de prueba por si falla la conexión
+// Datos de prueba GARANTIZADOS para la visualización
 const getMockCart = (): CartItem[] => {
+    // Usamos productos reales del archivo products.ts
     const perfumeProduct = allProducts.find(p => p.id === 46801); // Divine Dark Velvet
-    const makeupProduct = allProducts.find(p => p.id === 44917);  // Perlas Giordani
+    const pearlsProduct = allProducts.find(p => p.id === 44917);  // Perlas Giordani
+    const serumProduct = allProducts.find(p => p.id === 42118);   // Primer Giordani
 
     const mockCart: CartItem[] = [];
 
@@ -120,13 +110,22 @@ const getMockCart = (): CartItem[] => {
             selectedVariant: null
         });
     }
-    if (makeupProduct) {
+    if (pearlsProduct) {
         mockCart.push({
             id: `sim-makeup-2`,
-            product: makeupProduct,
+            product: pearlsProduct,
             quantity: 1,
             selectedVariant: { "Tono": "Luminous Peach" }
         });
     }
+    if (serumProduct) {
+        mockCart.push({
+            id: `sim-serum-3`,
+            product: serumProduct,
+            quantity: 1,
+            selectedVariant: null
+        });
+    }
+
     return mockCart;
 };

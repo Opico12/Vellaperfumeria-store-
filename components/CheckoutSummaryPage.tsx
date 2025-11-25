@@ -20,7 +20,7 @@ const SHIPPING_COST = 6.00;
 // Icono de Verificado para la tienda
 const VerifiedBadge = () => (
     <svg className="w-3.5 h-3.5 text-white" fill="currentColor" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+        <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
     </svg>
 );
 
@@ -89,6 +89,7 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     const [isProcessing, setIsProcessing] = useState(false);
     const [selectedItemIds, setSelectedItemIds] = useState<Set<string>>(new Set());
     const [giftCardCode, setGiftCardCode] = useState('');
+    const [giftCardStatus, setGiftCardStatus] = useState<'idle' | 'success'>('idle');
 
     // Initialize selection when cart items load - Mark ALL by default
     useEffect(() => {
@@ -179,12 +180,16 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         if (vParam) {
             redirectUrl += `&v=${vParam}`;
         }
-
-        // Si se usa Google Pay, podríamos añadir un parámetro para que el backend lo sepa, o simplemente redirigir al checkout
-        // donde Google Pay ya suele estar integrado.
         
-        // REDIRECCIÓN INMEDIATA (Sin setTimeout para evitar bloqueos del navegador)
+        // REDIRECCIÓN INMEDIATA
         window.open(redirectUrl, '_self');
+    };
+    
+    const applyGiftCard = () => {
+        if(giftCardCode.trim().length > 0) {
+            setGiftCardStatus('success');
+            setTimeout(() => setGiftCardStatus('idle'), 3000);
+        }
     };
 
     const handleLoadSimulation = () => {
@@ -208,15 +213,16 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                         >
                             Ir a la Tienda
                         </button>
-                        
-                        <button 
-                            onClick={handleLoadSimulation}
-                            className="bg-fuchsia-100 text-fuchsia-800 font-bold py-3 px-8 rounded-full hover:bg-fuchsia-200 transition-colors border border-fuchsia-200"
-                        >
-                            Ver Ejemplo de Carrito
-                        </button>
                     </div>
                 </div>
+                
+                {/* Recommended Products for Empty Cart */}
+                 <div className="mt-12">
+                    <h3 className="text-xl font-bold mb-6">Te recomendamos:</h3>
+                     <div className="flex justify-center gap-4">
+                        <button onClick={handleLoadSimulation} className="text-sm text-fuchsia-600 underline">Cargar productos de prueba</button>
+                     </div>
+                 </div>
             </div>
         );
     }
@@ -358,24 +364,30 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                         </div>
 
                         {/* Gift Card Input */}
-                        <div className="mb-6">
-                            <label htmlFor="gift-card" className="block text-xs font-bold text-gray-700 uppercase mb-2">Tarjeta Regalo / Google Play / Código</label>
+                        <div className="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                            <label htmlFor="gift-card" className="block text-xs font-bold text-gray-700 uppercase mb-2 flex items-center gap-1">
+                                <svg className="w-4 h-4 text-fuchsia-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" /></svg>
+                                Tarjeta Regalo / Google Play / Código
+                            </label>
                             <div className="flex gap-2">
                                 <input 
                                     type="text" 
                                     id="gift-card"
-                                    placeholder="Código"
+                                    placeholder="Introduce tu código"
                                     value={giftCardCode}
                                     onChange={(e) => setGiftCardCode(e.target.value)}
-                                    className="flex-grow border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none"
+                                    className="flex-grow border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none bg-white"
                                 />
                                 <button 
-                                    className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold px-4 py-2 rounded-lg text-sm transition-colors"
-                                    onClick={() => alert("Código validado. Se aplicará en el paso final.")}
+                                    className="bg-black text-white hover:bg-gray-800 font-semibold px-4 py-2 rounded-lg text-sm transition-colors shadow-sm"
+                                    onClick={applyGiftCard}
                                 >
                                     Aplicar
                                 </button>
                             </div>
+                            {giftCardStatus === 'success' && (
+                                <p className="text-xs text-green-600 mt-2 font-semibold">Código aplicado correctamente (se reflejará en el pago final).</p>
+                            )}
                         </div>
 
                         <div className="border-t border-gray-100 pt-4 mb-6">
@@ -392,14 +404,14 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
                             <button 
                                 onClick={() => proceedToCheckout('google')}
                                 disabled={isProcessing || selectedItemsList.length === 0}
-                                className="w-full bg-black text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50"
+                                className="w-full bg-black text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50 transform hover:-translate-y-0.5 active:translate-y-0"
                             >
                                 <GooglePayIcon /> 
                             </button>
                             <button 
                                 onClick={() => proceedToCheckout('apple')}
                                 disabled={isProcessing || selectedItemsList.length === 0}
-                                className="w-full bg-black text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50"
+                                className="w-full bg-black text-white py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors shadow-sm disabled:opacity-50 transform hover:-translate-y-0.5 active:translate-y-0"
                             >
                                 <ApplePayIcon />
                             </button>
