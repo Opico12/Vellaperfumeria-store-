@@ -105,7 +105,8 @@ const CartSidebar: React.FC<CartSidebarProps> = ({ isOpen, onClose, cartItems, c
 
         const encodedMessage = encodeURIComponent(message);
         const whatsappNumber = '34661202616'; 
-        window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
+        // Updated to use api.whatsapp.com/send for better compatibility
+        window.open(`https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodedMessage}`, '_blank');
     };
 
     // --- MAIN ACTION: GO TO SUMMARY ---

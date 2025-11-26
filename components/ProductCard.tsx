@@ -29,13 +29,17 @@ const CartPlusIcon = () => (
     </svg>
 );
 
-const GooglePlayLogoSmall = () => (
-    <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4.5 3.5L13.5 12L4.5 20.5V3.5Z" fill="#2196F3"/>
-        <path d="M13.5 12L18.5 17L21.5 12L18.5 7L13.5 12Z" fill="#FFC107"/>
-        <path d="M18.5 17L13.5 12L4.5 20.5L18.5 17Z" fill="#F44336"/>
-        <path d="M4.5 3.5L13.5 12L18.5 7L4.5 3.5Z" fill="#4CAF50"/>
-    </svg>
+// FULL GOOGLE PLAY LOGO
+const GooglePlayLogoFull = () => (
+    <div className="flex items-center justify-center gap-1">
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.5 3.5L13.5 12L4.5 20.5V3.5Z" fill="#2196F3"/>
+            <path d="M13.5 12L18.5 17L21.5 12L18.5 7L13.5 12Z" fill="#FFC107"/>
+            <path d="M18.5 17L13.5 12L4.5 20.5L18.5 17Z" fill="#F44336"/>
+            <path d="M4.5 3.5L13.5 12L18.5 7L4.5 3.5Z" fill="#4CAF50"/>
+        </svg>
+        <span className="font-sans font-medium text-gray-600">Pay</span>
+    </div>
 );
 
 interface ProductCardProps {
@@ -54,7 +58,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
     const addToCartBtnRef = useRef<HTMLButtonElement>(null);
     const buyNowBtnRef = useRef<HTMLButtonElement>(null);
 
-    // Reset image when product changes
     useEffect(() => {
         setImgSrc(product.imageUrl);
     }, [product.imageUrl]);
@@ -73,7 +76,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
         if (hasManyVariants) {
             onProductSelect(product);
         } else {
-            // Default variant selection logic for quick add
             let defaultVariant = null;
             if (product.variants) {
                 defaultVariant = {};
@@ -94,7 +96,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
         if (hasManyVariants) {
             onProductSelect(product);
         } else {
-            // Default variant selection logic for buy now
             let defaultVariant = null;
             if (product.variants) {
                 defaultVariant = {};
@@ -114,44 +115,38 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
 
     return (
         <div 
-            className="group relative bg-white border border-fuchsia-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+            className="group relative bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             role="article"
             aria-label={`Producto: ${product.name}`}
         >
             {/* Badge Section */}
             <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
                 {product.tag && (
-                    <span className="bg-gray-800 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider">
+                    <span className="bg-black text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider">
                         {product.tag}
                     </span>
                 )}
                 {isDiscounted && (
-                    <span className="bg-fuchsia-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm">
+                    <span className="bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-sm uppercase tracking-wider shadow-sm">
                         -{discountPercentage}%
-                    </span>
-                )}
-                {product.isShippingSaver && (
-                    <span className="bg-fuchsia-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider shadow-sm">
-                        ENVÍO GRATIS
                     </span>
                 )}
             </div>
 
             {/* Wishlist Button */}
             <button 
-                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/90 hover:bg-white shadow-sm transition-colors text-fuchsia-300 hover:text-fuchsia-500"
+                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/90 hover:bg-white shadow-sm transition-colors text-gray-400 hover:text-red-500"
                 onClick={(e) => {
                     e.stopPropagation();
                     setIsWishlist(!isWishlist);
                 }}
-                aria-label={isWishlist ? "Quitar de favoritos" : "Añadir a favoritos"}
             >
                 <HeartIcon isFilled={isWishlist} />
             </button>
 
             {/* Image Section */}
             <div 
-                className="relative aspect-square overflow-hidden bg-gradient-to-b from-white to-fuchsia-50 cursor-pointer"
+                className="relative aspect-square overflow-hidden bg-white cursor-pointer"
                 onClick={() => onProductSelect(product)}
             >
                 <img
@@ -161,25 +156,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                     className="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                 />
-                
-                {/* Quick View Overlay Button (Desktop) */}
-                <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex justify-center">
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            onQuickView(product);
-                        }}
-                        className="bg-white/90 backdrop-blur-sm text-fuchsia-600 hover:text-fuchsia-700 text-sm font-bold py-2 px-4 rounded-full shadow-lg hover:bg-fuchsia-50 transition-colors flex items-center gap-2 border border-fuchsia-100"
-                    >
-                        <EyeIcon /> Vista Rápida
-                    </button>
-                </div>
             </div>
 
             {/* Content Section */}
-            <div className="p-4 flex flex-col flex-grow">
+            <div className="p-4 flex flex-col flex-grow bg-white">
                 <div className="mb-1 flex justify-between items-start">
-                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{product.brand}</span>
+                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">{product.brand}</span>
                     {product.rating && (
                         <div className="flex items-center gap-1">
                             <StarIcon className="text-amber-400" />
@@ -198,57 +180,43 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, currency, onA
                 {/* Price Section */}
                 <div className="mt-auto pt-2">
                      <div className="flex items-center gap-2 flex-wrap mb-3">
-                        <span className={`text-lg font-bold ${isDiscounted ? 'text-fuchsia-600' : 'text-gray-900'}`}>
+                        <span className={`text-lg font-extrabold ${isDiscounted ? 'text-red-600' : 'text-gray-900'}`}>
                             {formatCurrency(product.price, currency)}
                         </span>
                         {isDiscounted && (
-                            <span className="text-sm text-gray-400 line-through decoration-fuchsia-200">
+                            <span className="text-sm text-gray-400 line-through">
                                 {formatCurrency(product.regularPrice!, currency)}
                             </span>
                         )}
                     </div>
 
                     {/* Action Buttons Grid */}
-                    <div className="flex flex-col gap-2">
-                         {/* ADD TO CART BUTTON */}
+                    <div className="space-y-2">
+                         {/* 1. Add to Cart (Standard) */}
                         <button
                             ref={addToCartBtnRef}
                             onClick={handleActionClick}
                             disabled={product.stock === 0}
-                            className={`w-full py-2 px-2 rounded-lg font-bold text-xs transition-all duration-300 shadow-sm flex justify-center items-center gap-1 ${
+                            className={`w-full py-2.5 rounded-lg font-bold text-xs uppercase tracking-wide transition-all border ${
                                 product.stock === 0
-                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
-                                    : 'bg-white text-black border border-black hover:bg-gray-50'
+                                    ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                    : 'bg-white text-black border-black hover:bg-black hover:text-white'
                             }`}
                         >
-                            <CartPlusIcon />
-                            {product.stock === 0 ? 'Agotado' : hasManyVariants ? 'Opciones' : 'Añadir'}
+                            {product.stock === 0 ? 'Agotado' : 'Añadir al carrito'}
                         </button>
 
-                        <div className="grid grid-cols-2 gap-2">
-                            {/* BUY NOW BUTTON */}
-                            {product.stock > 0 && (
-                                <button
-                                    ref={buyNowBtnRef}
-                                    onClick={handleBuyNowClick}
-                                    className="w-full py-2 px-1 rounded-lg font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md bg-black text-white hover:bg-gray-800 border border-black"
-                                >
-                                    COMPRAR
-                                </button>
-                            )}
-
-                            {/* GOOGLE PLAY BUTTON - NEW SPECIFIC BUTTON */}
-                            {product.stock > 0 && (
-                                <button
-                                    onClick={handleBuyNowClick}
-                                    className="w-full py-2 px-1 rounded-lg font-bold text-xs transition-all duration-300 shadow-sm hover:shadow-md bg-white text-gray-800 hover:bg-gray-50 border border-gray-300 flex items-center justify-center"
-                                    title="Pagar con Google Play"
-                                >
-                                    <GooglePlayLogoSmall />
-                                    Google Pay
-                                </button>
-                            )}
-                        </div>
+                        {/* 2. GOOGLE PAY BUTTON - EXPLICIT & DIRECT */}
+                        {product.stock > 0 && (
+                            <button
+                                onClick={handleBuyNowClick}
+                                className="w-full py-2.5 rounded-lg font-bold text-xs transition-all shadow-sm hover:shadow-md bg-white border border-gray-300 hover:bg-gray-50 flex items-center justify-center relative overflow-hidden"
+                                title="Pagar ahora con Google Play"
+                            >
+                                <span className="absolute inset-0 w-full h-full bg-black opacity-0 hover:opacity-5 transition-opacity"></span>
+                                <GooglePlayLogoFull />
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

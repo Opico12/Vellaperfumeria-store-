@@ -156,7 +156,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                            <span className="cursor-pointer hover:opacity-80 transition-all duration-300 transform hover:scale-110" aria-label="Threads"><ThreadsIcon /></span>
                            <span className="cursor-pointer hover:opacity-80 transition-all duration-300 transform hover:scale-110" aria-label="Instagram"><InstagramIcon /></span>
                            <span className="cursor-pointer hover:opacity-80 transition-all duration-300 transform hover:scale-110" aria-label="Facebook"><FacebookIcon /></span>
-                           <a href="https://wa.me/34661202616" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-80 transition-all duration-300 transform hover:scale-110" aria-label="WhatsApp"><WhatsAppIcon /></a>
+                           <a href="https://api.whatsapp.com/send?phone=34661202616" target="_blank" rel="noopener noreferrer" className="cursor-pointer hover:opacity-80 transition-all duration-300 transform hover:scale-110" aria-label="WhatsApp"><WhatsAppIcon /></a>
                         </div>
                         
                         <h3 className="text-base font-bold tracking-widest uppercase mb-4 text-white">Métodos de Pago</h3>

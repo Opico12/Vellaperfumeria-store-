@@ -349,7 +349,7 @@ const App: React.FC = () => {
                 crumbs.push({ label: view.payload.title });
                 break;
             case 'checkoutSummary':
-                crumbs.push({ label: 'Carrito' });
+                crumbs.push({ label: 'Finalizar Compra' });
                 break;
         }
 
