@@ -267,11 +267,20 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     // --- CHECKOUT FORM VIEW (One Page Style) ---
     return (
         <div className="bg-white min-h-screen pb-12">
-            {/* Trust Header */}
+            {/* Trust Header with Back Button */}
             <div className="bg-green-50 border-b border-green-100 py-3 sticky top-0 z-20 shadow-sm">
-                <div className="container mx-auto px-4 flex items-center justify-center gap-2 text-sm font-bold text-green-800">
-                     <LockIcon /> 
-                     <span>✅ API Conectada: Modo Real - Zona Segura</span>
+                <div className="container mx-auto px-4 flex items-center justify-between">
+                    <button 
+                        onClick={() => onNavigate('products')}
+                        className="text-green-800 font-bold text-sm flex items-center gap-1 hover:underline"
+                    >
+                        ← Volver
+                    </button>
+                    <div className="flex items-center gap-2 text-sm font-bold text-green-800">
+                         <LockIcon /> 
+                         <span>✅ API Conectada: Modo Real - Zona Segura</span>
+                    </div>
+                    <div className="w-12"></div> {/* Spacer for alignment */}
                 </div>
             </div>
 

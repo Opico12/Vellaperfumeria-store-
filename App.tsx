@@ -45,6 +45,7 @@ const App: React.FC = () => {
     const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
     const [vParam, setVParam] = useState<string | null>(null);
     const [isLoadingCart, setIsLoadingCart] = useState(false);
+    const [showTechInfo, setShowTechInfo] = useState(false);
 
     // Function to parse URL parameters and determine view
     const parseUrlParams = useCallback(() => {
@@ -371,6 +372,9 @@ const App: React.FC = () => {
         return crumbs;
     };
 
+    // Detect if we are in Checkout Mode to hide standard navigation
+    const isCheckoutMode = view.current === 'checkoutSummary';
+
     return (
         <div className="flex flex-col min-h-screen bg-white font-sans text-gray-800 relative">
 
@@ -388,31 +392,55 @@ const App: React.FC = () => {
                 </div>
             )}
 
-            {/* Floating WhatsApp Button */}
-            <a 
-                href="https://api.whatsapp.com/send?phone=34661202616&text=Hola,%20tengo%20una%20consulta%20sobre%20mi%20pedido%20en%20Vellaperfumeria."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="fixed bottom-24 md:bottom-8 right-6 z-[60] bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center gap-2 group border-2 border-white"
-                aria-label="Chat de WhatsApp"
+            {/* Floating WhatsApp Button - Hidden in Checkout */}
+            {!isCheckoutMode && (
+                <a 
+                    href="https://api.whatsapp.com/send?phone=34661202616&text=Hola,%20tengo%20una%20consulta%20sobre%20mi%20pedido%20en%20Vellaperfumeria."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="fixed bottom-24 md:bottom-8 right-6 z-[60] bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-2xl transition-transform hover:scale-110 flex items-center justify-center gap-2 group border-2 border-white"
+                    aria-label="Chat de WhatsApp"
+                >
+                    <WhatsAppFloatIcon />
+                    <span className="hidden group-hover:inline-block font-bold whitespace-nowrap transition-all">Ayuda 661-202-616</span>
+                </a>
+            )}
+            
+             {/* Tech Info Button - Always available for debugging */}
+             <button
+                onClick={() => setShowTechInfo(!showTechInfo)}
+                className="fixed bottom-4 left-4 z-50 text-[10px] bg-gray-200 hover:bg-gray-300 text-gray-600 px-2 py-1 rounded opacity-50 hover:opacity-100"
             >
-                <WhatsAppFloatIcon />
-                <span className="hidden group-hover:inline-block font-bold whitespace-nowrap transition-all">Ayuda 661-202-616</span>
-            </a>
+                {showTechInfo ? 'Ocultar Info Técnica' : 'Info Técnica'}
+            </button>
+            {showTechInfo && (
+                <div className="fixed bottom-12 left-4 z-50 bg-white p-4 rounded shadow-lg border text-xs max-w-sm">
+                    <p><strong>Origen (CORS):</strong> {window.location.origin}</p>
+                    <p><strong>API Configurada:</strong> {process.env.API_KEY ? 'Sí' : 'No'}</p>
+                    <p className="mt-2 text-gray-500">Copia el Origen y añádelo a tu plugin WP CORS.</p>
+                </div>
+            )}
 
-            <Header
-                onNavigate={handleNavigate}
-                currency={currency}
-                onCurrencyChange={setCurrency}
-                cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-                onCartClick={() => setIsCartOpen(true)}
-            />
-             <main className="flex-grow py-8 mb-20 md:mb-0">
-                <Breadcrumbs items={buildBreadcrumbs()} />
+            {/* Header - Hidden in Checkout */}
+            {!isCheckoutMode && (
+                <Header
+                    onNavigate={handleNavigate}
+                    currency={currency}
+                    onCurrencyChange={setCurrency}
+                    cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                    onCartClick={() => setIsCartOpen(true)}
+                />
+            )}
+
+             <main className={`flex-grow ${!isCheckoutMode ? 'py-8 mb-20 md:mb-0' : ''}`}>
+                {!isCheckoutMode && <Breadcrumbs items={buildBreadcrumbs()} />}
                 {renderContent()}
             </main>
-            <Footer onNavigate={handleNavigate} />
 
+            {/* Footer - Hidden in Checkout */}
+            {!isCheckoutMode && <Footer onNavigate={handleNavigate} />}
+
+            {/* Cart Sidebar - Available to edit cart, but logic might be limited in Checkout */}
             <CartSidebar
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
@@ -427,7 +455,8 @@ const App: React.FC = () => {
                 onClearCart={() => setCartItems([])} 
             />
 
-            <BottomNavBar onNavigate={handleNavigate} currentView={view.current} />
+            {/* Bottom Nav - Hidden in Checkout */}
+            {!isCheckoutMode && <BottomNavBar onNavigate={handleNavigate} currentView={view.current} />}
 
             {quickViewProduct && (
                 <QuickViewModal
