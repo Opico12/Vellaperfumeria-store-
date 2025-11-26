@@ -25,20 +25,14 @@ const VerifiedBadgeIcon = () => (
 );
 
 const LockIcon = () => (
-    <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 00-5.25 5.25v3a3 3 0 00-3 3v6.75a3 3 0 003 3h10.5a3 3 0 003-3v-6.75a3 3 0 00-3-3v-3c0-2.9-2.35-5.25-5.25-5.25zm3.75 8.25v-3a3.75 3.75 0 10-7.5 0v3h7.5z" clipRule="evenodd" />
     </svg>
 );
 
 const CreditCardIcon = () => (
     <svg className="w-8 h-8 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-    </svg>
-);
-
-const WhatsAppIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.919 6.066l-1.475 5.422 5.571-1.469z" />
     </svg>
 );
 
@@ -61,7 +55,6 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     const [isProcessing, setIsProcessing] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState<'card' | 'google_play'>('google_play');
     const [orderNumber, setOrderNumber] = useState('');
-    const [currentOrigin, setCurrentOrigin] = useState('');
     
     // Customer Info
     const [email, setEmail] = useState('');
@@ -87,12 +80,6 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
     const [googlePlayCode, setGooglePlayCode] = useState('');
     const [googleAccountName, setGoogleAccountName] = useState('');
     const [googleAccountEmail, setGoogleAccountEmail] = useState('');
-
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            setCurrentOrigin(window.location.origin);
-        }
-    }, []);
 
     // --- CALCULATIONS ---
     const subtotal = useMemo(() => {
@@ -157,18 +144,14 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         };
 
         try {
-            // Attempt to create real order in WooCommerce (Backend) via api.ts
-            // IMPORTANT: Even if this fails due to CORS in preview, we handle it gracefully below
             const result = await createOrder(orderData);
             
             if (result && result.id) {
                 setOrderNumber(result.id.toString());
             } else {
-                // Fallback for demo purposes if API is blocked by browser
                 setOrderNumber("VP-" + Math.floor(Math.random() * 1000000).toString());
             }
             
-            // CRITICAL: SHOW SUCCESS SCREEN IN-APP. DO NOT REDIRECT.
             setIsOrderComplete(true);
             window.scrollTo(0, 0);
 
@@ -264,269 +247,203 @@ const CheckoutSummaryPage: React.FC<CheckoutSummaryPageProps> = ({
         );
     }
 
-    // --- CHECKOUT FORM VIEW (One Page Style) ---
+    // --- CHECKOUT FORM VIEW (Native App Style) ---
     return (
-        <div className="bg-white min-h-screen pb-12">
-            {/* Trust Header with Back Button */}
-            <div className="bg-green-50 border-b border-green-100 py-3 sticky top-0 z-20 shadow-sm">
+        <div className="bg-gray-50 min-h-screen pb-12">
+            {/* NATIVE APP HEADER - DARK MODE */}
+            <div className="bg-[#202124] text-white py-4 sticky top-0 z-30 shadow-md">
                 <div className="container mx-auto px-4 flex items-center justify-between">
+                    {/* Left: Cancel / Back */}
                     <button 
                         onClick={() => onNavigate('products')}
-                        className="text-green-800 font-bold text-sm flex items-center gap-1 hover:underline"
+                        className="text-white/80 hover:text-white font-medium text-sm flex items-center gap-1"
                     >
-                        ← Volver
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        <span className="hidden sm:inline">Cancelar</span>
                     </button>
-                    <div className="flex items-center gap-2 text-sm font-bold text-green-800">
-                         <LockIcon /> 
-                         <span>✅ API Conectada: Modo Real - Zona Segura</span>
+
+                    {/* Center: Brand / Secure */}
+                    <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-2 font-bold tracking-tight">
+                             <LockIcon /> 
+                             <span>Pago Seguro</span>
+                        </div>
+                        <span className="text-[10px] text-gray-400 tracking-wider uppercase">Google Pay | Vellaperfumeria</span>
                     </div>
-                    <div className="w-12"></div> {/* Spacer for alignment */}
+
+                    {/* Right: Spacer or small logo */}
+                    <div className="w-12 flex justify-end">
+                        {/* Google G Logo simplified */}
+                        <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+                            <span className="text-black font-bold text-xs">G</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 max-w-6xl mt-8">
-                <h1 className="text-3xl font-extrabold text-black mb-8">Finalizar Compra</h1>
-
-                <form onSubmit={handleFinalizeOrder} className="flex flex-col lg:flex-row gap-8">
+            <div className="container mx-auto px-4 max-w-4xl mt-6">
+                
+                <form onSubmit={handleFinalizeOrder} className="flex flex-col gap-6">
                     
-                    {/* LEFT COLUMN: INFORMATION & PAYMENT */}
-                    <div className="lg:w-2/3 space-y-8">
-                        
-                        {/* 1. CONTACT & SHIPPING */}
-                        <section className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                            <h2 className="text-xl font-bold text-black mb-6 flex items-center gap-2">
-                                <span className="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
-                                Datos de Envío
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="md:col-span-2">
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Email</label>
-                                    <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" placeholder="tu@email.com" />
-                                </div>
+                    {/* ORDER TOTAL CARD */}
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex flex-col items-center justify-center text-center">
+                        <p className="text-sm text-gray-500 mb-1">Total a pagar</p>
+                        <p className="text-4xl font-extrabold text-black tracking-tight">{formatCurrency(total, currency)}</p>
+                        <div className="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                            <span>{cartItems.length} artículos</span>
+                            <span>•</span>
+                            <span>Envío {shippingCost === 0 ? 'Gratis' : formatCurrency(shippingCost, currency)}</span>
+                        </div>
+                    </div>
+
+                    {/* 1. CONTACT & SHIPPING */}
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 border-b pb-2">Datos de Envío</h2>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1">Email</label>
+                                <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" placeholder="tu@email.com" />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1">Nombre</label>
                                     <input required type="text" name="firstName" value={shipping.firstName} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Apellidos</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1">Apellidos</label>
                                     <input required type="text" name="lastName" value={shipping.lastName} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" />
                                 </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Dirección</label>
-                                    <input required type="text" name="address" value={shipping.address} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" placeholder="Calle, número..." />
-                                </div>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1">Dirección</label>
+                                <input required type="text" name="address" value={shipping.address} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" placeholder="Calle, número..." />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Ciudad</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1">Ciudad</label>
                                     <input required type="text" name="city" value={shipping.city} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Código Postal</label>
+                                    <label className="block text-xs font-bold text-gray-500 mb-1">CP</label>
                                     <input required type="text" name="zip" value={shipping.zip} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" />
                                 </div>
-                                <div className="md:col-span-2">
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Teléfono</label>
-                                    <input required type="tel" name="phone" value={shipping.phone} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" />
-                                </div>
                             </div>
-                        </section>
-
-                        {/* 2. PAYMENT METHOD SELECTION */}
-                        <section className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-                            <h2 className="text-xl font-bold text-black mb-6 flex items-center gap-2">
-                                <span className="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
-                                Método de Pago
-                            </h2>
-
-                            {/* Payment Tabs - INTERACTIVE */}
-                            <div className="grid grid-cols-2 gap-4 mb-6">
-                                <button
-                                    type="button"
-                                    onClick={() => setPaymentMethod('google_play')}
-                                    className={`relative p-5 rounded-xl border-2 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer shadow-sm hover:shadow-md ${
-                                        paymentMethod === 'google_play' 
-                                        ? 'border-black bg-blue-50/30 ring-1 ring-black shadow-md' 
-                                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                                    }`}
-                                >
-                                    <GooglePlayLogo />
-                                    <span className={`font-bold text-sm ${paymentMethod === 'google_play' ? 'text-black' : 'text-gray-600'}`}>Google Pay</span>
-                                    {paymentMethod === 'google_play' && (
-                                        <div className="absolute top-3 right-3 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
-                                            <svg className="w-2 h-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                                        </div>
-                                    )}
-                                </button>
-
-                                <button
-                                    type="button"
-                                    onClick={() => setPaymentMethod('card')}
-                                    className={`relative p-5 rounded-xl border-2 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer shadow-sm hover:shadow-md ${
-                                        paymentMethod === 'card' 
-                                        ? 'border-black bg-gray-50 ring-1 ring-black shadow-md' 
-                                        : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                                    }`}
-                                >
-                                    <CreditCardIcon />
-                                    <span className={`font-bold text-sm ${paymentMethod === 'card' ? 'text-black' : 'text-gray-600'}`}>Tarjeta</span>
-                                    {paymentMethod === 'card' && (
-                                        <div className="absolute top-3 right-3 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center shadow-sm">
-                                            <svg className="w-2 h-2 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                                        </div>
-                                    )}
-                                </button>
-                            </div>
-
-                            {/* Google Play Form */}
-                            {paymentMethod === 'google_play' && (
-                                <div className="space-y-4 bg-blue-50 p-6 rounded-xl border border-blue-100 animate-fade-in relative">
-                                    <div className="flex items-center gap-2 mb-2 text-blue-900 font-bold">
-                                        <GooglePlayLogo />
-                                        <span>Detalles de tu cuenta Google Play</span>
-                                    </div>
-                                    <div className="grid grid-cols-1 gap-4">
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Email Google Play</label>
-                                            <input required type="email" placeholder="ejemplo@gmail.com" value={googleAccountEmail} onChange={(e) => setGoogleAccountEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none bg-white" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Nombre del Titular</label>
-                                            <input required type="text" placeholder="Nombre completo" value={googleAccountName} onChange={(e) => setGoogleAccountName(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none bg-white" />
-                                        </div>
-                                        <div>
-                                             <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Código Promocional / Tarjeta Regalo (Opcional)</label>
-                                             <input type="text" placeholder="XXXX-XXXX-XXXX" value={googlePlayCode} onChange={(e) => setGooglePlayCode(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 outline-none font-mono bg-white uppercase" />
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Credit Card Form */}
-                            {paymentMethod === 'card' && (
-                                <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-200 animate-fade-in">
-                                    <div className="flex items-center gap-2 mb-2 text-gray-900 font-bold">
-                                        <CreditCardIcon />
-                                        <span>Datos de la Tarjeta</span>
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Número de Tarjeta</label>
-                                        <input required type="text" name="number" maxLength={19} placeholder="0000 0000 0000 0000" value={cardDetails.number} onChange={handleCardChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none bg-white font-mono" />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Caducidad</label>
-                                            <input required type="text" name="expiry" placeholder="MM / AA" maxLength={5} value={cardDetails.expiry} onChange={handleCardChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none bg-white text-center" />
-                                        </div>
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-700 uppercase mb-1">CVC</label>
-                                            <input required type="text" name="cvc" placeholder="123" maxLength={4} value={cardDetails.cvc} onChange={handleCardChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none bg-white text-center" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Titular</label>
-                                        <input required type="text" name="name" placeholder="Nombre en la tarjeta" value={cardDetails.name} onChange={handleCardChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none bg-white" />
-                                    </div>
-                                </div>
-                            )}
-                        </section>
-                    </div>
-
-                    {/* RIGHT COLUMN: ORDER SUMMARY */}
-                    <div className="lg:w-1/3">
-                        <div className="bg-gray-900 text-white p-6 rounded-xl shadow-2xl sticky top-24">
-                            <h2 className="text-lg font-bold mb-6 pb-4 border-b border-gray-700">Tu Pedido</h2>
-                            
-                            <div className="space-y-4 mb-6 max-h-80 overflow-y-auto pr-2 custom-scrollbar">
-                                {cartItems.map(item => (
-                                    <div key={item.id} className="flex gap-4">
-                                        <div className="relative w-12 h-12 bg-white rounded-md shrink-0">
-                                            <img src={item.product.imageUrl} alt={item.product.name} className="w-full h-full object-cover rounded-md" />
-                                            <span className="absolute -top-2 -right-2 bg-fuchsia-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border border-gray-900">{item.quantity}</span>
-                                        </div>
-                                        <div className="flex-grow">
-                                            <p className="text-sm font-medium text-gray-200 line-clamp-2">{item.product.name}</p>
-                                        </div>
-                                        <span className="text-sm font-bold">{formatCurrency(item.product.price * item.quantity, currency)}</span>
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="space-y-3 pt-4 border-t border-gray-700 text-sm text-gray-400">
-                                <div className="flex justify-between">
-                                    <span>Subtotal</span>
-                                    <span className="font-medium text-white">{formatCurrency(subtotal, currency)}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Envío</span>
-                                    <span className={shippingCost === 0 ? "text-green-400 font-bold" : "text-white"}>
-                                        {shippingCost === 0 ? "Gratis" : formatCurrency(shippingCost, currency)}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-between items-end mt-6 pt-4 border-t border-gray-700 mb-8">
-                                <span className="text-base font-bold text-white">Total</span>
-                                <span className="text-3xl font-extrabold text-white">{formatCurrency(total, currency)}</span>
-                            </div>
-
-                            <button 
-                                type="submit"
-                                disabled={isProcessing}
-                                className={`w-full bg-white text-black font-extrabold py-4 rounded-xl shadow-lg hover:bg-gray-100 transition-all transform hover:-translate-y-0.5 flex justify-center items-center gap-2 uppercase tracking-wide ${isProcessing ? 'opacity-70 cursor-wait' : ''}`}
-                            >
-                                {isProcessing ? (
-                                    <>
-                                        <svg className="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        Procesando...
-                                    </>
-                                ) : (
-                                    "PAGAR AHORA"
-                                )}
-                            </button>
-                            
-                            <div className="mt-6 flex justify-center gap-2 opacity-50 grayscale">
-                                <CreditCardIcon />
-                                <GooglePlayLogo />
-                            </div>
-
-                            <div className="mt-4 text-center">
-                                <p className="text-xs text-gray-400 mb-2">¿Necesitas ayuda?</p>
-                                <a 
-                                    href="https://api.whatsapp.com/send?phone=34661202616&text=Hola,%20tengo%20problemas%20para%20pagar%20mi%20pedido."
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-green-400 font-bold hover:text-green-300 text-sm"
-                                >
-                                    <WhatsAppIcon /> Pedir por WhatsApp (661-202-616)
-                                </a>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 mb-1">Teléfono</label>
+                                <input required type="tel" name="phone" value={shipping.phone} onChange={handleInputChange} className="w-full border border-gray-300 rounded-lg p-3 bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black outline-none transition-all" />
                             </div>
                         </div>
                     </div>
-                </form>
 
-                {/* --- SECCIÓN DE AYUDA TÉCNICA (CORS) --- */}
-                <div className="mt-12 bg-gray-100 border border-gray-300 rounded-lg p-4">
-                    <h3 className="text-sm font-bold text-gray-700 uppercase mb-2">🔧 Datos técnicos para WordPress (CORS)</h3>
-                    <p className="text-xs text-gray-600 mb-2">
-                        Si tienes problemas de conexión, copia el siguiente enlace y agrégalo en tu plugin <b>WP CORS</b> en WordPress, en la casilla <i>Allowed Origins</i>:
-                    </p>
-                    <div className="flex gap-2">
-                        <input 
-                            readOnly 
-                            value={currentOrigin} 
-                            className="flex-grow bg-white border border-gray-300 rounded px-3 py-1 text-xs font-mono text-gray-500" 
-                        />
-                        <button 
-                            onClick={() => {navigator.clipboard.writeText(currentOrigin); alert('Enlace copiado');}}
-                            className="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-bold px-3 py-1 rounded"
-                        >
-                            COPIAR URL
-                        </button>
+                    {/* 2. PAYMENT METHOD SELECTION */}
+                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                        <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-4 border-b pb-2">Método de Pago</h2>
+
+                        {/* Payment Tabs */}
+                        <div className="grid grid-cols-2 gap-3 mb-6">
+                            <button
+                                type="button"
+                                onClick={() => setPaymentMethod('google_play')}
+                                className={`relative p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${
+                                    paymentMethod === 'google_play' 
+                                    ? 'border-black bg-blue-50/30 ring-1 ring-black' 
+                                    : 'border-gray-100 bg-gray-50 hover:bg-white'
+                                }`}
+                            >
+                                <GooglePlayLogo />
+                                <span className={`font-bold text-xs ${paymentMethod === 'google_play' ? 'text-black' : 'text-gray-500'}`}>Google Pay</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => setPaymentMethod('card')}
+                                className={`relative p-4 rounded-xl border-2 flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${
+                                    paymentMethod === 'card' 
+                                    ? 'border-black bg-gray-50 ring-1 ring-black' 
+                                    : 'border-gray-100 bg-gray-50 hover:bg-white'
+                                }`}
+                            >
+                                <CreditCardIcon />
+                                <span className={`font-bold text-xs ${paymentMethod === 'card' ? 'text-black' : 'text-gray-500'}`}>Tarjeta</span>
+                            </button>
+                        </div>
+
+                        {/* Google Play Form */}
+                        {paymentMethod === 'google_play' && (
+                            <div className="space-y-4 animate-fade-in">
+                                <div className="p-4 bg-blue-50 rounded-lg border border-blue-100 text-sm text-blue-800 mb-4">
+                                    <p>Estás pagando de forma segura con <strong>Google Pay</strong>.</p>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 mb-1">Email de cuenta Google</label>
+                                    <input required type="email" placeholder="ejemplo@gmail.com" value={googleAccountEmail} onChange={(e) => setGoogleAccountEmail(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 mb-1">Nombre del Titular</label>
+                                    <input required type="text" placeholder="Nombre completo" value={googleAccountName} onChange={(e) => setGoogleAccountName(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+                                </div>
+                                <div>
+                                     <label className="block text-xs font-bold text-gray-700 mb-1">Código Promocional / Tarjeta (Opcional)</label>
+                                     <input type="text" placeholder="XXXX-XXXX-XXXX" value={googlePlayCode} onChange={(e) => setGooglePlayCode(e.target.value)} className="w-full border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-blue-500 outline-none font-mono uppercase" />
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Credit Card Form */}
+                        {paymentMethod === 'card' && (
+                            <div className="space-y-4 animate-fade-in">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 mb-1">Número de Tarjeta</label>
+                                    <div className="relative">
+                                        <input required type="text" name="number" maxLength={19} placeholder="0000 0000 0000 0000" value={cardDetails.number} onChange={handleCardChange} className="w-full border border-gray-300 rounded-lg p-3 pl-12 focus:ring-2 focus:ring-black outline-none bg-white font-mono" />
+                                        <div className="absolute left-3 top-3">
+                                            <CreditCardIcon />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">Caducidad</label>
+                                        <input required type="text" name="expiry" placeholder="MM / AA" maxLength={5} value={cardDetails.expiry} onChange={handleCardChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none bg-white text-center" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">CVC</label>
+                                        <input required type="text" name="cvc" placeholder="123" maxLength={4} value={cardDetails.cvc} onChange={handleCardChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none bg-white text-center" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-700 mb-1">Titular</label>
+                                    <input required type="text" name="name" placeholder="Nombre en la tarjeta" value={cardDetails.name} onChange={handleCardChange} className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-black outline-none bg-white" />
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
 
+                    {/* PAY BUTTON - FIXED BOTTOM MOBILE or INLINE DESKTOP */}
+                    <div className="mt-4 mb-8">
+                        <button 
+                            type="submit"
+                            disabled={isProcessing}
+                            className={`w-full bg-black text-white font-extrabold py-4 rounded-xl shadow-lg hover:bg-gray-900 transition-all transform active:scale-95 flex justify-center items-center gap-2 text-lg ${isProcessing ? 'opacity-70 cursor-wait' : ''}`}
+                        >
+                            {isProcessing ? (
+                                <>
+                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Procesando...
+                                </>
+                            ) : (
+                                `PAGAR ${formatCurrency(total, currency)}`
+                            )}
+                        </button>
+                        
+                        <p className="text-center text-xs text-gray-400 mt-4">
+                            Pagos procesados de forma segura. Al continuar aceptas nuestros términos y condiciones.
+                        </p>
+                    </div>
+                </form>
             </div>
         </div>
     );

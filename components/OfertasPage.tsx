@@ -1,12 +1,22 @@
 
 import React from 'react';
 import { ProductCard } from './ProductCard';
-import type { Product } from './types';
+import type { Product, View } from './types';
 import type { Currency } from './currency';
 import { allProducts } from './products';
 
-// Banner Data from provided HTML
-const banners = [
+// Update data structure to support internal navigation
+interface BannerData {
+    id: string;
+    imageUrl: string;
+    title: string;
+    buttonText: string;
+    action?: string; // Internal scroll action
+    view?: View;     // Internal view navigation
+    payload?: any;   // Payload for view
+}
+
+const banners: BannerData[] = [
     {
         id: 'black-friday',
         imageUrl: 'https://media-cdn.oriflame.com/contentImage?externalMediaId=b4f0fbe7-2786-457d-b0d1-2fcf05e82f5b&name=1_Promo_split_Week1_600x450&inputFormat=jpg',
@@ -19,35 +29,40 @@ const banners = [
         imageUrl: 'https://media-cdn.oriflame.com/contentImage?externalMediaId=10eada9f-b5ef-4854-911a-34f17f58b371&name=2_Promo_split_NewCollection_600x450&inputFormat=jpg',
         title: 'Nueva Colección especial Navidad',
         buttonText: 'COMPRA PARA BRILLAR',
-        link: 'https://vellaperfumeria.com/plp/magical-midnights-collection'
+        view: 'products',
+        payload: 'makeup' // Mapping to makeup category
     },
     {
         id: 'wellosophy-pack',
         imageUrl: 'https://media-cdn.oriflame.com/contentImage?externalMediaId=e12555ba-0c42-4991-9821-7327bc9eae12&name=focus_banner_PWP&inputFormat=png',
         title: '¡Tu plan personalizado de nutrición!',
         buttonText: 'Ver más',
-        link: 'https://vellaperfumeria.com/campaigns/editorials/wellosophy/personalised-wellness-pack'
+        view: 'products',
+        payload: 'wellness'
     },
     {
         id: 'wellosophy-sub',
         imageUrl: 'https://media-cdn.oriflame.com/contentImage?externalMediaId=b7da6e77-1fb1-46be-80cb-7bd1157cc06a&name=focus_banner_WS_bis&inputFormat=png',
         title: '¡Suscríbete a Wellosophy!',
         buttonText: 'Ver más',
-        link: 'https://vellaperfumeria.com/go-to/wellosophy-nutrition-subscription'
+        view: 'products',
+        payload: 'wellness'
     },
     {
         id: 'gift-sets',
         imageUrl: 'https://media-cdn.oriflame.com/contentImage?externalMediaId=e6a950aa-3fef-457c-bcbf-1058993497d0&name=3_Promo_split_GiftSets_600x450&inputFormat=jpg',
         title: 'NUEVOS Sets perfectos para regalar',
         buttonText: 'COMPRAR REGALOS',
-        link: 'https://vellaperfumeria.com/gift-ideas/gift-sets-and-bundles'
+        view: 'ofertas',
+        payload: undefined // Stays on offers page
     },
     {
         id: 'novage',
         imageUrl: 'https://media-cdn.oriflame.com/contentImage?externalMediaId=6efc6ae1-0a1d-4df6-97f8-d785fa0c0476&name=5_Promo_split_Novage_600x450&inputFormat=jpg',
         title: 'Contorno de Ojos con 40% dto',
         buttonText: 'ELIGE EL TUYO',
-        link: 'https://vellaperfumeria.com/brands/novage-plus'
+        view: 'products',
+        payload: 'skincare'
     },
     {
         id: 'duologi',
@@ -61,7 +76,8 @@ const banners = [
         imageUrl: 'https://media-cdn.oriflame.com/contentImage?externalMediaId=ff411183-8497-4756-bad2-c5de537fc1be&name=7_Promo_split_Backcover_600x450&inputFormat=jpg',
         title: 'Cada Roll On por solo 3,99€',
         buttonText: 'VER LA COLECCIÓN',
-        link: 'https://vellaperfumeria.com/bath-body/deodorants-and-antiperspirants'
+        view: 'products',
+        payload: 'personal-care'
     }
 ];
 
@@ -94,9 +110,10 @@ const OfertasPage: React.FC<{
     onBuyNow: (product: Product, buttonElement: HTMLButtonElement | null, selectedVariant: Record<string, string> | null) => void;
     onProductSelect: (product: Product) => void;
     onQuickView: (product: Product) => void;
-}> = ({ currency, onAddToCart, onQuickAddToCart, onBuyNow, onProductSelect, onQuickView }) => {
+    onNavigate: (view: View, payload?: any) => void;
+}> = ({ currency, onAddToCart, onQuickAddToCart, onBuyNow, onProductSelect, onQuickView, onNavigate }) => {
 
-    const handleBannerClick = (banner: typeof banners[0]) => {
+    const handleBannerClick = (banner: BannerData) => {
         if (banner.action === 'scroll-duologi') {
             const element = document.getElementById('duologi-section');
             if (element) {
@@ -107,8 +124,9 @@ const OfertasPage: React.FC<{
             if (element) {
                 element.scrollIntoView({ behavior: 'smooth' });
             }
-        } else if (banner.link) {
-            window.open(banner.link, '_self');
+        } else if (banner.view) {
+            onNavigate(banner.view, banner.payload);
+            window.scrollTo(0, 0);
         }
     };
 

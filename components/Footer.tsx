@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import type { View } from './types';
 
@@ -80,25 +81,14 @@ const FooterLink: React.FC<{ onClick: () => void; children: React.ReactNode }> =
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     const [currentUrl, setCurrentUrl] = useState('');
-    const [vParam, setVParam] = useState<string | null>(null);
 
     useEffect(() => {
         try {
             setCurrentUrl(window.location.href);
-            const urlParams = new URLSearchParams(window.location.search);
-            setVParam(urlParams.get('v'));
         } catch (e) {
             console.error("Error extracting params", e);
         }
     }, []);
-
-    const homeUrl = (() => {
-        const baseUrl = 'https://vellaperfumeria.com/tienda'; // Changed from root to /tienda
-        const params = new URLSearchParams();
-        if (vParam) params.append('v', vParam);
-        const queryString = params.toString();
-        return queryString ? `${baseUrl}?${queryString}` : baseUrl;
-    })();
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(currentUrl);
@@ -110,13 +100,12 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="container mx-auto px-6 py-16">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-center md:text-left">
                     <div className="sm:col-span-2 lg:col-span-1 flex flex-col items-center text-center md:items-center md:text-center">
-                         <a 
-                             href={homeUrl}
-                             target="_self"
-                             className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer"
+                         <button 
+                             onClick={() => onNavigate('home')}
+                             className="inline-block hover:opacity-80 transition-opacity mb-4 cursor-pointer bg-transparent border-none p-0"
                          >
                              <img src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" alt="Vellaperfumeria Logo" className="h-36 w-auto mx-auto" />
-                         </a>
+                         </button>
                         <h2 className="text-xl font-bold tracking-wider text-white">Vellaperfumeria</h2>
                         <p className="text-gray-400 text-sm mt-2">
                             Tu esencia, tu belleza, tu tienda.
@@ -126,15 +115,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                     <div>
                         <h3 className="text-base font-bold tracking-widest uppercase mb-4 text-white">Navegación</h3>
                         <ul className="space-y-2 text-sm">
-                           <li>
-                                <a
-                                    href={homeUrl}
-                                    target="_self"
-                                    className="text-gray-400 hover:text-white transition-colors hover:underline"
-                                >
-                                    Inicio
-                                </a>
-                            </li>
+                           <FooterLink onClick={() => onNavigate('home')}>Inicio</FooterLink>
                            <FooterLink onClick={() => onNavigate('products', 'all')}>Tienda</FooterLink>
                            <FooterLink onClick={() => onNavigate('products', 'skincare')}>Cuidado Facial</FooterLink>
                            <FooterLink onClick={() => onNavigate('products', 'makeup')}>Maquillaje</FooterLink>

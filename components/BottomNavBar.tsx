@@ -49,27 +49,8 @@ interface NavItem {
 }
 
 const BottomNavBar: React.FC<BottomNavBarProps> = ({ onNavigate, currentView }) => {
-    const [vParam, setVParam] = useState<string | null>(null);
-
-    useEffect(() => {
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            setVParam(urlParams.get('v'));
-        } catch (e) {
-            console.error("Error extracting params", e);
-        }
-    }, []);
-
-    const homeUrl = (() => {
-        const baseUrl = 'https://vellaperfumeria.com/tienda'; // Changed from root to /tienda
-        const params = new URLSearchParams();
-        if (vParam) params.append('v', vParam);
-        const queryString = params.toString();
-        return queryString ? `${baseUrl}?${queryString}` : baseUrl;
-    })();
-    
     const navItems: NavItem[] = [
-        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined, isExternal: true, href: homeUrl },
+        { view: 'home', label: 'Inicio', icon: HomeIcon, payload: undefined }, // Changed: No longer external
         { view: 'products', label: 'Tienda', icon: ShopIcon, payload: 'all' },
         { view: 'catalog', label: 'Catálogo', icon: CatalogIcon, payload: undefined },
         { view: 'ofertas', label: 'Ofertas', icon: GiftIcon, payload: undefined },

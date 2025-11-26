@@ -68,25 +68,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange, cartCount, onCartClick }) => {
     const [cartPulse, setCartPulse] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [vParam, setVParam] = useState<string | null>(null);
     const navRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        try {
-            const urlParams = new URLSearchParams(window.location.search);
-            setVParam(urlParams.get('v'));
-        } catch (e) {
-            console.error("Error extracting params", e);
-        }
-    }, []);
-
-    const homeUrl = (() => {
-        const baseUrl = 'https://vellaperfumeria.com/tienda'; // Changed from root to /tienda
-        const params = new URLSearchParams();
-        if (vParam) params.append('v', vParam);
-        const queryString = params.toString();
-        return queryString ? `${baseUrl}?${queryString}` : baseUrl;
-    })();
 
     useEffect(() => {
         if (cartCount > 0) {
@@ -144,13 +126,16 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
                     {/* Logo Centered Absolute for mobile */}
                     <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-                        <a href={homeUrl} target="_self" className="pointer-events-auto block cursor-pointer transition-transform hover:scale-105 duration-300">
+                        <button 
+                            onClick={() => onNavigate('home')}
+                            className="pointer-events-auto block cursor-pointer transition-transform hover:scale-105 duration-300 bg-transparent border-none p-0"
+                        >
                             <img 
                                 src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                                 alt="Vellaperfumeria Logo" 
                                 className="h-24 w-auto object-contain" 
                             />
-                        </a>
+                        </button>
                     </div>
 
                     <div className="z-20">
@@ -172,13 +157,16 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                 <div className="hidden md:flex flex-col items-center py-4 relative">
                     {/* Row 1: Logo Centered */}
                     <div className="w-full flex justify-center items-center relative mb-4">
-                        <a href={homeUrl} target="_self" className="block cursor-pointer transition-transform hover:scale-105 duration-300">
+                        <button 
+                            onClick={() => onNavigate('home')}
+                            className="block cursor-pointer transition-transform hover:scale-105 duration-300 bg-transparent border-none p-0"
+                        >
                             <img 
                                 src="https://i0.wp.com/vellaperfumeria.com/wp-content/uploads/2025/06/1000003724-removebg-preview.png" 
                                 alt="Vellaperfumeria Logo" 
                                 className="h-28 w-auto object-contain" 
                             />
-                        </a>
+                        </button>
 
                         {/* Cart Icon - Absolute Right in the Logo Row */}
                         <div className="absolute right-0 top-1/2 transform -translate-y-1/2">
@@ -198,7 +186,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
 
                     {/* Row 2: Navigation Menu Centered */}
                     <nav className="flex justify-center space-x-8 w-full border-t border-gray-100 pt-4">
-                        <NavLink href={homeUrl}>Inicio</NavLink>
+                        <NavLink onClick={() => onNavigate('home')}>Inicio</NavLink>
                         <NavLink onClick={() => onNavigate('products', 'all')}>Tienda</NavLink>
                         <NavLink onClick={() => onNavigate('ofertas')}>Ideas Regalo</NavLink>
                         <NavLink onClick={() => onNavigate('catalog')}>Catálogo</NavLink>
@@ -220,7 +208,7 @@ const Header: React.FC<HeaderProps> = ({ onNavigate, currency, onCurrencyChange,
                             </button>
                         </div>
                         <div className="flex-grow overflow-y-auto py-4">
-                             <a href={homeUrl} target="_self" className="block px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Inicio</a>
+                             <button onClick={() => handleMobileNav('home')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Inicio</button>
                              <button onClick={() => handleMobileNav('products', 'all')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Tienda</button>
                              <button onClick={() => handleMobileNav('ofertas')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Ideas Regalo</button>
                              <button onClick={() => handleMobileNav('catalog')} className="block w-full text-left px-6 py-3 text-lg font-medium text-gray-800 hover:bg-fuchsia-50 hover:text-[var(--color-primary-solid)]">Catálogo</button>

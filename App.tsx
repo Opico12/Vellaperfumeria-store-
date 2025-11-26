@@ -286,7 +286,7 @@ const App: React.FC = () => {
             case 'productDetail':
                 return <ProductDetailPage product={view.payload} currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
             case 'ofertas':
-                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} />;
+                return <OfertasPage currency={currency} onAddToCart={handleAddToCart} onQuickAddToCart={handleQuickAddToCart} onBuyNow={handleBuyNow} onProductSelect={handleProductSelect} onQuickView={setQuickViewProduct} onNavigate={handleNavigate} />;
             case 'ia':
                 return <AsistenteIAPage cartItems={cartItems} />;
             case 'catalog':
@@ -321,10 +321,10 @@ const App: React.FC = () => {
         const queryString = params.toString();
         const homeUrl = queryString ? `${baseUrl}?${queryString}` : baseUrl;
         
+        // Use internal navigation instead of href for Home to maintain state
         const homeCrumb: BreadcrumbItem = { 
             label: 'Inicio', 
-            href: homeUrl,
-            target: '_self'
+            onClick: () => handleNavigate('home')
         };
         const crumbs = [homeCrumb];
 
@@ -373,6 +373,7 @@ const App: React.FC = () => {
     };
 
     // Detect if we are in Checkout Mode to hide standard navigation
+    // When in Checkout Mode, remove distracting UI elements
     const isCheckoutMode = view.current === 'checkoutSummary';
 
     return (
@@ -406,14 +407,16 @@ const App: React.FC = () => {
                 </a>
             )}
             
-             {/* Tech Info Button - Always available for debugging */}
-             <button
-                onClick={() => setShowTechInfo(!showTechInfo)}
-                className="fixed bottom-4 left-4 z-50 text-[10px] bg-gray-200 hover:bg-gray-300 text-gray-600 px-2 py-1 rounded opacity-50 hover:opacity-100"
-            >
-                {showTechInfo ? 'Ocultar Info Técnica' : 'Info Técnica'}
-            </button>
-            {showTechInfo && (
+             {/* Tech Info Button - Hidden in Checkout */}
+             {!isCheckoutMode && (
+                 <button
+                    onClick={() => setShowTechInfo(!showTechInfo)}
+                    className="fixed bottom-4 left-4 z-50 text-[10px] bg-gray-200 hover:bg-gray-300 text-gray-600 px-2 py-1 rounded opacity-50 hover:opacity-100"
+                >
+                    {showTechInfo ? 'Ocultar Info Técnica' : 'Info Técnica'}
+                </button>
+             )}
+            {showTechInfo && !isCheckoutMode && (
                 <div className="fixed bottom-12 left-4 z-50 bg-white p-4 rounded shadow-lg border text-xs max-w-sm">
                     <p><strong>Origen (CORS):</strong> {window.location.origin}</p>
                     <p><strong>API Configurada:</strong> {process.env.API_KEY ? 'Sí' : 'No'}</p>
@@ -432,7 +435,7 @@ const App: React.FC = () => {
                 />
             )}
 
-             <main className={`flex-grow ${!isCheckoutMode ? 'py-8 mb-20 md:mb-0' : ''}`}>
+             <main className={`flex-grow ${!isCheckoutMode ? 'py-8 mb-20 md:mb-0' : 'h-full bg-gray-50'}`}>
                 {!isCheckoutMode && <Breadcrumbs items={buildBreadcrumbs()} />}
                 {renderContent()}
             </main>
