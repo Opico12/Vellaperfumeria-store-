@@ -17,6 +17,8 @@ const categories = [
     { key: 'accessories', name: 'Accesorios' },
 ];
 
+const ITEMS_PER_PAGE = 12;
+
 const ShopPage: React.FC<{
     currency: Currency;
     initialCategory: string;
@@ -29,10 +31,16 @@ const ShopPage: React.FC<{
     
     const [activeCategory, setActiveCategory] = useState(initialCategory);
     const [sortOrder, setSortOrder] = useState('menu_order');
+    const [currentPage, setCurrentPage] = useState(1);
     
     useEffect(() => {
         setActiveCategory(initialCategory);
     }, [initialCategory]);
+
+    // Reset page to 1 when category or sort changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeCategory, sortOrder]);
 
     const filteredAndSortedProducts = useMemo(() => {
         let filtered = activeCategory === 'all'
@@ -63,7 +71,26 @@ const ShopPage: React.FC<{
         setSortOrder(e.target.value);
     };
 
+    // Pagination Logic
+    const totalItems = filteredAndSortedProducts.length;
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    
+    const currentProducts = useMemo(() => {
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredAndSortedProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    }, [currentPage, filteredAndSortedProducts]);
+
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
     const currentCategoryName = categories.find(c => c.key === activeCategory)?.name || 'Tienda';
+
+    const startItem = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+    const endItem = Math.min(currentPage * ITEMS_PER_PAGE, totalItems);
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -92,7 +119,10 @@ const ShopPage: React.FC<{
                     <h1 className="text-2xl font-bold text-rose-600 tracking-tight mb-4">{currentCategoryName}</h1>
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4 p-4 bg-white rounded-lg shadow-sm border">
                         <p className="text-sm text-gray-700">
-                           Mostrando {filteredAndSortedProducts.length} productos
+                           {totalItems > 0 
+                             ? `Mostrando ${startItem}–${endItem} de ${totalItems} productos`
+                             : 'No hay productos'
+                           }
                         </p>
                         <form className="woocommerce-ordering">
                             <select 
@@ -111,21 +141,60 @@ const ShopPage: React.FC<{
                         </form>
                     </div>
 
-                    {filteredAndSortedProducts.length > 0 ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-fr">
-                            {filteredAndSortedProducts.map(product => (
-                                <ProductCard
-                                    key={product.id}
-                                    product={product}
-                                    currency={currency}
-                                    onAddToCart={onAddToCart}
-                                    onQuickAddToCart={onQuickAddToCart}
-                                    onBuyNow={onBuyNow}
-                                    onProductSelect={onProductSelect}
-                                    onQuickView={onQuickView}
-                                />
-                            ))}
-                        </div>
+                    {currentProducts.length > 0 ? (
+                        <>
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 auto-rows-fr">
+                                {currentProducts.map(product => (
+                                    <ProductCard
+                                        key={product.id}
+                                        product={product}
+                                        currency={currency}
+                                        onAddToCart={onAddToCart}
+                                        onQuickAddToCart={onQuickAddToCart}
+                                        onBuyNow={onBuyNow}
+                                        onProductSelect={onProductSelect}
+                                        onQuickView={onQuickView}
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Pagination Controls */}
+                            {totalPages > 1 && (
+                                <div className="mt-12 flex justify-center items-center gap-2">
+                                    <button
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Anterior
+                                    </button>
+                                    
+                                    <div className="flex gap-1">
+                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                            <button
+                                                key={page}
+                                                onClick={() => handlePageChange(page)}
+                                                className={`w-10 h-10 rounded-lg text-sm font-bold flex items-center justify-center transition-all ${
+                                                    currentPage === page
+                                                        ? 'bg-black text-white shadow-md'
+                                                        : 'bg-white text-gray-700 hover:bg-gray-100 border border-transparent'
+                                                }`}
+                                            >
+                                                {page}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                        className="px-4 py-2 rounded-lg border border-gray-300 text-sm font-medium hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Siguiente
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     ) : (
                         <div className="text-center py-16 border rounded-lg">
                             <p className="text-xl text-gray-600">No se encontraron productos en esta categoría.</p>
